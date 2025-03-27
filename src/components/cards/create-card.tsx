@@ -46,7 +46,7 @@ export function CreateCardEditor() {
           "h-card-height w-card-width p-card-padding rounded-[12px] shadow-lg flex flex-col justify-between",
           type === 'white' ? 'bg-white text-black' : 'bg-black text-white'
         )}>
-          <p className="text-card-content-size font-extrabold text-cah-card">
+          <p className="text-card-content-size font-extrabold text-mwh-card">
             {text}
           </p>
 

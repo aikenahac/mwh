@@ -22,7 +22,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Cards Against Humanity [Generator]',
+  title: 'Mess with Humanity',
   description: 'Create custom cards for Cards Against Humanity',
 };
 
