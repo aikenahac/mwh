@@ -9,7 +9,7 @@ export default async function DecksPage() {
   const { userId } = await auth();
 
   if (!userId) redirect(Routes.SIGN_IN);
-  const {data: decks} = await getDecks(userId);
+  const { data: decks } = await getDecks(userId);
   const hasDecks = !!decks && decks.length > 0;
 
   return (
@@ -20,11 +20,11 @@ export default async function DecksPage() {
       </div>
       <br />
       {hasDecks ? (
-        decks.map((deck) => (
-          <div key={deck.id} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <DeckCard deck={deck} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {decks.map((deck) => (
+              <DeckCard key={deck.id} deck={deck} />
+            ))}
           </div>
-        ))
       ) : (
         <div className="flex flex-col items-center justify-center w-full">
           <p className="text-xl font-bold">No decks found</p>

@@ -1,3 +1,5 @@
+import { MwhCard } from '@/components/cards/mwh-card';
+import { CardContextMenu } from '@/components/decks/deck/card-menu';
 import { buttonVariants } from '@/components/ui/button';
 import { Routes } from '@/lib/routes';
 import { getDeckById } from '@/lib/supabase/api/deck';
@@ -25,6 +27,8 @@ export default async function DeckPage({
     );
   }
 
+  const hasCards = !!deck.cards && deck.cards.length > 0;
+
   return (
     <div>
       <div className='flex flex-row items-center justify-between'>
@@ -38,6 +42,22 @@ export default async function DeckPage({
           </Link>
         )}
       </div>
+      {hasCards ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {deck.cards.map((card) => (
+              <CardContextMenu key={card.id}>
+                <MwhCard type={card.type} text={card.text} />
+              </CardContextMenu>
+            ))}
+          </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center w-full">
+          <p className="text-xl font-bold">No decks found</p>
+          <p className="text-sm text-muted-foreground">
+            Create a new deck to get started
+          </p>
+        </div>
+      )}
     </div>
   );
 }

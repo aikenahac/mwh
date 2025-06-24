@@ -17,3 +17,11 @@ type Failure<E> = {
 };
 
 export type Result<T, E = Error> = Success<T> | Failure<E>;
+
+export function getCardCount(count: number) {
+  if (count === 1) {
+    return "1 card";
+  }
+
+  return `${count} cards`;
+}

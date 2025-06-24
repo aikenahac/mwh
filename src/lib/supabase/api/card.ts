@@ -2,8 +2,8 @@ import z from 'zod';
 import { createClerkSupabaseClientServer } from '@/lib/supabase/server';
 
 enum CardType {
-  WHITE = 'WHITE',
-  BLACK = 'BLACK',
+  WHITE = 'white',
+  BLACK = 'black',
 }
 
 export type Card = z.infer<typeof cardSchema>;
@@ -12,6 +12,7 @@ export const cardSchema = z.object({
   type: z.nativeEnum(CardType),
   text: z.string(),
   deck_id: z.string(),
+  user_id: z.string(),
   created_at: z.string(),
 });
 
@@ -24,6 +25,7 @@ export async function getCards(deckId: string) {
     type,
     text,
     deck_id,
+    user_id,
     created_at
   `).eq('deck_id', deckId);
 

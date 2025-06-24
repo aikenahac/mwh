@@ -26,7 +26,7 @@ export function Navbar() {
         <Link href="/" className={getClassName(path === Routes.HOME)}>
           Home
         </Link>
-        <Link href="/decks" className={getClassName(path.startsWith(Routes.DECKS))}>
+        <Link href="/decks" className={getClassName(path.startsWith(Routes.DECKS) || path.startsWith(Routes.CARDS))}>
           Decks
         </Link>
       </div>

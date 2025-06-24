@@ -41,22 +41,14 @@ export default async function CreateCardPage({
           <h1 className="text-2xl font-bold flex items-center">Create Card</h1>
           <h2 className="text-md font-medium flex items-center gap-1">for <span className='font-bold'>{deck.name}</span></h2>
         </div>
-        <div className='flex flex-row items-center gap-2'>
-          <Link href={Routes.DECK(deck.id)} className={buttonVariants({ variant: 'outline' })}>
-            <FontAwesomeIcon icon={faLayerGroup} />
-          </Link>
-          <Button>
-            Create
-          </Button>
-          <Button>
-            Save & Create Another
-          </Button>
-        </div>
+        <Link href={Routes.DECK(deck.id)} className={buttonVariants({ variant: 'outline' })}>
+          <FontAwesomeIcon icon={faLayerGroup} />
+        </Link>
       </div>
 
       <br />
 
-      <CreateCardEditor />
+      <CreateCardEditor deckId={deck.id} />
     </div>
   );
 }

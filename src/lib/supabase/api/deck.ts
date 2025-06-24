@@ -24,7 +24,7 @@ export const deckSchema = z
 
 const decksSchema = z.array(deckSchema);
 
-export async function getDecks(userId: string) {
+export async function getDecks(userId: string): Promise<Result<Deck[], Error>> {
   const supabase = await createClerkSupabaseClientServer();
   const { data } = await supabase
     .from('deck')
@@ -41,13 +41,33 @@ export async function getDecks(userId: string) {
       type,
       text,
       deck_id,
+      user_id,
       created_at
     ) as cards
   `,
     )
     .eq('user_id', userId);
 
-  return decksSchema.safeParse(data);
+  if (!data) {
+    return {
+      data: null,
+      error: new Error('An error occurred while fetching decks'),
+    };
+  }
+
+  const parsed = decksSchema.safeParse(data);
+  if (!parsed.success) {
+    console.log(parsed.error)
+    return {
+      data: null,
+      error: new Error('An error occurred while parsing decks'),
+    };
+  }
+
+  return {
+    data: parsed.data,
+    error: null,
+  };
 }
 
 export async function getDeckById(id: string): Promise<Result<Deck, Error>> {
@@ -75,6 +95,7 @@ export async function getDeckById(id: string): Promise<Result<Deck, Error>> {
       type,
       text,
       deck_id,
+      user_id,
       created_at
     ) as cards
   `,

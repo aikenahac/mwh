@@ -48,3 +48,6 @@ SUPABASE_ACCESS_TOKEN=
 ```
 
 ToDo - write documentation on where to find these keys
+
+---
+###### To my girlfriend, who just complained about there not being a K-Pop expansion once

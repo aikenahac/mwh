@@ -53,7 +53,6 @@ export function CreateDeck() {
     }
     console.log('inserting deck');
     const res = await supabase.from('deck').insert({ name, description }).select('*');
-    console.log(res)
     if (res.error || !res.data || !res.data[0]) {
       toast.error(res.error?.message ?? "An error occurred");
       return;

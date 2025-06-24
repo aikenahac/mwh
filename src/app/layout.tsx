@@ -9,6 +9,7 @@ import QueryProvider from '@/components/query-provider';
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import { Toaster } from '@/components/ui/sonner';
+import { appName } from '@/lib/constants';
 config.autoAddCss = false;
 
 const geistSans = Geist({
@@ -22,7 +23,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Mess with Humanity',
+  title: appName,
   description: 'Create custom cards for Cards Against Humanity',
 };
 
