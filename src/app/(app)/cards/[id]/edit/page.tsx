@@ -1,4 +1,5 @@
 import { CreateCardEditor } from '@/components/cards/create-card';
+import { EditCardPage } from '@/components/cards/edit-card-page';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Routes } from '@/lib/routes';
 import { getCardById } from '@/lib/supabase/api/card';
@@ -10,7 +11,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { toast } from 'sonner';
 
-export default async function EditCardPage({
+export default async function EditCardPageRoot({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -44,29 +45,5 @@ export default async function EditCardPage({
     );
   }
 
-  return (
-    <div>
-      <div className="flex flex-row items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center">Edit Card</h1>
-          <h2 className="text-md font-medium flex items-center gap-1">
-            for <span className="font-bold">{deck.name}</span>
-          </h2>
-        </div>
-        <div className="flex flex-row items-center gap-2">
-          <Link
-            href={Routes.DECK(deck.id)}
-            className={buttonVariants({ variant: 'outline' })}
-          >
-            <FontAwesomeIcon icon={faLayerGroup} />
-          </Link>
-          <Button>Save</Button>
-        </div>
-      </div>
-
-      <br />
-
-      <CreateCardEditor textProp={card.text} typeProp={card.type} />
-    </div>
-  );
+  return <EditCardPage deck={deck} card={card} />
 }

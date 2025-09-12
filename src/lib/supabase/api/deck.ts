@@ -39,6 +39,7 @@ export async function getDecks(userId: string) {
     card(
       id,
       type,
+      black_card_type,
       text,
       deck_id,
       created_at
@@ -79,6 +80,7 @@ export async function getDeckById(id: string): Promise<Result<Deck, Error>> {
     card(
       id,
       type,
+      black_card_type,
       text,
       deck_id,
       created_at

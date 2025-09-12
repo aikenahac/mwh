@@ -1,15 +1,11 @@
-import { CreateCardEditor } from '@/components/cards/create-card';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { CreateCardPage } from '@/components/cards/create-card-page';
 import { Routes } from '@/lib/routes';
 import { getDeckById } from '@/lib/supabase/api/deck';
 import { auth } from '@clerk/nextjs/server';
-import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { toast } from 'sonner';
 
-export default async function CreateCardPage({
+export default async function CreateCardPageRoot({
   params,
 }: {
   params: Promise<{ deckId: string }>;
@@ -34,30 +30,5 @@ export default async function CreateCardPage({
     );
   }
 
-  return (
-    <div>
-      <div className="flex flex-row items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center">Create Card</h1>
-          <h2 className="text-md font-medium flex items-center gap-1">
-            for <span className="font-bold">{deck.name}</span>
-          </h2>
-        </div>
-        <div className="flex flex-row items-center gap-2">
-          <Link
-            href={Routes.DECK(deck.id)}
-            className={buttonVariants({ variant: 'outline' })}
-          >
-            <FontAwesomeIcon icon={faLayerGroup} />
-          </Link>
-          <Button>Create</Button>
-          <Button>Save & Create Another</Button>
-        </div>
-      </div>
-
-      <br />
-
-      <CreateCardEditor />
-    </div>
-  );
+  return <CreateCardPage deck={deck} />
 }

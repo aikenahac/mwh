@@ -16,6 +16,7 @@ export type Database = {
           id: string;
           text: string | null;
           type: Database['public']['Enums']['cardtype'];
+          black_card_type: Database['public']['Enums']['blackcardtype'] | null;
           user_id: string | null;
         };
         Insert: {
@@ -24,6 +25,7 @@ export type Database = {
           id?: string;
           text?: string | null;
           type?: Database['public']['Enums']['cardtype'];
+          black_card_type?: Database['public']['Enums']['blackcardtype'] | null;
           user_id?: string | null;
         };
         Update: {
@@ -32,6 +34,7 @@ export type Database = {
           id?: string;
           text?: string | null;
           type?: Database['public']['Enums']['cardtype'];
+          black_card_type?: Database['public']['Enums']['blackcardtype'] | null;
           user_id?: string | null;
         };
         Relationships: [
@@ -80,6 +83,7 @@ export type Database = {
     };
     Enums: {
       cardtype: 'black' | 'white';
+      blackcardtype: 'normal' | 'pick_2';
     };
     CompositeTypes: {
       [_ in never]: never;

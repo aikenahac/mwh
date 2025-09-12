@@ -7,7 +7,7 @@ export async function createClerkSupabaseClientServer() {
 
   return createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_ACCESS_TOKEN!,
+    process.env.SUPABASE_SECRET_KEY!,
     {
       global: {
         // Get the custom Supabase token from Clerk
