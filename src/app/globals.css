@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -118,7 +118,6 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -128,11 +127,13 @@
   }
 }
 
-.cl-footerAction, .cl-footerAction__signIn, .cl-internal-1rpdi70 {
+.cl-footerAction,
+.cl-footerAction__signIn,
+.cl-internal-1rpdi70 {
   display: none;
   visibility: hidden;
 }
 
 .text-mwh-card {
-  font-family: "Helvetica", sans-serif;
+  font-family: 'Helvetica', sans-serif;
 }

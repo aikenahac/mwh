@@ -17,7 +17,9 @@ export function Navbar() {
   const path = usePathname();
 
   function getClassName(active: boolean) {
-    return active ? buttonVariants({ variant: 'outline' }) : buttonVariants({ variant: 'ghost' });
+    return active
+      ? buttonVariants({ variant: 'outline' })
+      : buttonVariants({ variant: 'ghost' });
   }
 
   return (
@@ -26,7 +28,10 @@ export function Navbar() {
         <Link href="/" className={getClassName(path === Routes.HOME)}>
           Home
         </Link>
-        <Link href="/decks" className={getClassName(path.startsWith(Routes.DECKS))}>
+        <Link
+          href="/decks"
+          className={getClassName(path.startsWith(Routes.DECKS))}
+        >
           Decks
         </Link>
       </div>

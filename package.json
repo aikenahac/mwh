@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "prettier:format": "prettier --ignore-path .gitignore --write \"./src/**/*.{ts,tsx,js,css,scss,html,json}\"",
-    "format": "npm run prettier:format && npm run lint:fix",
+    "format": "pnpm prettier:format && pnpm lint --fix",
     "s:gen": "supabase gen types typescript --project-id ejercihjnwtdxifeioyx > src/lib/supabase/types.ts"
   },
   "dependencies": {

@@ -1,10 +1,10 @@
-import { buttonVariants } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Routes } from "@/lib/routes";
-import { Deck } from "@/lib/supabase/api/deck";
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Link from "next/link";
+import { buttonVariants } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Routes } from '@/lib/routes';
+import { Deck } from '@/lib/supabase/api/deck';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Link from 'next/link';
 
 export function DeckCard({ deck }: { deck: Deck }) {
   return (
@@ -15,7 +15,10 @@ export function DeckCard({ deck }: { deck: Deck }) {
         <p className="text-sm text-muted-foreground">
           {deck.cards.length} cards
         </p>
-        <Link href={Routes.DECK(deck.id)} className={buttonVariants({ variant: "default" })}>
+        <Link
+          href={Routes.DECK(deck.id)}
+          className={buttonVariants({ variant: 'default' })}
+        >
           <FontAwesomeIcon icon={faChevronRight} />
         </Link>
       </div>

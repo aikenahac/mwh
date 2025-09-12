@@ -7,7 +7,7 @@ export default async function HomePage() {
   // if (!userId) redirect(Routes.SIGN_IN);
 
   return (
-    <Card className='w-full flex items-center justify-center'>
+    <Card className="w-full flex items-center justify-center">
       <h1>Home page</h1>
     </Card>
   );

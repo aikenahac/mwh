@@ -4,11 +4,10 @@ import { Routes } from '@/lib/routes';
 import { createDeckFormSchema } from '@/lib/schemas';
 import { createClerkSupabaseClientServer } from '@/lib/supabase/server';
 import { auth } from '@clerk/nextjs/server';
-import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { redirect } from 'next/navigation';
-import { z } from 'zod';
 
 export async function createDeck(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   prevState: any,
   formData: FormData,
 ): Promise<{ success: false; message: string }> {

@@ -24,13 +24,18 @@ export const cardsSchema = z.array(cardSchema);
 
 export async function getCards(deckId: string) {
   const supabase = await createClerkSupabaseClientServer();
-  const { data } = await supabase.from('card').select(`
+  const { data } = await supabase
+    .from('card')
+    .select(
+      `
     id,
     type,
     text,
     deck_id,
     created_at
-  `).eq('deck_id', deckId);
+  `,
+    )
+    .eq('deck_id', deckId);
 
   return cardsSchema.safeParse(data);
 }

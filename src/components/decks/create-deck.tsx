@@ -55,45 +55,6 @@ export function CreateDeck() {
             Choose a name and add a description for your deck.
           </DialogDescription>
         </DialogHeader>
-        {/* <Form {...form}>
-          <form onSubmit={form.handleSubmit()} className="grid gap-4 py-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="K-Pop Pack"
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="I just wanna be your dog woof woof"
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <DialogFooter>
-              <Button className="cursor-pointer" type="submit">
-                Create
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form> */}
         <form className="flex flex-col gap-4" action={formAction}>
           <div className="space-y-2">
             <Label>Name</Label>
@@ -113,37 +74,6 @@ export function CreateDeck() {
             </Button>
           </DialogFooter>
         </form>
-        {/* <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input
-              id="name"
-              name="name"
-              placeholder="K-Pop Pack"
-              className="col-span-3"
-              onChange={handleChange}
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="description" className="text-right">
-              Description
-            </Label>
-            <Input
-              id="description"
-              name="description"
-              placeholder="I just wanna be your doog woof woof"
-              className="col-span-3"
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button className="cursor-pointer" onClick={() => handleSubmit()}>
-            Create
-          </Button>
-        </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );

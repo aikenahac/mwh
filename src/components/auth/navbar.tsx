@@ -27,7 +27,7 @@ export function AuthNavbar() {
           Sign Up
         </Link>
       </div>
-      <div className='scale-90'>
+      <div className="scale-90">
         <ThemeToggle />
       </div>
     </Card>

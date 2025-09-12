@@ -1,4 +1,4 @@
-import { AuthNavbar } from "@/components/auth/navbar";
+import { AuthNavbar } from '@/components/auth/navbar';
 
 export default function AppLayout({
   children,

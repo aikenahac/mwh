@@ -6,8 +6,8 @@ import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import QueryProvider from '@/components/query-provider';
 
-import { config } from '@fortawesome/fontawesome-svg-core'
-import '@fortawesome/fontawesome-svg-core/styles.css'
+import { config } from '@fortawesome/fontawesome-svg-core';
+import '@fortawesome/fontawesome-svg-core/styles.css';
 import { Toaster } from '@/components/ui/sonner';
 config.autoAddCss = false;
 
