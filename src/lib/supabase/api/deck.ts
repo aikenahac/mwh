@@ -47,7 +47,13 @@ export async function getDecks(userId: string) {
     )
     .eq('user_id', userId);
 
-  return decksSchema.safeParse(data);
+  console.log('Decks data:', data);
+
+  const res = decksSchema.safeParse(data);
+
+  console.log('Parsed decks:', res);
+
+  return res;
 }
 
 export async function getDeckById(id: string): Promise<Result<Deck, Error>> {

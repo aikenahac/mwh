@@ -7,6 +7,7 @@ import { Label } from '../ui/label';
 
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
 import { cn } from '@/lib/utils';
+import { MWHCard } from './mwh-card';
 
 export function CreateCardEditor() {
   const [text, setText] = useState('Jungkook and Jimin cuddling');
@@ -42,18 +43,7 @@ export function CreateCardEditor() {
         />
       </Card>
       <Card className="w-full flex items-center justify-center lg:w-[35%]">
-        <div className={cn(
-          "h-card-height w-card-width p-card-padding rounded-[12px] shadow-lg flex flex-col justify-between",
-          type === 'white' ? 'bg-white text-black' : 'bg-black text-white'
-        )}>
-          <p className="text-card-content-size font-extrabold text-mwh-card">
-            {text}
-          </p>
-
-          <div className='flex flex-row items-center gap-2'>
-            <p className='text-card-footer-size font-bold'>Neki Against Humanity</p>
-          </div>
-        </div>
+        <MWHCard text={text} type={type} />
       </Card>
     </div>
   );

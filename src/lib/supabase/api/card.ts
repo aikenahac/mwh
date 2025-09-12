@@ -1,10 +1,15 @@
 import z from 'zod';
 import { createClerkSupabaseClientServer } from '@/lib/supabase/server';
 
-enum CardType {
-  WHITE = 'WHITE',
-  BLACK = 'BLACK',
-}
+// export enum CardType {
+//   WHITE = 'white',
+//   BLACK = 'black',
+// }
+
+export const CardType = {
+  white: 'white',
+  black: 'black',
+} as const;
 
 export type Card = z.infer<typeof cardSchema>;
 export const cardSchema = z.object({

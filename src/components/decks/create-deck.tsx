@@ -11,56 +11,34 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
-import { useCreateClerkSupabaseClient } from '@/lib/supabase/client';
-import { toast } from "sonner"
-import { Routes } from '@/lib/routes';
-import { redirect } from 'next/navigation';
+import { createDeck } from '@/app/(app)/decks/actions';
+import { useActionState, useEffect } from 'react';
+import { toast } from 'sonner';
+import { Label } from '../ui/label';
+
+const initialState = {
+  success: false,
+  message: '',
+};
 
 export function CreateDeck() {
-  const supabase = useCreateClerkSupabaseClient();
+  const [state, formAction, pending] = useActionState(createDeck, initialState);
 
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = event.target;
-      console.log('changing');
-      console.log("current:", name)
-    if (name === 'name') {
-      console.log('name changed');
-      setName(value);
-    } else if (name === 'description') {
-      console.log('description changed');
-      setDescription(value);
+  useEffect(() => {
+    if (state?.message && state.message.length > 0) {
+      if (state.success) {
+        toast.success(state.message, {
+          richColors: true,
+        });
+      } else {
+        toast.error(state.message, {
+          richColors: true,
+        });
+      }
     }
-  }
-
-  async function handleSubmit() {
-    console.log('handleSubmit called');
-    if (!name || name.length === 0) {
-      console.log('no name');
-      toast.error("Name is required");
-      return;
-    }
-    if (!description || description.length === 0) {
-      console.log('no description');
-      toast.error("Description is required");
-      return;
-    }
-    console.log('inserting deck');
-    const res = await supabase.from('deck').insert({ name, description }).select('*');
-    console.log(res)
-    if (res.error || !res.data || !res.data[0]) {
-      toast.error(res.error?.message ?? "An error occurred");
-      return;
-    }
-    toast("Deck created successfully!");
-    redirect(`${Routes.DECKS}/${res.data[0].id}`);
-  };
+  }, [state]);
 
   return (
     <Dialog>
@@ -77,35 +55,95 @@ export function CreateDeck() {
             Choose a name and add a description for your deck.
           </DialogDescription>
         </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
-              </Label>
-              <Input
-                id="name"
-                name="name"
-                placeholder="K-Pop Pack"
-                className="col-span-3"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="description" className="text-right">
-                Description
-              </Label>
-              <Input
-                id="description"
-                name='description'
-                placeholder="I just wanna be your doog woof woof"
-                className="col-span-3"
-                onChange={handleChange}
-              />
-            </div>
+        {/* <Form {...form}>
+          <form onSubmit={form.handleSubmit()} className="grid gap-4 py-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="K-Pop Pack"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="I just wanna be your dog woof woof"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <DialogFooter>
+              <Button className="cursor-pointer" type="submit">
+                Create
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form> */}
+        <form className="flex flex-col gap-4" action={formAction}>
+          <div className="space-y-2">
+            <Label>Name</Label>
+            <Input id="name" name="name" placeholder="K-Pop Pack" />
+          </div>
+          <div className="space-y-2">
+            <Label>Description</Label>
+            <Input
+              id="description"
+              name="description"
+              placeholder="I just wanna be your dog woof woof"
+            />
           </div>
           <DialogFooter>
-            <Button className='cursor-pointer' onClick={() => handleSubmit()}>Create</Button>
+            <Button className="cursor-pointer" disabled={pending} type="submit">
+              Create
+            </Button>
           </DialogFooter>
+        </form>
+        {/* <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
+            <Input
+              id="name"
+              name="name"
+              placeholder="K-Pop Pack"
+              className="col-span-3"
+              onChange={handleChange}
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="description" className="text-right">
+              Description
+            </Label>
+            <Input
+              id="description"
+              name="description"
+              placeholder="I just wanna be your doog woof woof"
+              className="col-span-3"
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button className="cursor-pointer" onClick={() => handleSubmit()}>
+            Create
+          </Button>
+        </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );
