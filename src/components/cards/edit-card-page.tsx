@@ -7,8 +7,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 import { CreateCardEditor } from './create-card';
 import { Deck } from '@/lib/supabase/api/deck';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BlackCardType, Card, CardType } from '@/lib/supabase/api/card';
+import { DeleteCardDialog } from './delete-card-dialog';
 
 type Props = {
   deck: Deck;
@@ -21,6 +22,14 @@ export function EditCardPage({ deck, card }: Props) {
   const [blackCardType, setBlackCardType] = useState<
     keyof typeof BlackCardType | undefined
   >(card.black_card_type || card.type === 'black' ? 'normal' : undefined);
+
+  useEffect(() => {
+    if (type === "black") {
+      setBlackCardType("normal");
+    } else {
+      setBlackCardType(undefined);
+    }
+  }, [type])
 
   return (
     <div>
@@ -38,6 +47,7 @@ export function EditCardPage({ deck, card }: Props) {
           >
             <FontAwesomeIcon icon={faLayerGroup} />
           </Link>
+          <DeleteCardDialog cardId={card.id} deckId={deck.id} />
           <Button>Save</Button>
         </div>
       </div>

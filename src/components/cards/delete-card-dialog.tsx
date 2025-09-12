@@ -1,0 +1,78 @@
+import { Routes } from '@/lib/routes';
+import { redirect } from 'next/navigation';
+import { useActionState, useEffect } from 'react';
+import { toast } from 'sonner';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../ui/dialog';
+import { Button, buttonVariants } from '../ui/button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { deleteCard } from '@/app/(app)/cards/[id]/edit/actions';
+import { cn } from '@/lib/utils';
+
+type Props = {
+  cardId: string;
+  deckId: string;
+};
+
+const initialState = {
+  success: false,
+  error: undefined,
+};
+
+export function DeleteCardDialog({ cardId, deckId }: Props) {
+  const onSubmit = () => deleteCard({ id: cardId });
+
+  const [state, formAction, pending] = useActionState(onSubmit, initialState);
+
+  useEffect(() => {
+    if (!state.success && state.error) {
+      toast.error(state.error, {
+        richColors: true,
+      });
+    }
+
+    if (state.success) {
+      toast.success('Card deleted successfully', {
+        richColors: true,
+      });
+      redirect(Routes.DECK(deckId));
+    }
+  }, [state]);
+
+  return (
+    <Dialog>
+      <DialogTrigger
+        asChild
+        className={cn(buttonVariants({ variant: 'destructive' }), 'py-3')}
+      >
+        <FontAwesomeIcon icon={faTrash} />
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Delete card?</DialogTitle>
+          <DialogDescription>
+            Are you sure you want to delete this card? This action cannot be
+            undone.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <DialogClose>
+            <Button variant="outline" disabled={pending}>Cancel</Button>
+          </DialogClose>
+          <form action={formAction}>
+            <Button variant="destructive">Delete</Button>
+          </form>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
