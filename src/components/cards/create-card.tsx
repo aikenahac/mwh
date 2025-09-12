@@ -6,10 +6,16 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
 import { MWHCard } from './mwh-card';
+import { CardType } from '@/lib/supabase/api/card';
 
-export function CreateCardEditor() {
-  const [text, setText] = useState('Jungkook and Jimin cuddling');
-  const [type, setType] = useState<'black' | 'white'>('white');
+type Props = {
+  textProp?: string;
+  typeProp?: keyof typeof CardType;
+};
+
+export function CreateCardEditor({ textProp, typeProp }: Props) {
+  const [text, setText] = useState(textProp ?? 'Jungkook and Jimin cuddling');
+  const [type, setType] = useState<keyof typeof CardType>(typeProp ?? 'white');
 
   return (
     <div className="flex flex-col items-start justify-between w-full gap-4 lg:flex-row">

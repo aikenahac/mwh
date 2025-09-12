@@ -1,11 +1,6 @@
 import z from 'zod';
 import { createClerkSupabaseClientServer } from '@/lib/supabase/server';
 
-// export enum CardType {
-//   WHITE = 'white',
-//   BLACK = 'black',
-// }
-
 export const CardType = {
   white: 'white',
   black: 'black',
@@ -14,7 +9,7 @@ export const CardType = {
 export type Card = z.infer<typeof cardSchema>;
 export const cardSchema = z.object({
   id: z.string(),
-  type: z.nativeEnum(CardType),
+  type: z.enum(CardType),
   text: z.string(),
   deck_id: z.string(),
   created_at: z.string(),
@@ -22,7 +17,7 @@ export const cardSchema = z.object({
 
 export const cardsSchema = z.array(cardSchema);
 
-export async function getCards(deckId: string) {
+export async function getCardById(cardId: string) {
   const supabase = await createClerkSupabaseClientServer();
   const { data } = await supabase
     .from('card')
@@ -35,7 +30,9 @@ export async function getCards(deckId: string) {
     created_at
   `,
     )
-    .eq('deck_id', deckId);
+    .eq('id', cardId)
+    .limit(1)
+    .single();
 
-  return cardsSchema.safeParse(data);
+  return cardSchema.safeParse(data);
 }

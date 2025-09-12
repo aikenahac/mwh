@@ -56,12 +56,16 @@ export default async function DeckPage({
         {deck.cards
           .filter((c) => c.type === 'black')
           .map((card) => (
-            <MWHCard key={card.id} text={card.text} type={card.type} />
+            <Link href={Routes.CARD_EDIT(card.id)} key={card.id}>
+              <MWHCard text={card.text} type={card.type} />
+            </Link>
           ))}
         {deck.cards
           .filter((c) => c.type === 'white')
           .map((card) => (
-            <MWHCard key={card.id} text={card.text} type={card.type} />
+            <Link href={Routes.CARD_EDIT(card.id)} key={card.id}>
+              <MWHCard text={card.text} type={card.type} />
+            </Link>
           ))}
       </div>
     </div>
