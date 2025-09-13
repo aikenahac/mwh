@@ -17,7 +17,7 @@ export const cardSchema = z.object({
   id: z.string(),
   type: z.enum(CardType),
   black_card_type: z.enum(BlackCardType).optional().nullish(),
-  text: z.string(),
+  text: z.string().nullish(),
   deck_id: z.string(),
   created_at: z.string(),
 });

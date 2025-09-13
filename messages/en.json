@@ -32,6 +32,7 @@
   "deck": {
     "addCard": "Add Card",
     "unknownDeck": "Unknown deck",
+    "print": "Print",
 
     "editDialog": {
       "title": "Edit Deck",
@@ -64,6 +65,10 @@
       "title": "Deck Details",
       "subtitle": "Deck ID: {id}"
     },
+    "printDialog": {
+      "title": "Print deck"
+    },
+
     "cards": "cards"
   },
 

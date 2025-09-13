@@ -9,6 +9,7 @@ export const Routes = {
   DECKS: '/decks',
   DECK: (id: string) => `/decks/${id}`,
   DECK_EDIT: (id: string) => `/decks/${id}/edit`,
+  DECK_PRINT: (id: string) => `/decks/${id}/print`,
 
   // Cards
   CARDS: '/cards',
