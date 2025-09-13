@@ -20,6 +20,7 @@ import { updateDeck } from '@/app/(app)/decks/[id]/actions';
 import { Deck } from '@/lib/supabase/api/deck';
 import { redirect } from 'next/navigation';
 import { Routes } from '@/lib/routes';
+import { useTranslations } from 'next-intl';
 
 const initialState = {
   success: false,
@@ -27,6 +28,8 @@ const initialState = {
 };
 
 export function EditDeckDialog({ deck }: { deck: Deck }) {
+  const t = useTranslations();
+
   const onSubmit = () => updateDeck({ id: deck.id, name, description });
   const [state, formAction, pending] = useActionState(onSubmit, initialState);
 
@@ -43,12 +46,12 @@ export function EditDeckDialog({ deck }: { deck: Deck }) {
     }
 
     if (state.success) {
-      toast.success('Deck updated successfully', {
+      toast.success(t('deck.editDialog.success'), {
         richColors: true,
       });
       redirect(Routes.DECK(deck.id));
     }
-  }, [state, deck.id]);
+  }, [state, deck.id, t]);
 
   return (
     <Dialog>
@@ -59,26 +62,28 @@ export function EditDeckDialog({ deck }: { deck: Deck }) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Deck</DialogTitle>
-          <DialogDescription>Update deck information.</DialogDescription>
+          <DialogTitle>{t('deck.editDialog.title')}</DialogTitle>
+          <DialogDescription>
+            {t('deck.editDialog.description')}
+          </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <div className="space-y-2">
-            <Label>Name</Label>
+            <Label>{t('deck.editDialog.nameLabel')}</Label>
             <Input
               id="name"
               name="name"
-              placeholder="K-Pop Pack"
+              placeholder={t('deck.editDialog.namePlaceholder')}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div className="space-y-2">
-            <Label>Description</Label>
+            <Label>{t('deck.editDialog.descriptionLabel')}</Label>
             <Input
               id="description"
               name="description"
-              placeholder="I just wanna be your dog woof woof"
+              placeholder={t('deck.editDialog.descriptionPlaceholder')}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
@@ -90,7 +95,7 @@ export function EditDeckDialog({ deck }: { deck: Deck }) {
                 disabled={pending}
                 type="submit"
               >
-                Update
+                {t('deck.editDialog.updateButton')}
               </Button>
             </form>
           </DialogFooter>

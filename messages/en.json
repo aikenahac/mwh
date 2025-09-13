@@ -1,0 +1,104 @@
+{
+  "appName": "Mess With Humanity",
+
+  "theme": {
+    "toggle": "Toggle Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+
+  "nav": {
+    "home": "Home",
+    "decks": "Decks"
+  },
+  "authNav": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up"
+  },
+
+  "home": {
+    "title": "Home page"
+  },
+
+  "decksPage": {
+    "title": "Decks",
+    "empty": {
+      "title": "No decks yet",
+      "description": "Create your first deck to get started!"
+    }
+  },
+
+  "deck": {
+    "addCard": "Add Card",
+    "unknownDeck": "Unknown deck",
+
+    "editDialog": {
+      "title": "Edit Deck",
+      "description": "Update deck information.",
+      "nameLabel": "Name",
+      "namePlaceholder": "K-Pop Pack",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "I just wanna be your dog woof woof",
+      "updateButton": "Update",
+      "success": "Deck updated successfully."
+    },
+    "deleteDialog": {
+      "title": "Delete Deck?",
+      "description": "Are you sure you want to delete this deck? This action cannot be undone.",
+      "cancelButton": "Cancel",
+      "deleteButton": "Delete",
+      "success": "Deck deleted successfully."
+    },
+    "createDialog": {
+      "title": "Create Deck",
+      "description": "Choose a name and add a description for your deck.",
+      "nameLabel": "Name",
+      "namePlaceholder": "K-Pop Pack",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "I just wanna be your dog woof woof",
+      "createButton": "Create",
+      "success": "Deck created successfully."
+    },
+    "details": {
+      "title": "Deck Details",
+      "subtitle": "Deck ID: {id}"
+    },
+    "cards": "cards"
+  },
+
+  "card": {
+    "unknownCard": "Unknown card",
+
+    "edit": {
+      "title": "Edit Card",
+      "deck": "for",
+      "saveButton": "Save",
+      "success": "Card updated successfully."
+    },
+    "deleteDialog": {
+      "title": "Delete card?",
+      "description": "Are you sure you want to delete this card? This action cannot be undone.",
+      "cancelButton": "Cancel",
+      "deleteButton": "Delete",
+      "success": "Card deleted successfully."
+    },
+    "editor": {
+      "typeLabel": "Card type",
+      "white": "White",
+      "black": "Black",
+      "textLabel": "Card text",
+      "textPlaceholder": "Jungkook and Jimin cuddling",
+      "addLine": "Add line",
+      "blackCardTypeLabel": "Black Card Type",
+      "normal": "Normal",
+      "pick2": "Pick 2"
+    },
+    "create": {
+      "title": "Create Card",
+      "deck": "for",
+      "saveButton": "Save",
+      "success": "Card created successfully."
+    }
+  }
+}

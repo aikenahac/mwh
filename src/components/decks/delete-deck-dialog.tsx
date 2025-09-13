@@ -18,6 +18,7 @@ import { Button, buttonVariants } from '../ui/button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { deleteDeck } from '@/app/(app)/decks/[id]/actions';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   deckId: string;
@@ -29,6 +30,8 @@ const initialState = {
 };
 
 export function DeleteDeckDialog({ deckId }: Props) {
+  const t = useTranslations();
+
   const onSubmit = () => deleteDeck({ id: deckId });
   const [state, formAction, pending] = useActionState(onSubmit, initialState);
 
@@ -40,12 +43,12 @@ export function DeleteDeckDialog({ deckId }: Props) {
     }
 
     if (state.success) {
-      toast.success('Deck deleted successfully', {
+      toast.success(t('deck.deleteDialog.success'), {
         richColors: true,
       });
       redirect(Routes.DECKS);
     }
-  }, [state]);
+  }, [state, t]);
 
   return (
     <Dialog>
@@ -56,10 +59,9 @@ export function DeleteDeckDialog({ deckId }: Props) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete deck?</DialogTitle>
+          <DialogTitle>{t('deck.deleteDialog.title')}</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete this deck? This action cannot be
-            undone.
+            {t('deck.deleteDialog.description')}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -67,11 +69,11 @@ export function DeleteDeckDialog({ deckId }: Props) {
             className={buttonVariants({ variant: 'outline' })}
             disabled={pending}
           >
-            Cancel
+            {t('deck.deleteDialog.cancelButton')}
           </DialogClose>
           <form action={formAction}>
             <Button variant="destructive" disabled={pending}>
-              Delete
+              {t('deck.deleteDialog.deleteButton')}
             </Button>
           </form>
         </DialogFooter>

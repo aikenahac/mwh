@@ -12,6 +12,7 @@ import { BlackCardType, Card, CardType } from '@/lib/supabase/api/card';
 import { DeleteCardDialog } from './delete-card-dialog';
 import { updateCard } from '@/app/(app)/cards/[id]/edit/actions';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   deck: Deck;
@@ -24,7 +25,9 @@ const initialState = {
 };
 
 export function EditCardPage({ deck, card }: Props) {
-  const [text, setText] = useState(card.text || 'Jungkook and Jimin cuddling');
+  const t = useTranslations();
+
+  const [text, setText] = useState(card.text || '');
   const [type, setType] = useState<keyof typeof CardType>(card.type || 'white');
   const [blackCardType, setBlackCardType] = useState<
     keyof typeof BlackCardType | undefined
@@ -49,19 +52,21 @@ export function EditCardPage({ deck, card }: Props) {
     }
 
     if (state.success) {
-      toast.success('Card updated successfully', {
+      toast.success(t('card.edit.success'), {
         richColors: true,
       });
     }
-  }, [state]);
+  }, [state, t]);
 
   return (
     <div>
       <div className="flex flex-row items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold flex items-center">Edit Card</h1>
+          <h1 className="text-2xl font-bold flex items-center">
+            {t('card.edit.title')}
+          </h1>
           <h2 className="text-md font-medium flex items-center gap-1">
-            for <span className="font-bold">{deck.name}</span>
+            {t('card.edit.deck')} <span className="font-bold">{deck.name}</span>
           </h2>
         </div>
         <div className="flex flex-row items-center gap-2">
@@ -74,7 +79,7 @@ export function EditCardPage({ deck, card }: Props) {
           <DeleteCardDialog cardId={card.id} deckId={deck.id} />
           <form action={formAction}>
             <Button type="submit" disabled={pending}>
-              Save
+              {t('card.edit.saveButton')}
             </Button>
           </form>
         </div>

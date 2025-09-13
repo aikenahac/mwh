@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import { Card } from '@/lib/supabase/api/card';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   creator?: boolean;
@@ -7,6 +8,8 @@ type Props = {
 };
 
 export function MWHCard({ creator, card }: Props) {
+  const t = useTranslations();
+
   return (
     <div
       className={cn(
@@ -22,7 +25,7 @@ export function MWHCard({ creator, card }: Props) {
       </p>
 
       <div className="flex flex-row items-center justify-between gap-2">
-        <p className="text-card-footer-size font-bold">Mess With Humanity</p>
+        <p className="text-card-footer-size font-bold">{t('appName')}</p>
         {card.black_card_type === 'pick_2' && (
           <div className="font-bold text-white flex items-center gap-1">
             PICK{' '}

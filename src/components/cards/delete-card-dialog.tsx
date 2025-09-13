@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { deleteCard } from '@/app/(app)/cards/[id]/edit/actions';
 import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   cardId: string;
@@ -29,6 +30,8 @@ const initialState = {
 };
 
 export function DeleteCardDialog({ cardId, deckId }: Props) {
+  const t = useTranslations();
+
   const onSubmit = () => deleteCard({ id: cardId });
   const [state, formAction, pending] = useActionState(onSubmit, initialState);
 
@@ -40,12 +43,12 @@ export function DeleteCardDialog({ cardId, deckId }: Props) {
     }
 
     if (state.success) {
-      toast.success('Card deleted successfully', {
+      toast.success(t('card.deleteDialog.success'), {
         richColors: true,
       });
       redirect(Routes.DECK(deckId));
     }
-  }, [state, deckId]);
+  }, [state, deckId, t]);
 
   return (
     <Dialog>
@@ -56,10 +59,9 @@ export function DeleteCardDialog({ cardId, deckId }: Props) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete card?</DialogTitle>
+          <DialogTitle>{t('card.deleteDialog.title')}</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete this card? This action cannot be
-            undone.
+            {t('card.deleteDialog.description')}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -67,11 +69,11 @@ export function DeleteCardDialog({ cardId, deckId }: Props) {
             className={buttonVariants({ variant: 'outline' })}
             disabled={pending}
           >
-            Cancel
+            {t('card.deleteDialog.cancelButton')}
           </DialogClose>
           <form action={formAction}>
             <Button variant="destructive" disabled={pending}>
-              Delete
+              {t('card.deleteDialog.deleteButton')}
             </Button>
           </form>
         </DialogFooter>

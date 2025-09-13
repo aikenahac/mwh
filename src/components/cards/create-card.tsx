@@ -8,6 +8,7 @@ import { BlackCardType, CardType } from '@/lib/supabase/api/card';
 import { Button } from '../ui/button';
 import { BLACK_CARD_LINE } from '@/lib/utils';
 import { Textarea } from '../ui/textarea';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   text: string;
@@ -27,12 +28,14 @@ export function CreateCardEditor({
   setType,
   setText,
 }: Props) {
+  const t = useTranslations();
+
   return (
     <div className="flex flex-col items-start justify-between w-full gap-4 lg:flex-row">
       <Card className="w-full flex items-start justify-center lg:w-[65%] p-6">
         <div className="flex flex-row gap-6 items-center justify-start">
           <Label htmlFor="card_text" className="text-right font-bold">
-            Card Type
+            {t('card.editor.typeLabel')}
           </Label>
           <ToggleGroup type="single" value={type}>
             <ToggleGroupItem
@@ -41,7 +44,7 @@ export function CreateCardEditor({
               aria-label="Toggle white"
               className="cursor-pointer"
             >
-              White
+              {t('card.editor.white')}
             </ToggleGroupItem>
             <ToggleGroupItem
               onClick={() => setType('black')}
@@ -49,13 +52,13 @@ export function CreateCardEditor({
               aria-label="Toggle black"
               className="cursor-pointer"
             >
-              Black
+              {t('card.editor.black')}
             </ToggleGroupItem>
           </ToggleGroup>
         </div>
         <div className="flex flex-col gap-2 flex-1 w-full">
           <Label htmlFor="card_text" className="text-right font-bold">
-            Card Text
+            {t('card.editor.textLabel')}
           </Label>
           <div className="w-full flex-1 flex flex-row gap-4">
             <Textarea
@@ -63,11 +66,12 @@ export function CreateCardEditor({
               name="card_text"
               value={text}
               className="col-span-3"
+              placeholder={t('card.editor.textPlaceholder')}
               onChange={(e) => setText(e.target.value)}
             />
             {type === 'black' && (
               <Button onClick={() => setText(`${text} ${BLACK_CARD_LINE}`)}>
-                Add line
+                {t('card.editor.addLine')}
               </Button>
             )}
           </div>
@@ -75,7 +79,7 @@ export function CreateCardEditor({
         {type === 'black' && (
           <div className="flex flex-row gap-6 items-center justify-start">
             <Label htmlFor="card_text" className="text-right font-bold">
-              Black Card Type
+              {t('card.editor.blackCardTypeLabel')}
             </Label>
             <ToggleGroup type="single" value={blackCardType}>
               <ToggleGroupItem
@@ -84,8 +88,7 @@ export function CreateCardEditor({
                 aria-label="Toggle normal"
                 className="cursor-pointer"
               >
-                {/* <div className='w-4 h-4 rounded-md bg-white' /> */}
-                Normal
+                {t('card.editor.normal')}
               </ToggleGroupItem>
               <ToggleGroupItem
                 onClick={() => setBlackCardType('pick_2')}
@@ -93,8 +96,7 @@ export function CreateCardEditor({
                 aria-label="Toggle pick_2"
                 className="cursor-pointer"
               >
-                {/* <div className='w-4 h-4 rounded-md bg-black' /> */}
-                Pick 2
+                {t('card.editor.pick2')}
               </ToggleGroupItem>
             </ToggleGroup>
           </div>

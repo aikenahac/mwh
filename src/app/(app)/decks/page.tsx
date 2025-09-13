@@ -4,10 +4,12 @@ import { Routes } from '@/lib/routes';
 import { getDecks } from '@/lib/supabase/api/deck';
 import { cn } from '@/lib/utils';
 import { auth } from '@clerk/nextjs/server';
+import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 
 export default async function DecksPage() {
   const { userId } = await auth();
+  const t = await getTranslations();
 
   if (!userId) redirect(Routes.SIGN_IN);
   const { data: decks } = await getDecks(userId);
@@ -16,7 +18,7 @@ export default async function DecksPage() {
   return (
     <div className="flex flex-col items-center w-full">
       <div className="flex flex-row items-center justify-between w-full">
-        <h1 className="text-2xl font-bold">Decks</h1>
+        <h1 className="text-2xl font-bold">{t('decksPage.title')}</h1>
         <CreateDeckDialog />
       </div>
       <br />
@@ -35,9 +37,9 @@ export default async function DecksPage() {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center w-full">
-          <p className="text-xl font-bold">No decks found</p>
+          <p className="text-xl font-bold">{t('decksPage.empty.title')}</p>
           <p className="text-sm text-muted-foreground">
-            Create a new deck to get started
+            {t('decksPage.empty.description')}
           </p>
         </div>
       )}

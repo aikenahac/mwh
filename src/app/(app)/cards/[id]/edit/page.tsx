@@ -3,6 +3,7 @@ import { Routes } from '@/lib/routes';
 import { getCardById } from '@/lib/supabase/api/card';
 import { getDeckById } from '@/lib/supabase/api/deck';
 import { auth } from '@clerk/nextjs/server';
+import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { toast } from 'sonner';
 
@@ -13,6 +14,7 @@ export default async function EditCardPageRoot({
 }) {
   const { id } = await params;
   const { userId } = await auth();
+  const t = await getTranslations();
 
   if (!userId) redirect(Routes.SIGN_IN);
 
@@ -27,7 +29,9 @@ export default async function EditCardPageRoot({
   if (!deck) {
     return (
       <div>
-        <h1 className="text-2xl font-bold flex items-center">Unknown card</h1>
+        <h1 className="text-2xl font-bold flex items-center">
+          {t('deck.unknownDeck')}
+        </h1>
       </div>
     );
   }
@@ -35,7 +39,9 @@ export default async function EditCardPageRoot({
   if (!card) {
     return (
       <div>
-        <h1 className="text-2xl font-bold flex items-center">Unknown card</h1>
+        <h1 className="text-2xl font-bold flex items-center">
+          {t('card.unknownCard')}
+        </h1>
       </div>
     );
   }

@@ -11,10 +11,12 @@ import { dark } from '@clerk/themes';
 import { useTheme } from 'next-themes';
 import { usePathname } from 'next/navigation';
 import { Routes } from '@/lib/routes';
+import { useTranslations } from 'next-intl';
 
 export function Navbar() {
   const { theme } = useTheme();
   const path = usePathname();
+  const t = useTranslations();
 
   function getClassName(active: boolean) {
     return active
@@ -26,7 +28,7 @@ export function Navbar() {
     <Card className="flex flex-row items-center justify-between w-full px-6">
       <div className="flex gap-3">
         <Link href="/" className={getClassName(path === Routes.HOME)}>
-          Home
+          {t('nav.home')}
         </Link>
         <Link
           href="/decks"
@@ -34,7 +36,7 @@ export function Navbar() {
             path.startsWith(Routes.DECKS) || path.startsWith(Routes.CARDS),
           )}
         >
-          Decks
+          {t('nav.decks')}
         </Link>
       </div>
       <div className="flex gap-3">

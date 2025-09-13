@@ -6,6 +6,7 @@ import { Routes } from '@/lib/routes';
 import { getDeckById } from '@/lib/supabase/api/deck';
 import { cn } from '@/lib/utils';
 import { auth } from '@clerk/nextjs/server';
+import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
@@ -16,6 +17,7 @@ export default async function DeckPage({
 }) {
   const { id: deckId } = await params;
   const { userId } = await auth();
+  const t = await getTranslations();
 
   if (!userId) redirect(Routes.SIGN_IN);
 
@@ -46,7 +48,7 @@ export default async function DeckPage({
               href={Routes.CARD_CREATE(deck.id)}
               className={buttonVariants({ variant: 'default' })}
             >
-              Add Card
+              {t('deck.addCard')}
             </Link>
           )}
         </div>
