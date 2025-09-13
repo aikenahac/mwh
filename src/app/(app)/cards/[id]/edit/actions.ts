@@ -51,26 +51,20 @@ export async function updateCard({ id, text, type, blackCardType }: UpdateProps)
     black_card_type: blackCardType,
   }).eq('id', id);
 
-  console.log(res);
+  if (res.status >= 200 && res.status < 300) {
+    return {
+      success: true,
+    }
+  }
+
+  if (res.error) {
+    return {
+      success: false,
+      error: res.error ? res.error.message : 'Unknown error',
+    }
+  }
 
   return {
     success: true,
   }
-
-  // if (res.status >= 200 && res.status < 300) {
-  //   return {
-  //     success: true,
-  //   }
-  // }
-
-  // if (res.error) {
-  //   return {
-  //     success: false,
-  //     error: res.error ? res.error.message : 'Unknown error',
-  //   }
-  // }
-
-  // return {
-  //   success: true,
-  // }
 }

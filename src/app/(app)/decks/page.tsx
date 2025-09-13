@@ -11,7 +11,6 @@ export default async function DecksPage() {
 
   if (!userId) redirect(Routes.SIGN_IN);
   const { data: decks } = await getDecks(userId);
-  console.log('Rendering DecksPage with decks:', decks);
   const hasDecks = !!decks && decks.length > 0;
 
   return (

@@ -12,7 +12,6 @@ export async function createDeck(
   formData: FormData,
 ): Promise<{ success: false; message: string }> {
   const { userId } = await auth();
-  console.log('User ID:', userId);
 
   if (!userId) redirect(Routes.SIGN_IN);
 
