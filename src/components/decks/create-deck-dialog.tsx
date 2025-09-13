@@ -23,7 +23,7 @@ const initialState = {
   message: '',
 };
 
-export function CreateDeck() {
+export function CreateDeckDialog() {
   const [state, formAction, pending] = useActionState(createDeck, initialState);
 
   useEffect(() => {

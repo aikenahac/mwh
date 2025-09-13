@@ -1,13 +1,8 @@
-import { CreateCardEditor } from '@/components/cards/create-card';
 import { EditCardPage } from '@/components/cards/edit-card-page';
-import { Button, buttonVariants } from '@/components/ui/button';
 import { Routes } from '@/lib/routes';
 import { getCardById } from '@/lib/supabase/api/card';
 import { getDeckById } from '@/lib/supabase/api/deck';
 import { auth } from '@clerk/nextjs/server';
-import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { toast } from 'sonner';
 

@@ -1,3 +1,5 @@
+'use client';
+
 import { Routes } from '@/lib/routes';
 import { redirect } from 'next/navigation';
 import { useActionState, useEffect } from 'react';
@@ -15,11 +17,9 @@ import {
 import { Button, buttonVariants } from '../ui/button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { deleteCard } from '@/app/(app)/cards/[id]/edit/actions';
-import { cn } from '@/lib/utils';
+import { deleteDeck } from '@/app/(app)/decks/[id]/actions';
 
 type Props = {
-  cardId: string;
   deckId: string;
 };
 
@@ -28,8 +28,8 @@ const initialState = {
   error: undefined,
 };
 
-export function DeleteCardDialog({ cardId, deckId }: Props) {
-  const onSubmit = () => deleteCard({ id: cardId });
+export function DeleteDeckDialog({ deckId }: Props) {
+  const onSubmit = () => deleteDeck({ id: deckId });
   const [state, formAction, pending] = useActionState(onSubmit, initialState);
 
   useEffect(() => {
@@ -40,25 +40,25 @@ export function DeleteCardDialog({ cardId, deckId }: Props) {
     }
 
     if (state.success) {
-      toast.success('Card deleted successfully', {
+      toast.success('Deck deleted successfully', {
         richColors: true,
       });
-      redirect(Routes.DECK(deckId));
+      redirect(Routes.DECKS);
     }
   }, [state]);
 
   return (
     <Dialog>
       <DialogTrigger>
-        <div className={cn(buttonVariants({ variant: 'destructive-outline' }))}>
+        <div className={buttonVariants({ variant: 'destructive-outline' })}>
           <FontAwesomeIcon icon={faTrash} />
         </div>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete card?</DialogTitle>
+          <DialogTitle>Delete deck?</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete this card? This action cannot be
+            Are you sure you want to delete this deck? This action cannot be
             undone.
           </DialogDescription>
         </DialogHeader>
@@ -70,7 +70,9 @@ export function DeleteCardDialog({ cardId, deckId }: Props) {
             Cancel
           </DialogClose>
           <form action={formAction}>
-            <Button variant="destructive" disabled={pending}>Delete</Button>
+            <Button variant="destructive" disabled={pending}>
+              Delete
+            </Button>
           </form>
         </DialogFooter>
       </DialogContent>

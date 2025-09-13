@@ -1,4 +1,4 @@
-import { CreateDeck } from '@/components/decks/create-deck';
+import { CreateDeckDialog } from '@/components/decks/create-deck-dialog';
 import { DeckCard } from '@/components/decks/deck/deck-card';
 import { Routes } from '@/lib/routes';
 import { getDecks } from '@/lib/supabase/api/deck';
@@ -17,7 +17,7 @@ export default async function DecksPage() {
     <div className="flex flex-col items-center w-full">
       <div className="flex flex-row items-center justify-between w-full">
         <h1 className="text-2xl font-bold">Decks</h1>
-        <CreateDeck />
+        <CreateDeckDialog />
       </div>
       <br />
       {hasDecks ? (

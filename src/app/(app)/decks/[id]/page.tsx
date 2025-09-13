@@ -1,4 +1,6 @@
 import { MWHCard } from '@/components/cards/mwh-card';
+import { DeleteDeckDialog } from '@/components/decks/delete-deck-dialog';
+import { EditDeckDialog } from '@/components/decks/edit-deck-dialog';
 import { buttonVariants } from '@/components/ui/button';
 import { Routes } from '@/lib/routes';
 import { getDeckById } from '@/lib/supabase/api/deck';
@@ -36,14 +38,18 @@ export default async function DeckPage({
           <h1 className="text-2xl font-bold flex items-center">{deck.name}</h1>
           <p>{deck.description}</p>
         </div>
-        {deck.user_id === userId && (
-          <Link
-            href={Routes.CARD_CREATE(deck.id)}
-            className={buttonVariants({ variant: 'default' })}
-          >
-            Add Card
-          </Link>
-        )}
+        <div className="flex flex-row items-center gap-2">
+          <DeleteDeckDialog deckId={deck.id} />
+          <EditDeckDialog deck={deck} />
+          {deck.user_id === userId && (
+            <Link
+              href={Routes.CARD_CREATE(deck.id)}
+              className={buttonVariants({ variant: 'default' })}
+            >
+              Add Card
+            </Link>
+          )}
+        </div>
       </div>
       <div
         className={cn(

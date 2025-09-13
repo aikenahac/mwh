@@ -33,6 +33,7 @@ export async function createDeck(
     .from('deck')
     .insert({
       name: validatedFields.data.name,
+      description: validatedFields.data.description,
     })
     .select('*');
 
