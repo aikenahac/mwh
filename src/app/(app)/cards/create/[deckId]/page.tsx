@@ -30,5 +30,5 @@ export default async function CreateCardPageRoot({
     );
   }
 
-  return <CreateCardPage deck={deck} />
+  return <CreateCardPage deck={deck} />;
 }

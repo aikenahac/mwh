@@ -30,7 +30,9 @@ export function Navbar() {
         </Link>
         <Link
           href="/decks"
-          className={getClassName(path.startsWith(Routes.DECKS) || path.startsWith(Routes.CARDS))}
+          className={getClassName(
+            path.startsWith(Routes.DECKS) || path.startsWith(Routes.CARDS),
+          )}
         >
           Decks
         </Link>

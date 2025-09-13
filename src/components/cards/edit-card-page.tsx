@@ -34,12 +34,12 @@ export function EditCardPage({ deck, card }: Props) {
   const [state, formAction, pending] = useActionState(onSubmit, initialState);
 
   useEffect(() => {
-    if (type === "black") {
-      setBlackCardType("normal");
+    if (type === 'black') {
+      setBlackCardType('normal');
     } else {
       setBlackCardType(undefined);
     }
-  }, [type])
+  }, [type]);
 
   useEffect(() => {
     if (!state.success && state.error) {
@@ -73,7 +73,9 @@ export function EditCardPage({ deck, card }: Props) {
           </Link>
           <DeleteCardDialog cardId={card.id} deckId={deck.id} />
           <form action={formAction}>
-            <Button type='submit' disabled={pending}>Save</Button>
+            <Button type="submit" disabled={pending}>
+              Save
+            </Button>
           </form>
         </div>
       </div>

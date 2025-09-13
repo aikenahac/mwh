@@ -1,8 +1,6 @@
 'use client';
 
-import { useState } from 'react';
 import { Card } from '../ui/card';
-import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
 import { MWHCard } from './mwh-card';
@@ -43,7 +41,6 @@ export function CreateCardEditor({
               aria-label="Toggle white"
               className="cursor-pointer"
             >
-              {/* <div className='w-4 h-4 rounded-md bg-white' /> */}
               White
             </ToggleGroupItem>
             <ToggleGroupItem
@@ -52,7 +49,6 @@ export function CreateCardEditor({
               aria-label="Toggle black"
               className="cursor-pointer"
             >
-              {/* <div className='w-4 h-4 rounded-md bg-black' /> */}
               Black
             </ToggleGroupItem>
           </ToggleGroup>

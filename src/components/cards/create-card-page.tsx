@@ -20,7 +20,7 @@ const initialState = {
   success: false,
   error: undefined,
   card: undefined,
-}
+};
 
 export function CreateCardPage({ deck }: Props) {
   const [text, setText] = useState('Jungkook and Jimin cuddling');
@@ -34,12 +34,12 @@ export function CreateCardPage({ deck }: Props) {
   const [state, formAction, pending] = useActionState(onSubmit, initialState);
 
   useEffect(() => {
-    if (type === "black") {
-      setBlackCardType("normal");
+    if (type === 'black') {
+      setBlackCardType('normal');
     } else {
       setBlackCardType(undefined);
     }
-  }, [type])
+  }, [type]);
 
   useEffect(() => {
     if (!state.success && state.error) {
@@ -75,7 +75,9 @@ export function CreateCardPage({ deck }: Props) {
             <FontAwesomeIcon icon={faLayerGroup} />
           </Link>
           <form action={formAction}>
-            <Button type="submit" disabled={pending}>Create</Button>
+            <Button type="submit" disabled={pending}>
+              Create
+            </Button>
           </form>
         </div>
       </div>

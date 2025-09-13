@@ -40,5 +40,5 @@ export default async function EditCardPageRoot({
     );
   }
 
-  return <EditCardPage deck={deck} card={card} />
+  return <EditCardPage deck={deck} card={card} />;
 }

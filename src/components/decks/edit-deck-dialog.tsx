@@ -48,7 +48,7 @@ export function EditDeckDialog({ deck }: { deck: Deck }) {
       });
       redirect(Routes.DECK(deck.id));
     }
-  }, [state]);
+  }, [state, deck.id]);
 
   return (
     <Dialog>

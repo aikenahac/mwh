@@ -45,7 +45,7 @@ export function DeleteCardDialog({ cardId, deckId }: Props) {
       });
       redirect(Routes.DECK(deckId));
     }
-  }, [state]);
+  }, [state, deckId]);
 
   return (
     <Dialog>
@@ -70,7 +70,9 @@ export function DeleteCardDialog({ cardId, deckId }: Props) {
             Cancel
           </DialogClose>
           <form action={formAction}>
-            <Button variant="destructive" disabled={pending}>Delete</Button>
+            <Button variant="destructive" disabled={pending}>
+              Delete
+            </Button>
           </form>
         </DialogFooter>
       </DialogContent>

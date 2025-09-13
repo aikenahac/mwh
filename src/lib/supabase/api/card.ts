@@ -9,7 +9,7 @@ export const CardType = {
 
 export const BlackCardType = {
   normal: 'normal',
-  pick_2: 'pick_2'
+  pick_2: 'pick_2',
 } as const;
 
 export type Card = z.infer<typeof cardSchema>;
@@ -26,7 +26,7 @@ export const cardsSchema = z.array(cardSchema);
 
 export type CardWithDeck = Card & {
   deck: Pick<Deck, 'id' | 'name'>;
-}
+};
 
 export async function getCardById(cardId: string) {
   const supabase = await createClerkSupabaseClientServer();
