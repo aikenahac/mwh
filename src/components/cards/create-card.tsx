@@ -7,6 +7,9 @@ import { Label } from '../ui/label';
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
 import { MWHCard } from './mwh-card';
 import { BlackCardType, CardType } from '@/lib/supabase/api/card';
+import { Button } from '../ui/button';
+import { BLACK_CARD_LINE } from '@/lib/utils';
+import { Textarea } from '../ui/textarea';
 
 type Props = {
   text: string;
@@ -54,16 +57,25 @@ export function CreateCardEditor({
             </ToggleGroupItem>
           </ToggleGroup>
         </div>
-        <Label htmlFor="card_text" className="text-right font-bold">
-          Card Text
-        </Label>
-        <Input
-          id="card_text"
-          name="card_text"
-          defaultValue={text}
-          className="col-span-3"
-          onChange={(e) => setText(e.target.value)}
-        />
+        <div className="flex flex-col gap-2 flex-1 w-full">
+          <Label htmlFor="card_text" className="text-right font-bold">
+            Card Text
+          </Label>
+          <div className="w-full flex-1 flex flex-row gap-4">
+            <Textarea
+              id="card_text"
+              name="card_text"
+              value={text}
+              className="col-span-3"
+              onChange={(e) => setText(e.target.value)}
+            />
+            {type === 'black' && (
+              <Button onClick={() => setText(`${text} ${BLACK_CARD_LINE}`)}>
+                Add line
+              </Button>
+            )}
+          </div>
+        </div>
         {type === 'black' && (
           <div className="flex flex-row gap-6 items-center justify-start">
             <Label htmlFor="card_text" className="text-right font-bold">
@@ -93,7 +105,7 @@ export function CreateCardEditor({
         )}
       </Card>
       <Card className="w-full flex items-center justify-center lg:w-[35%]">
-        <MWHCard text={text} type={type} blackCardType={blackCardType} />
+        <MWHCard card={{ text, type, black_card_type: blackCardType }} />
       </Card>
     </div>
   );

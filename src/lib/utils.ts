@@ -17,3 +17,5 @@ type Failure<E> = {
 };
 
 export type Result<T, E = Error> = Success<T> | Failure<E>;
+
+export const BLACK_CARD_LINE = '__________';

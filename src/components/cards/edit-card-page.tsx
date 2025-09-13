@@ -7,13 +7,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 import { CreateCardEditor } from './create-card';
 import { Deck } from '@/lib/supabase/api/deck';
-import { useEffect, useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { BlackCardType, Card, CardType } from '@/lib/supabase/api/card';
 import { DeleteCardDialog } from './delete-card-dialog';
+import { updateCard } from '@/app/(app)/cards/[id]/edit/actions';
+import { toast } from 'sonner';
 
 type Props = {
   deck: Deck;
   card: Card;
+};
+
+const initialState = {
+  success: false,
+  error: undefined,
 };
 
 export function EditCardPage({ deck, card }: Props) {
@@ -23,6 +30,9 @@ export function EditCardPage({ deck, card }: Props) {
     keyof typeof BlackCardType | undefined
   >(card.black_card_type || card.type === 'black' ? 'normal' : undefined);
 
+  const onSubmit = () => updateCard({ id: card.id, text, type, blackCardType });
+  const [state, formAction, pending] = useActionState(onSubmit, initialState);
+
   useEffect(() => {
     if (type === "black") {
       setBlackCardType("normal");
@@ -30,6 +40,20 @@ export function EditCardPage({ deck, card }: Props) {
       setBlackCardType(undefined);
     }
   }, [type])
+
+  useEffect(() => {
+    if (!state.success && state.error) {
+      toast.error(state.error, {
+        richColors: true,
+      });
+    }
+
+    if (state.success) {
+      toast.success('Card updated successfully', {
+        richColors: true,
+      });
+    }
+  }, [state]);
 
   return (
     <div>
@@ -48,7 +72,9 @@ export function EditCardPage({ deck, card }: Props) {
             <FontAwesomeIcon icon={faLayerGroup} />
           </Link>
           <DeleteCardDialog cardId={card.id} deckId={deck.id} />
-          <Button>Save</Button>
+          <form action={formAction}>
+            <Button type='submit' disabled={pending}>Save</Button>
+          </form>
         </div>
       </div>
 

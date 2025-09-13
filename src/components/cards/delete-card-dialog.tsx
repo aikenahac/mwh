@@ -30,7 +30,6 @@ const initialState = {
 
 export function DeleteCardDialog({ cardId, deckId }: Props) {
   const onSubmit = () => deleteCard({ id: cardId });
-
   const [state, formAction, pending] = useActionState(onSubmit, initialState);
 
   useEffect(() => {
@@ -50,11 +49,10 @@ export function DeleteCardDialog({ cardId, deckId }: Props) {
 
   return (
     <Dialog>
-      <DialogTrigger
-        asChild
-        className={cn(buttonVariants({ variant: 'destructive' }), 'py-3')}
-      >
-        <FontAwesomeIcon icon={faTrash} />
+      <DialogTrigger>
+        <div className={cn(buttonVariants({ variant: 'destructive-outline' }))}>
+          <FontAwesomeIcon icon={faTrash} />
+        </div>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -69,7 +67,7 @@ export function DeleteCardDialog({ cardId, deckId }: Props) {
             <Button variant="outline" disabled={pending}>Cancel</Button>
           </DialogClose>
           <form action={formAction}>
-            <Button variant="destructive">Delete</Button>
+            <Button variant="destructive" disabled={pending}>Delete</Button>
           </form>
         </DialogFooter>
       </DialogContent>
