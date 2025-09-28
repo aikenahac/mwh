@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { VisuallyHidden } from 'radix-ui';
 import { Card } from '@/lib/supabase/api/card';
 import { faPrint } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -27,10 +28,10 @@ export function PrintDeckDialog({ cards }: { cards?: Array<Card> }) {
           <FontAwesomeIcon icon={faPrint} />
         </Button>
       </DialogTrigger>
-      <DialogContent className='w-full h-[80vh]'>
-        <DialogHeader>
-          <DialogTitle>{t("deck.printDialog.title")}</DialogTitle>
-        </DialogHeader>
+      <DialogContent className='w-[80vw] h-[60vh]'>
+        <VisuallyHidden.Root>
+          <DialogTitle>Print Document</DialogTitle>
+        </VisuallyHidden.Root>
         <PDFViewer className='w-full h-full'>
           <PrintDocument cards={cards} />
         </PDFViewer>

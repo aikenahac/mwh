@@ -36,6 +36,17 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     border: '1px solid #ccc',
   },
+  backCardWhite: {
+    height: 249.48, // 8.8cm
+    width: 178.605, // 6.3cm
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: 'white',
+    display: 'flex',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    border: '1px solid #ccc',
+  },
   cardWhite: {
     backgroundColor: 'white',
     color: 'black',
@@ -55,6 +66,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Helvetica',
     color: 'white',
+    textAlign: 'left',
+    paddingLeft: 4,
+    paddingTop: 4,
+  },
+  backCardWhiteText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    fontFamily: 'Helvetica',
+    color: 'black',
     textAlign: 'left',
     paddingLeft: 4,
     paddingTop: 4,
@@ -147,7 +167,7 @@ export function PrintDocument({ cards }: { cards?: Array<Card> }) {
                     </View>
                   );
                 } else {
-                  return <BackCardComponent key={`back-${index}`} />;
+                  return <BackCardComponent key={`back-${index}`} type={alternatingElements[index-1].data?.type || 'white'} />;
                 }
               })}
             </View>
@@ -158,10 +178,12 @@ export function PrintDocument({ cards }: { cards?: Array<Card> }) {
   );
 }
 
-function BackCardComponent() {
+function BackCardComponent({ type }: { type: 'black' | 'white' }) {
   return (
-    <View style={styles.backCard}>
-      <Text style={styles.backCardText}>Mess{'\n'}With{'\n'}Humanity</Text>
+    <View style={type === 'black' ? styles.backCard : styles.backCardWhite}>
+      <Text style={type === 'black' ? styles.backCardText : styles.backCardWhiteText}>
+        Mess{'\n'}With{'\n'}Humanity
+      </Text>
     </View>
   );
 }
