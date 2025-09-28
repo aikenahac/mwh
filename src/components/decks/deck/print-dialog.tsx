@@ -4,22 +4,16 @@ import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { VisuallyHidden } from 'radix-ui';
 import { Card } from '@/lib/supabase/api/card';
 import { PDFViewer } from '@react-pdf/renderer';
-import { useTranslations } from 'next-intl';
 import { PrintDocument } from './print-document';
 import { Printer } from 'lucide-react';
 
 export function PrintDeckDialog({ cards }: { cards?: Array<Card> }) {
-  const t = useTranslations();
-
   return (
     <Dialog>
       <DialogTrigger asChild>

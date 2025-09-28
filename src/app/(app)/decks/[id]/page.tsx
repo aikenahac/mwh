@@ -2,7 +2,7 @@ import { MWHCard } from '@/components/cards/mwh-card';
 import { PrintDeckDialog } from '@/components/decks/deck/print-dialog';
 import { DeleteDeckDialog } from '@/components/decks/delete-deck-dialog';
 import { EditDeckDialog } from '@/components/decks/edit-deck-dialog';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import { Routes } from '@/lib/routes';
 import { getDeckById } from '@/lib/supabase/api/deck';
 import { cn } from '@/lib/utils';
