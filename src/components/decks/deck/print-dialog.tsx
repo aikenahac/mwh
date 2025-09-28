@@ -12,11 +12,10 @@ import {
 } from '@/components/ui/dialog';
 import { VisuallyHidden } from 'radix-ui';
 import { Card } from '@/lib/supabase/api/card';
-import { faPrint } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PDFViewer } from '@react-pdf/renderer';
 import { useTranslations } from 'next-intl';
 import { PrintDocument } from './print-document';
+import { Printer } from 'lucide-react';
 
 export function PrintDeckDialog({ cards }: { cards?: Array<Card> }) {
   const t = useTranslations();
@@ -25,7 +24,7 @@ export function PrintDeckDialog({ cards }: { cards?: Array<Card> }) {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant='outline'>
-          <FontAwesomeIcon icon={faPrint} />
+          <Printer />
         </Button>
       </DialogTrigger>
       <DialogContent className='w-[80vw] h-[60vh]'>

@@ -5,13 +5,12 @@ import { CreateCardEditor } from './create-card';
 import { Routes } from '@/lib/routes';
 import Link from 'next/link';
 import { Button, buttonVariants } from '../ui/button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 import { useActionState, useEffect, useState } from 'react';
 import { BlackCardType, CardType } from '@/lib/supabase/api/card';
 import { createCard } from '@/app/(app)/cards/create/[deckId]/actions';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
+import { Layers } from 'lucide-react';
 
 type Props = {
   deck: Deck;
@@ -78,7 +77,7 @@ export function CreateCardPage({ deck }: Props) {
             href={Routes.DECK(deck.id)}
             className={buttonVariants({ variant: 'outline' })}
           >
-            <FontAwesomeIcon icon={faLayerGroup} />
+            <Layers />
           </Link>
           <form action={formAction}>
             <Button type="submit" disabled={pending}>

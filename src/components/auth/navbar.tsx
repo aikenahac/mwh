@@ -2,11 +2,10 @@
 
 import { Card } from '@/components/ui/card';
 import { ThemeToggle } from '../theme-toggle';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import { buttonVariants } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
+import { House } from 'lucide-react';
 
 export function AuthNavbar() {
   const t = useTranslations();
@@ -15,7 +14,7 @@ export function AuthNavbar() {
     <Card className="flex flex-row items-center justify-between w-full px-6 py-2">
       <div className="flex flex-row items-center gap-3">
         <Link href="/" className={buttonVariants({ variant: 'ghost' })}>
-          <FontAwesomeIcon icon={faHome} />
+          <House />
         </Link>
         <Link
           href="/auth/sign-in"

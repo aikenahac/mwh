@@ -11,13 +11,12 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { createDeck } from '@/app/(app)/decks/actions';
 import { useActionState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Label } from '../ui/label';
 import { useTranslations } from 'next-intl';
+import { Plus } from 'lucide-react';
 
 const initialState = {
   success: false,
@@ -43,7 +42,7 @@ export function CreateDeckDialog() {
     <Dialog>
       <DialogTrigger asChild>
         <Button>
-          <FontAwesomeIcon icon={faPlus} />
+          <Plus />
           <span>{t('deck.createDialog.title')}</span>
         </Button>
       </DialogTrigger>

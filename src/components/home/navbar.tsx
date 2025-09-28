@@ -4,14 +4,13 @@ import { Card } from '@/components/ui/card';
 import { ThemeToggle } from '../theme-toggle';
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import Link from 'next/link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignIn } from '@fortawesome/free-solid-svg-icons';
 import { buttonVariants } from '@/components/ui/button';
 import { dark } from '@clerk/themes';
 import { useTheme } from 'next-themes';
 import { usePathname } from 'next/navigation';
 import { Routes } from '@/lib/routes';
 import { useTranslations } from 'next-intl';
+import { LogIn } from 'lucide-react';
 
 export function Navbar() {
   const { theme } = useTheme();
@@ -45,7 +44,7 @@ export function Navbar() {
             href="/auth/sign-in"
             className={buttonVariants({ variant: 'ghost' })}
           >
-            <FontAwesomeIcon icon={faSignIn} />
+            <LogIn />
           </Link>
         </SignedOut>
         <SignedIn>

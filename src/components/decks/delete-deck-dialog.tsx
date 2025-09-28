@@ -15,10 +15,9 @@ import {
   DialogTrigger,
 } from '../ui/dialog';
 import { Button, buttonVariants } from '../ui/button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { deleteDeck } from '@/app/(app)/decks/[id]/actions';
 import { useTranslations } from 'next-intl';
+import { Trash } from 'lucide-react';
 
 type Props = {
   deckId: string;
@@ -54,7 +53,7 @@ export function DeleteDeckDialog({ deckId }: Props) {
     <Dialog>
       <DialogTrigger>
         <div className={buttonVariants({ variant: 'destructive-outline' })}>
-          <FontAwesomeIcon icon={faTrash} />
+          <Trash />
         </div>
       </DialogTrigger>
       <DialogContent>

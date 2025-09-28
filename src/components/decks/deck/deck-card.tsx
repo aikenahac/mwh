@@ -2,8 +2,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Routes } from '@/lib/routes';
 import { Deck } from '@/lib/supabase/api/deck';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ChevronRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 
@@ -22,7 +21,7 @@ export function DeckCard({ deck }: { deck: Deck }) {
           href={Routes.DECK(deck.id)}
           className={buttonVariants({ variant: 'default' })}
         >
-          <FontAwesomeIcon icon={faChevronRight} />
+          <ChevronRight />
         </Link>
       </div>
     </Card>

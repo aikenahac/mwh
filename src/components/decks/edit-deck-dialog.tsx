@@ -11,8 +11,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import { useActionState, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Label } from '../ui/label';
@@ -21,6 +19,7 @@ import { Deck } from '@/lib/supabase/api/deck';
 import { redirect } from 'next/navigation';
 import { Routes } from '@/lib/routes';
 import { useTranslations } from 'next-intl';
+import { Pencil } from 'lucide-react';
 
 const initialState = {
   success: false,
@@ -57,7 +56,7 @@ export function EditDeckDialog({ deck }: { deck: Deck }) {
     <Dialog>
       <DialogTrigger>
         <div className={buttonVariants({ variant: 'outline' })}>
-          <FontAwesomeIcon icon={faPencil} />
+          <Pencil />
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

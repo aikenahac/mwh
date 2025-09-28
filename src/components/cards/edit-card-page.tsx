@@ -3,8 +3,6 @@
 import { Routes } from '@/lib/routes';
 import Link from 'next/link';
 import { Button, buttonVariants } from '../ui/button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 import { CreateCardEditor } from './create-card';
 import { Deck } from '@/lib/supabase/api/deck';
 import { useActionState, useEffect, useState } from 'react';
@@ -13,6 +11,7 @@ import { DeleteCardDialog } from './delete-card-dialog';
 import { updateCard } from '@/app/(app)/cards/[id]/edit/actions';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
+import { Layers } from 'lucide-react';
 
 type Props = {
   deck: Deck;
@@ -74,7 +73,7 @@ export function EditCardPage({ deck, card }: Props) {
             href={Routes.DECK(deck.id)}
             className={buttonVariants({ variant: 'outline' })}
           >
-            <FontAwesomeIcon icon={faLayerGroup} />
+            <Layers />
           </Link>
           <DeleteCardDialog cardId={card.id} deckId={deck.id} />
           <form action={formAction}>
