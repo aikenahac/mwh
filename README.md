@@ -6,6 +6,7 @@ Mess with Humanity is a web application that allows users to create custom decks
 - [x] Create decks
 - [x] Edit decks
 - [x] Add cards
+- [x] Print decks
 - [ ] Share decks
 - [ ] Collaborate on decks
 
