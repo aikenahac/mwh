@@ -6,7 +6,6 @@ Mess with Humanity is a web application that allows users to create custom decks
 - [x] Create decks
 - [x] Edit decks
 - [x] Add cards
-- [x] Print decks
 - [ ] Share decks
 - [ ] Collaborate on decks
 
@@ -38,11 +37,17 @@ cp .env.example .env
 
 ```
 # .env
-NEXT_PUBLIC_SUPABASE_URL=
-SUPABASE_ACCESS_TOKEN=
-
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
 NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=/
 NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL=/
+
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_KEY=
+SUPABASE_ACCESS_TOKEN=
 ```
+
+ToDo - write documentation on where to find these keys
+
+---
+###### To my girlfriend, who just complained about there not being a K-Pop expansion once
