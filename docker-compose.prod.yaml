@@ -1,0 +1,45 @@
+# Configuration for my production environment
+# uses traefik for reverse proxy
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mwh-app
+    env_file:
+      - stack.env
+    ports:
+      - "3101:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - proxy
+
+  db:
+    image: postgres:latest
+    container_name: aerio-auth-db
+    env_file:
+      - stack.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+       - proxy
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  proxy:
+    external: true

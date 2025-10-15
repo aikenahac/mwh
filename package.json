@@ -9,7 +9,10 @@
     "lint": "next lint",
     "prettier:format": "prettier --ignore-path .gitignore --write \"./src/**/*.{ts,tsx,js,css,scss,html,json}\"",
     "format": "pnpm prettier:format && pnpm lint --fix",
-    "s:gen": "pnpm dlx supabase gen types typescript --project-id ejercihjnwtdxifeioyx > src/lib/supabase/types.ts"
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.12.9",
@@ -23,15 +26,16 @@
     "@radix-ui/react-toggle-group": "^1.1.2",
     "@radix-ui/react-visually-hidden": "^1.2.3",
     "@react-pdf/renderer": "^4.3.0",
-    "@supabase/ssr": "^0.6.1",
-    "@supabase/supabase-js": "^2.49.3",
     "@tanstack/react-query": "^5.69.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.44.6",
     "lucide-react": "^0.483.0",
     "next": "15.2.4",
     "next-intl": "^4.3.8",
     "next-themes": "^0.4.6",
+    "pg": "^8.16.3",
     "radix-ui": "^1.4.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -47,11 +51,14 @@
     "@tailwindcss/postcss": "^4",
     "@tanstack/eslint-plugin-query": "^5.68.0",
     "@types/node": "^20",
+    "@types/pg": "^8.15.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.5",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
     "tailwindcss": "^4",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   }
 }

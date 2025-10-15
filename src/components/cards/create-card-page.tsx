@@ -1,12 +1,12 @@
 'use client';
 
-import { Deck } from '@/lib/supabase/api/deck';
+import { Deck } from '@/lib/api/deck';
 import { CreateCardEditor } from './create-card';
 import { Routes } from '@/lib/routes';
 import Link from 'next/link';
 import { Button, buttonVariants } from '../ui/button';
 import { useActionState, useEffect, useState } from 'react';
-import { BlackCardType, CardType } from '@/lib/supabase/api/card';
+import { BlackCardType, CardType } from '@/lib/api/card';
 import { createCard } from '@/app/(app)/cards/create/[deckId]/actions';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
@@ -25,8 +25,9 @@ const initialState = {
 export function CreateCardPage({ deck }: Props) {
   const t = useTranslations();
 
-  const [text, setText] = useState('');
+  const [text, setText] = useState<string>('');
   const [type, setType] = useState<keyof typeof CardType>('white');
+  const [createAnother, setCreateAnother] = useState(false);
   const [blackCardType, setBlackCardType] = useState<
     keyof typeof BlackCardType | undefined
   >(undefined);
@@ -54,9 +55,12 @@ export function CreateCardPage({ deck }: Props) {
       toast.success(t('card.create.success'), {
         richColors: true,
       });
-      setText('Jungkook and Jimin cuddling');
-      setType('white');
-      setBlackCardType(undefined);
+
+      if (createAnother) {
+        setText('');
+        setType('white');
+        setBlackCardType(undefined);
+      }
     }
   }, [state, t]);
 
@@ -80,8 +84,21 @@ export function CreateCardPage({ deck }: Props) {
             <Layers />
           </Link>
           <form action={formAction}>
-            <Button type="submit" disabled={pending}>
+            <Button
+              type="submit"
+              disabled={pending || !text || text.length === 0}
+              onClick={() => setCreateAnother(false)}
+            >
               {t('card.create.saveButton')}
+            </Button>
+          </form>
+          <form action={formAction}>
+            <Button
+              type="submit"
+              disabled={pending || !text || text.length === 0}
+              onClick={() => setCreateAnother(true)}
+            >
+              {t('card.create.saveAndCreateButton')}
             </Button>
           </form>
         </div>

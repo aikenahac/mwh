@@ -1,7 +1,9 @@
 'use server';
 
-import { BlackCardType, CardType } from '@/lib/supabase/api/card';
-import { createClerkSupabaseClientServer } from '@/lib/supabase/server';
+import { BlackCardType, CardType } from '@/lib/api/card';
+import { db } from '@/lib/db';
+import { card } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
 
 type Result = {
   success: boolean;
@@ -13,26 +15,18 @@ type DeleteProps = {
 };
 
 export async function deleteCard({ id }: DeleteProps): Promise<Result> {
-  const supabase = await createClerkSupabaseClientServer();
+  try {
+    await db.delete(card).where(eq(card.id, id));
 
-  const res = await supabase.from('card').delete().eq('id', id);
-
-  if (res.status >= 200 && res.status < 300) {
     return {
       success: true,
     };
-  }
-
-  if (res.error) {
+  } catch (error) {
     return {
       success: false,
-      error: res.error ? res.error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
-
-  return {
-    success: true,
-  };
 }
 
 type UpdateProps = {
@@ -48,31 +42,23 @@ export async function updateCard({
   type,
   blackCardType,
 }: UpdateProps): Promise<Result> {
-  const supabase = await createClerkSupabaseClientServer();
+  try {
+    await db
+      .update(card)
+      .set({
+        text,
+        type,
+        blackCardType,
+      })
+      .where(eq(card.id, id));
 
-  const res = await supabase
-    .from('card')
-    .update({
-      text,
-      type,
-      black_card_type: blackCardType,
-    })
-    .eq('id', id);
-
-  if (res.status >= 200 && res.status < 300) {
     return {
       success: true,
     };
-  }
-
-  if (res.error) {
+  } catch (error) {
     return {
       success: false,
-      error: res.error ? res.error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
-
-  return {
-    success: true,
-  };
 }

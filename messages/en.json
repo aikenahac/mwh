@@ -103,6 +103,7 @@
       "title": "Create Card",
       "deck": "for",
       "saveButton": "Save",
+      "saveAndCreateButton": "Save & Create Another",
       "success": "Card created successfully."
     }
   }

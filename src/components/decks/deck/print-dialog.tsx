@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { VisuallyHidden } from 'radix-ui';
-import { Card } from '@/lib/supabase/api/card';
+import { Card } from '@/lib/api/card';
 import { PDFViewer } from '@react-pdf/renderer';
 import { PrintDocument } from './print-document';
 import { Printer } from 'lucide-react';

@@ -1,7 +1,7 @@
 import { EditCardPage } from '@/components/cards/edit-card-page';
 import { Routes } from '@/lib/routes';
-import { getCardById } from '@/lib/supabase/api/card';
-import { getDeckById } from '@/lib/supabase/api/deck';
+import { getCardById } from '@/lib/api/card';
+import { getDeckById } from '@/lib/api/deck';
 import { auth } from '@clerk/nextjs/server';
 import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';

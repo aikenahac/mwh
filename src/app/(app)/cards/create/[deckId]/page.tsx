@@ -1,6 +1,6 @@
 import { CreateCardPage } from '@/components/cards/create-card-page';
 import { Routes } from '@/lib/routes';
-import { getDeckById } from '@/lib/supabase/api/deck';
+import { getDeckById } from '@/lib/api/deck';
 import { auth } from '@clerk/nextjs/server';
 import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';

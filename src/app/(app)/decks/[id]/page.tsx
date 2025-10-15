@@ -4,7 +4,7 @@ import { DeleteDeckDialog } from '@/components/decks/delete-deck-dialog';
 import { EditDeckDialog } from '@/components/decks/edit-deck-dialog';
 import { buttonVariants } from '@/components/ui/button';
 import { Routes } from '@/lib/routes';
-import { getDeckById } from '@/lib/supabase/api/deck';
+import { getDeckById } from '@/lib/api/deck';
 import { cn } from '@/lib/utils';
 import { auth } from '@clerk/nextjs/server';
 import { getTranslations } from 'next-intl/server';

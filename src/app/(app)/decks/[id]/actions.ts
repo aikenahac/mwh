@@ -1,6 +1,8 @@
 'use server';
 
-import { createClerkSupabaseClientServer } from '@/lib/supabase/server';
+import { db } from '@/lib/db';
+import { deck } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
 
 type Result = {
   success: boolean;
@@ -12,26 +14,18 @@ type DeleteProps = {
 };
 
 export async function deleteDeck({ id }: DeleteProps): Promise<Result> {
-  const supabase = await createClerkSupabaseClientServer();
+  try {
+    await db.delete(deck).where(eq(deck.id, id));
 
-  const res = await supabase.from('deck').delete().eq('id', id);
-
-  if (res.status >= 200 && res.status < 300) {
     return {
       success: true,
     };
-  }
-
-  if (res.error) {
+  } catch (error) {
     return {
       success: false,
-      error: res.error ? res.error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
-
-  return {
-    success: true,
-  };
 }
 
 type UpdateProps = {
@@ -45,30 +39,22 @@ export async function updateDeck({
   name,
   description,
 }: UpdateProps): Promise<Result> {
-  const supabase = await createClerkSupabaseClientServer();
+  try {
+    await db
+      .update(deck)
+      .set({
+        name,
+        description,
+      })
+      .where(eq(deck.id, id));
 
-  const res = await supabase
-    .from('deck')
-    .update({
-      name,
-      description,
-    })
-    .eq('id', id);
-
-  if (res.status >= 200 && res.status < 300) {
     return {
       success: true,
     };
-  }
-
-  if (res.error) {
+  } catch (error) {
     return {
       success: false,
-      error: res.error ? res.error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
-
-  return {
-    success: true,
-  };
 }

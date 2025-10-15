@@ -4,7 +4,7 @@ import { Card } from '../ui/card';
 import { Label } from '../ui/label';
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
 import { MWHCard } from './mwh-card';
-import { BlackCardType, CardType } from '@/lib/supabase/api/card';
+import { BlackCardType, CardType } from '@/lib/api/card';
 import { Button } from '../ui/button';
 import { BLACK_CARD_LINE } from '@/lib/utils';
 import { Textarea } from '../ui/textarea';
