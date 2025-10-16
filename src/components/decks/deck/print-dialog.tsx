@@ -12,8 +12,11 @@ import { Card } from '@/lib/api/card';
 import { PDFViewer } from '@react-pdf/renderer';
 import { PrintDocument } from './print-document';
 import { Printer } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export function PrintDeckDialog({ cards }: { cards?: Array<Card> }) {
+  const t = useTranslations();
+  
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -23,7 +26,7 @@ export function PrintDeckDialog({ cards }: { cards?: Array<Card> }) {
       </DialogTrigger>
       <DialogContent className='w-[80vw] h-[60vh]'>
         <VisuallyHidden.Root>
-          <DialogTitle>Print Document</DialogTitle>
+          <DialogTitle>{t('deck.printDialog.printDocument')}</DialogTitle>
         </VisuallyHidden.Root>
         <PDFViewer className='w-full h-full'>
           <PrintDocument cards={cards} />
