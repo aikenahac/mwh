@@ -30,6 +30,7 @@ export interface UploadProgress {
   totalCards: number;
   processedCards: number;
   skippedDecks: string[];
+  skippedCards: number;
   errors: string[];
   status: 'processing' | 'completed' | 'error';
 }
@@ -69,6 +70,7 @@ export async function uploadSystemDecks(
     totalCards: decks.reduce((sum, d) => sum + d.white.length + d.black.length, 0),
     processedCards: 0,
     skippedDecks: [],
+    skippedCards: 0,
     errors: [],
     status: 'processing',
   };
@@ -92,9 +94,11 @@ export async function uploadSystemDecks(
 
     // Skip if deck already exists
     if (existingDeckNames.has(deckData.name)) {
+      const skippedCardCount = deckData.white.length + deckData.black.length;
       progress.skippedDecks.push(deckData.name);
+      progress.skippedCards += skippedCardCount;
       progress.processedDecks++;
-      progress.processedCards += deckData.white.length + deckData.black.length;
+      progress.processedCards += skippedCardCount;
       continue;
     }
 

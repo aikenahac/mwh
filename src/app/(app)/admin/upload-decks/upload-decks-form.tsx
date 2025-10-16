@@ -50,6 +50,7 @@ export function UploadDecksForm() {
         totalCards: 0,
         processedCards: 0,
         skippedDecks: [],
+        skippedCards: 0,
         errors: [
           error instanceof Error ? error.message : 'Unknown error occurred',
         ],
@@ -169,12 +170,11 @@ export function UploadDecksForm() {
                 <AlertTitle className="text-green-600">
                   Upload Successful!
                 </AlertTitle>
-                <AlertDescription className="text-green-600">
-                  Successfully imported {progress.processedDecks} deck(s) with{' '}
-                  {progress.processedCards.toLocaleString()} card(s).
+                <AlertDescription className="text-green-600 block">
+                  Successfully imported {progress.processedDecks - progress.skippedDecks.length} deck(s) with {(progress.processedCards - progress.skippedCards).toLocaleString()} card(s).
                   {progress.skippedDecks.length > 0 && (
                     <span className="block mt-1">
-                      Skipped {progress.skippedDecks.length} existing deck(s).
+                      Skipped {progress.skippedDecks.length} existing deck(s) with {progress.skippedCards.toLocaleString()} card(s).
                     </span>
                   )}
                 </AlertDescription>
@@ -183,8 +183,8 @@ export function UploadDecksForm() {
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Upload Completed with Errors</AlertTitle>
-                <AlertDescription>
-                  {progress.processedDecks - progress.errors.length} deck(s)
+                <AlertDescription className="block">
+                  {progress.processedDecks - progress.errors.length - progress.skippedDecks.length} deck(s)
                   imported successfully.
                 </AlertDescription>
               </Alert>
