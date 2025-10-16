@@ -6,6 +6,7 @@ import { db } from '@/lib/db';
 import { deck } from '@/lib/db/schema';
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 
 export async function createDeck(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,6 +41,10 @@ export async function createDeck(
 
     redirect(Routes.DECK(newDeck.id));
   } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+
     return {
       success: false,
       message: error instanceof Error ? error.message : 'Unknown error',
