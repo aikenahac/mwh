@@ -16,4 +16,9 @@ export const Routes = {
   CARD: (id: string) => `/cards/${id}`,
   CARD_EDIT: (id: string) => `/cards/${id}/edit`,
   CARD_CREATE: (deckId: string) => `/cards/create/${deckId}`,
+
+  // Docs
+  DOCS: '/docs',
+  DOCS_PRIVACY_POLICY: '/docs/privacy-policy',
+  DOCS_TERMS_OF_SERVICE: '/docs/tos',
 };

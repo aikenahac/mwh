@@ -5,6 +5,7 @@ import { Deck } from '@/lib/api/deck';
 import { db } from '@/lib/db';
 import { card } from '@/lib/db/schema';
 import { auth } from '@clerk/nextjs/server';
+import { canEditDeck } from '@/lib/auth/permissions';
 
 type Props = {
   text: string;
@@ -31,6 +32,15 @@ export async function createCard({
     return {
       success: false,
       error: 'Unauthorized',
+    };
+  }
+
+  // Check if user can edit the deck (cards inherit deck permissions)
+  const canEdit = await canEditDeck(deck.id, userId);
+  if (!canEdit) {
+    return {
+      success: false,
+      error: 'You do not have permission to create cards in this deck',
     };
   }
 

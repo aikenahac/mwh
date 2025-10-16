@@ -8,6 +8,27 @@
       "when": 1760563549028,
       "tag": "0000_steep_ultimates",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1760598404886,
+      "tag": "0001_clumsy_peter_quill",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1760599391457,
+      "tag": "0002_panoramic_bulldozer",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1760600430589,
+      "tag": "0003_tan_abomination",
+      "breakpoints": true
     }
   ]
 }

@@ -24,7 +24,7 @@ export default async function EditCardPageRoot({
   }
 
   const { data: card } = await getCardById(id);
-  const { data: deck } = await getDeckById(card?.deck_id || '');
+  const { data: deck } = await getDeckById(card?.deck_id || '', userId);
 
   if (!deck) {
     return (

@@ -1,0 +1,2 @@
+CREATE INDEX "DeckShare_deck_id_idx" ON "DeckShare" USING btree ("deck_id");--> statement-breakpoint
+CREATE INDEX "DeckShare_shared_with_user_id_idx" ON "DeckShare" USING btree ("shared_with_user_id");
