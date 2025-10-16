@@ -18,7 +18,27 @@
   },
 
   "home": {
-    "title": "Home page"
+    "title": "Home page",
+    "hero": {
+      "title": "Create Custom Cards Against Humanity Decks",
+      "subtitle": "Design, print, and play with your own personalized card decks",
+      "cta": "Get Started"
+    },
+    "features": {
+      "title": "Features",
+      "createDecks": {
+        "title": "Create Custom Decks",
+        "description": "Build unlimited decks with your own unique themes and inside jokes"
+      },
+      "customCards": {
+        "title": "Custom Cards",
+        "description": "Design both white answer cards and black question cards, including Pick 2 variants"
+      },
+      "printReady": {
+        "title": "Print Ready PDFs",
+        "description": "Generate professional PDFs optimized for printing real cards you can play with"
+      }
+    }
   },
 
   "decksPage": {
@@ -98,6 +118,13 @@
     },
 
     "cards": "cards"
+  },
+
+  "footer": {
+    "copyright": "© {year} {appName}. All rights reserved.",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "documents": "Documents"
   },
 
   "card": {
