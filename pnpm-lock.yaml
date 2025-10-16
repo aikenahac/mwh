@@ -59,6 +59,9 @@ importers:
       dotenv:
         specifier: ^17.2.3
         version: 17.2.3
+      drizzle-kit:
+        specifier: ^0.31.5
+        version: 0.31.5
       drizzle-orm:
         specifier: ^0.44.6
         version: 0.44.6(@types/pg@8.15.5)(pg@8.16.3)
@@ -126,9 +129,6 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.0.4(@types/react@19.0.12)
-      drizzle-kit:
-        specifier: ^0.31.5
-        version: 0.31.5
       eslint:
         specifier: ^9
         version: 9.23.0(jiti@2.4.2)

@@ -48,6 +48,13 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# Copy package files for migration dependencies
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+
+# Install ONLY production dependencies (including drizzle-kit)
+RUN pnpm install --prod --frozen-lockfile
+
 # Copy necessary files from builder
 COPY --from=builder /app/public ./public
 
@@ -56,9 +63,15 @@ RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
 # Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Copy migration-related files
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle ./drizzle
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle.config.ts ./drizzle.config.ts
+
+# Change ownership of node_modules
+RUN chown -R nextjs:nodejs /app/node_modules
 
 USER nextjs
 
