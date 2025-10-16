@@ -8,8 +8,12 @@ Mess with Humanity is a web application that allows users to create custom decks
 - [x] Add and edit cards (white answer cards and black question cards)
 - [x] Support for "Pick 2" black cards
 - [x] Generate printable PDFs of decks (4 cards per A4 page, landscape)
-- [ ] Share decks
-- [ ] Collaborate on decks
+- [x] Share decks
+- [x] Collaborate on decks
+- [x] Admin panel
+    - Importing system-level decks
+    - Adding new admins
+- [ ] CAH online player
 
 ## Tech Stack
 
