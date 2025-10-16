@@ -20,7 +20,7 @@ export default function TermsOfServicePage() {
           <h2 className="text-2xl font-semibold mb-4">1. Overview</h2>
           <p>
             By accessing or using Mess With Humanity, you agree to these Terms
-            of Service ("Terms"). If you don't agree, don't use the app.
+            of Service (&quot;Terms&quot;). If you don&apos;t agree, don&apos;t use the app.
           </p>
         </section>
 
@@ -55,7 +55,7 @@ export default function TermsOfServicePage() {
           <p className="mb-4">You agree not to:</p>
           <ul className="list-disc pl-6 space-y-2">
             <li>Use the app for unlawful or abusive purposes</li>
-            <li>Interfere with or disrupt the app's operation</li>
+            <li>Interfere with or disrupt the app&apos;s operation</li>
             <li>Attempt to gain unauthorized access to systems or data</li>
             <li>Upload or post harmful, illegal, or infringing content</li>
           </ul>
@@ -91,9 +91,9 @@ export default function TermsOfServicePage() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">7. Disclaimers</h2>
           <ul className="list-disc pl-6 space-y-2">
-            <li>The app is provided "as is" without warranties of any kind.</li>
+            <li>The app is provided &quot;as is&quot; without warranties of any kind.</li>
             <li>
-              We don't guarantee uptime, availability, or that the app will be
+              We don&apos;t guarantee uptime, availability, or that the app will be
               error-free.
             </li>
             <li>Use the app at your own risk.</li>

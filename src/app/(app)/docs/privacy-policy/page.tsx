@@ -18,7 +18,7 @@ export default function PrivacyPolicyPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">1. Who We Are</h2>
             <p className="mb-4">
-              Mess With Humanity ("the App", "we", "us", "our") is operated and
+              Mess With Humanity (&quot;the App&quot;, &quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is operated and
               distributed by Aerio, Aiken Tine Ahac s.p., registered in Slovenia
               (EU).
             </p>
@@ -61,7 +61,7 @@ export default function PrivacyPolicyPage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Clerk's privacy policy
+                Clerk&apos;s privacy policy
               </a>
               .
             </p>
@@ -90,8 +90,8 @@ export default function PrivacyPolicyPage() {
             </h3>
             <p className="mb-4">
               If the app allows submissions, uploads, or user-generated content,
-              we'll store that data for the purpose of displaying and
-              maintaining the app's functionality. You can delete your content
+              we&apos;ll store that data for the purpose of displaying and
+              maintaining the app&apos;s functionality. You can delete your content
               or request removal at any time.
             </p>
           </section>
@@ -108,7 +108,7 @@ export default function PrivacyPolicyPage() {
               <li>Respond to support requests</li>
             </ul>
             <p className="mb-4">
-              We don't sell, rent, or share your data with third parties for
+              We don&apos;t sell, rent, or share your data with third parties for
               advertising or marketing.
             </p>
           </section>
@@ -178,7 +178,7 @@ export default function PrivacyPolicyPage() {
             </h2>
             <p className="mb-4">
               We may update this Privacy Policy occasionally. Updates will be
-              posted here with a revised "Effective Date." Continued use of the
+              posted here with a revised &quot;Effective Date.&quot; Continued use of the
               app means you accept the changes.
             </p>
           </section>
