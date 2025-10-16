@@ -85,10 +85,10 @@ export async function updateCard({
     }
 
     // Validate pick value if provided
-    if (pick !== undefined && (pick < 1 || pick > 4)) {
+    if (pick !== undefined && (pick < 1 || pick > 10)) {
       return {
         success: false,
-        error: 'Pick value must be between 1 and 4',
+        error: 'Pick value must be between 1 and 10',
       };
     }
 

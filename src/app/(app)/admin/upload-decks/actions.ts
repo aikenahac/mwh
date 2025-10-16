@@ -14,7 +14,7 @@ const whiteCardSchema = z.object({
 
 const blackCardSchema = z.object({
   text: z.string().min(1, 'Card text cannot be empty').max(1000, 'Card text too long'),
-  pick: z.number().int().min(1).max(4),
+  pick: z.number().int().min(1).max(10),
   pack: z.number().int(),
 });
 
@@ -67,10 +67,14 @@ export async function uploadSystemDecks(
   const validationResult = decksArraySchema.safeParse(parsedContent);
 
   if (!validationResult.success) {
-    const firstError = validationResult.error.errors[0];
-    throw new Error(
-      `Invalid deck data: ${firstError.path.join('.')} - ${firstError.message}`
-    );
+    const issues = validationResult.error.issues;
+    if (issues.length > 0) {
+      const firstIssue = issues[0];
+      throw new Error(
+        `Invalid deck data at ${firstIssue.path.join('.')}: ${firstIssue.message}`
+      );
+    }
+    throw new Error('Invalid deck data format');
   }
 
   const decks = validationResult.data;

@@ -36,10 +36,10 @@ export async function createCard({
   }
 
   // Validate pick value
-  if (pick < 1 || pick > 4) {
+  if (pick < 1 || pick > 10) {
     return {
       success: false,
-      error: 'Pick value must be between 1 and 4',
+      error: 'Pick value must be between 1 and 10',
     };
   }
 
