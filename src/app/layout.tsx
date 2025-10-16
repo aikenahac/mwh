@@ -98,6 +98,13 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
+        <head>
+          <script
+            defer
+            data-domain="gomwh.com"
+            src="https://plausible.aerio.cloud/js/script.file-downloads.outbound-links.js"
+          />
+        </head>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
         >
