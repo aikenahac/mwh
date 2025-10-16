@@ -9,7 +9,7 @@ export default function AppLayout({
   return (
     <div className="min-h-screen w-screen max-w-screen flex flex-col">
       <div className="flex-1 flex items-start justify-center py-12 overflow-x-hidden">
-        <div className="w-[75vw]">
+        <div className="w-[90vw]">
           <header className="flex justify-end items-center gap-4 h-16 mb-8">
             <Navbar />
           </header>
