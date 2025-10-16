@@ -15,7 +15,7 @@ import { useActionState, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Label } from '../ui/label';
 import { updateDeck } from '@/app/(app)/decks/[id]/actions';
-import { Deck } from '@/lib/supabase/api/deck';
+import { Deck } from '@/lib/api/deck';
 import { redirect } from 'next/navigation';
 import { Routes } from '@/lib/routes';
 import { useTranslations } from 'next-intl';

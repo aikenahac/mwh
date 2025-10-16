@@ -1,7 +1,7 @@
 import { buttonVariants } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Routes } from '@/lib/routes';
-import { Deck } from '@/lib/supabase/api/deck';
+import { Deck } from '@/lib/api/deck';
 import { ChevronRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';

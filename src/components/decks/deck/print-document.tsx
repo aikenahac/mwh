@@ -1,6 +1,6 @@
 'use client';
 
-import { Card } from '@/lib/supabase/api/card';
+import { Card } from '@/lib/api/card';
 import React from 'react';
 import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
 import { chunkArray } from '@/lib/utils';

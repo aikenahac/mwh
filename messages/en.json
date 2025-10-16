@@ -66,7 +66,35 @@
       "subtitle": "Deck ID: {id}"
     },
     "printDialog": {
-      "title": "Print deck"
+      "title": "Print deck",
+      "printDocument": "Print Document"
+    },
+    "shareDialog": {
+      "title": "Share Deck",
+      "description": "Share this deck with other users. They can view or collaborate based on the permission you set.",
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "Enter username",
+      "permissionLabel": "Permission",
+      "viewOnly": "View Only",
+      "collaborate": "Collaborate",
+      "currentShares": "Current Shares",
+      "cancel": "Cancel",
+      "share": "Share",
+      "sharing": "Sharing...",
+      "remove": "Remove",
+      "removing": "Removing...",
+      "removeShareTitle": "Remove Share",
+      "removeShareDescription": "Are you sure you want to remove this share? This action cannot be undone.",
+      "pleaseEnterUsername": "Please enter a username",
+      "deckSharedSuccessfully": "Deck shared successfully",
+      "failedToShareDeck": "Failed to share deck",
+      "errorSharingDeck": "An error occurred while sharing the deck",
+      "shareRemovedSuccessfully": "Share removed successfully",
+      "failedToRemoveShare": "Failed to remove share",
+      "errorRemovingShare": "An error occurred while removing the share",
+      "permissionUpdatedSuccessfully": "Permission updated successfully",
+      "failedToUpdatePermission": "Failed to update permission",
+      "errorUpdatingPermission": "An error occurred while updating the permission"
     },
 
     "cards": "cards"
@@ -97,12 +125,17 @@
       "addLine": "Add line",
       "blackCardTypeLabel": "Black Card Type",
       "normal": "Normal",
-      "pick2": "Pick 2"
+      "pick2": "Pick 2",
+      "toggleWhite": "Toggle white",
+      "toggleBlack": "Toggle black",
+      "toggleNormal": "Toggle normal",
+      "togglePick2": "Toggle pick 2"
     },
     "create": {
       "title": "Create Card",
       "deck": "for",
       "saveButton": "Save",
+      "saveAndCreateButton": "Save & Create Another",
       "success": "Card created successfully."
     }
   }

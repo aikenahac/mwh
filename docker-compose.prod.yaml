@@ -1,0 +1,50 @@
+# Configuration for my production environment
+# uses traefik for reverse proxy
+
+services:
+  app:
+    image: ghcr.io/aikenahac/mwh:master
+    container_name: mwh-app
+    env_file:
+      - .env
+    ports:
+      - "3101:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.mwh.loadbalancer.server.port=3101"
+      - "traefik.http.routers.mwh.rule=Host(`gomwh.com`)"
+      - "traefik.http.routers.mwh.entrypoints=https"
+      - "traefik.http.routers.mwh.service=mwh"
+      - "traefik.http.routers.mwh.tls.certresolver=cloudflare"
+
+  db:
+    image: postgres:latest
+    container_name: aerio-auth-db
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+       - proxy
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  proxy:
+    external: true

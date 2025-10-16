@@ -6,7 +6,7 @@ export default function AppLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="min-h-screen w-screen max-w-screen flex items-start justify-center py-12">
+    <div className="min-h-screen w-screen max-w-screen flex items-start justify-center py-12 overflow-x-hidden">
       <div className="w-[75vw]">
         <header className="flex justify-end items-center gap-4 h-16 mb-8">
           <Navbar />

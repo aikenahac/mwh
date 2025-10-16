@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Card } from '@/lib/supabase/api/card';
+import { Card } from '@/lib/api/card';
 import { useTranslations } from 'next-intl';
 
 type Props = {

@@ -4,7 +4,7 @@ import { Card } from '../ui/card';
 import { Label } from '../ui/label';
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
 import { MWHCard } from './mwh-card';
-import { BlackCardType, CardType } from '@/lib/supabase/api/card';
+import { BlackCardType, CardType } from '@/lib/api/card';
 import { Button } from '../ui/button';
 import { BLACK_CARD_LINE } from '@/lib/utils';
 import { Textarea } from '../ui/textarea';
@@ -41,7 +41,7 @@ export function CreateCardEditor({
             <ToggleGroupItem
               onClick={() => setType('white')}
               value="white"
-              aria-label="Toggle white"
+              aria-label={t('card.editor.toggleWhite')}
               className="cursor-pointer"
             >
               {t('card.editor.white')}
@@ -49,7 +49,7 @@ export function CreateCardEditor({
             <ToggleGroupItem
               onClick={() => setType('black')}
               value="black"
-              aria-label="Toggle black"
+              aria-label={t('card.editor.toggleBlack')}
               className="cursor-pointer"
             >
               {t('card.editor.black')}
@@ -85,7 +85,7 @@ export function CreateCardEditor({
               <ToggleGroupItem
                 onClick={() => setBlackCardType('normal')}
                 value="normal"
-                aria-label="Toggle normal"
+                aria-label={t('card.editor.toggleNormal')}
                 className="cursor-pointer"
               >
                 {t('card.editor.normal')}
@@ -93,7 +93,7 @@ export function CreateCardEditor({
               <ToggleGroupItem
                 onClick={() => setBlackCardType('pick_2')}
                 value="pick_2"
-                aria-label="Toggle pick_2"
+                aria-label={t('card.editor.togglePick2')}
                 className="cursor-pointer"
               >
                 {t('card.editor.pick2')}

@@ -1,7 +1,11 @@
 'use server';
 
-import { BlackCardType, CardType } from '@/lib/supabase/api/card';
-import { createClerkSupabaseClientServer } from '@/lib/supabase/server';
+import { BlackCardType, CardType } from '@/lib/api/card';
+import { db } from '@/lib/db';
+import { card } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
+import { auth } from '@clerk/nextjs/server';
+import { canEditDeck } from '@/lib/auth/permissions';
 
 type Result = {
   success: boolean;
@@ -13,26 +17,48 @@ type DeleteProps = {
 };
 
 export async function deleteCard({ id }: DeleteProps): Promise<Result> {
-  const supabase = await createClerkSupabaseClientServer();
+  try {
+    const { userId } = await auth();
 
-  const res = await supabase.from('card').delete().eq('id', id);
+    if (!userId) {
+      return {
+        success: false,
+        error: 'Unauthorized',
+      };
+    }
 
-  if (res.status >= 200 && res.status < 300) {
+    // Get the card to find its deck
+    const cardData = await db.query.card.findFirst({
+      where: eq(card.id, id),
+    });
+
+    if (!cardData) {
+      return {
+        success: false,
+        error: 'Card not found',
+      };
+    }
+
+    // Check if user can edit the deck (cards inherit deck permissions)
+    const canEdit = await canEditDeck(cardData.deckId, userId);
+    if (!canEdit) {
+      return {
+        success: false,
+        error: 'You do not have permission to delete this card',
+      };
+    }
+
+    await db.delete(card).where(eq(card.id, id));
+
     return {
       success: true,
     };
-  }
-
-  if (res.error) {
+  } catch (error) {
     return {
       success: false,
-      error: res.error ? res.error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
-
-  return {
-    success: true,
-  };
 }
 
 type UpdateProps = {
@@ -48,31 +74,53 @@ export async function updateCard({
   type,
   blackCardType,
 }: UpdateProps): Promise<Result> {
-  const supabase = await createClerkSupabaseClientServer();
+  try {
+    const { userId } = await auth();
 
-  const res = await supabase
-    .from('card')
-    .update({
-      text,
-      type,
-      black_card_type: blackCardType,
-    })
-    .eq('id', id);
+    if (!userId) {
+      return {
+        success: false,
+        error: 'Unauthorized',
+      };
+    }
 
-  if (res.status >= 200 && res.status < 300) {
+    // Get the card to find its deck
+    const cardData = await db.query.card.findFirst({
+      where: eq(card.id, id),
+    });
+
+    if (!cardData) {
+      return {
+        success: false,
+        error: 'Card not found',
+      };
+    }
+
+    // Check if user can edit the deck (cards inherit deck permissions)
+    const canEdit = await canEditDeck(cardData.deckId, userId);
+    if (!canEdit) {
+      return {
+        success: false,
+        error: 'You do not have permission to update this card',
+      };
+    }
+
+    await db
+      .update(card)
+      .set({
+        text,
+        type,
+        blackCardType,
+      })
+      .where(eq(card.id, id));
+
     return {
       success: true,
     };
-  }
-
-  if (res.error) {
+  } catch (error) {
     return {
       success: false,
-      error: res.error ? res.error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
-
-  return {
-    success: true,
-  };
 }
