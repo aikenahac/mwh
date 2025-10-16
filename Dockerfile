@@ -67,5 +67,8 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
+# Run the migrations before starting the app
+RUN pnpm db:push
+
 # Start the application
 CMD ["node", "server.js"]
