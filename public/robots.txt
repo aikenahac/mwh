@@ -1,0 +1,9 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow authentication pages
+Disallow: /auth/
+
+# Sitemap location
+Sitemap: https://gomwh.com/sitemap.xml

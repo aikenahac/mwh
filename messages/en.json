@@ -20,24 +20,42 @@
   "home": {
     "title": "Home page",
     "hero": {
+      "badge": "Create Your Own Card Game Experience",
       "title": "Create Custom Cards Against Humanity Decks",
-      "subtitle": "Design, print, and play with your own personalized card decks",
+      "subtitle": "Design, print, and play with your own personalized card decks. Free online card creator for custom playing cards.",
       "cta": "Get Started"
     },
     "features": {
-      "title": "Features",
+      "title": "Everything You Need to Create Custom Card Games",
       "createDecks": {
         "title": "Create Custom Decks",
-        "description": "Build unlimited decks with your own unique themes and inside jokes"
+        "description": "Build unlimited custom card decks with your own unique themes and inside jokes. Perfect for parties and game nights."
       },
       "customCards": {
-        "title": "Custom Cards",
-        "description": "Design both white answer cards and black question cards, including Pick 2 variants"
+        "title": "Design Custom Cards",
+        "description": "Design both white answer cards and black question cards, including Pick 2 variants. Easy-to-use card creator."
       },
       "printReady": {
         "title": "Print Ready PDFs",
-        "description": "Generate professional PDFs optimized for printing real cards you can play with"
+        "description": "Generate professional print-ready PDFs optimized for printing real playing cards you can use in your games."
       }
+    },
+    "howItWorks": {
+      "title": "How to Make Custom Cards Against Humanity",
+      "description": "Design both question and answer cards just like the original game, then export them to PDF for professional printing. Create your own custom card game in minutes.",
+      "blackCard": {
+        "label": "BLACK CARD",
+        "description": "Create black question cards with custom text and Pick 2 options for your card game"
+      },
+      "whiteCard": {
+        "label": "WHITE CARD",
+        "description": "Design white answer cards with your own hilarious responses for maximum fun"
+      },
+      "cta": "Start Creating Your Custom Deck"
+    },
+    "seo": {
+      "h2": "Free Custom Cards Against Humanity Maker",
+      "description": "Mess with Humanity is the best free online tool to create custom Cards Against Humanity decks. Whether you're looking to make custom playing cards for a party, create personalized game cards for friends, or design your own card game from scratch, our card creator makes it easy. Build unlimited custom card decks, design both white and black cards, and generate professional print-ready PDFs. Perfect for party games, custom gifts, or just having fun with friends."
     }
   },
 
