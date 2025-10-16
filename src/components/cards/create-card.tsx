@@ -4,7 +4,7 @@ import { Card } from '../ui/card';
 import { Label } from '../ui/label';
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
 import { MWHCard } from './mwh-card';
-import { BlackCardType, CardType } from '@/lib/api/card';
+import { CardType } from '@/lib/api/card';
 import { Button } from '../ui/button';
 import { BLACK_CARD_LINE } from '@/lib/utils';
 import { Textarea } from '../ui/textarea';
@@ -13,18 +13,18 @@ import { useTranslations } from 'next-intl';
 type Props = {
   text: string;
   type: keyof typeof CardType;
-  blackCardType: keyof typeof BlackCardType | undefined;
+  pick: number;
 
   setType: (type: keyof typeof CardType) => void;
   setText: (text: string) => void;
-  setBlackCardType: (blackCardType: keyof typeof BlackCardType) => void;
+  setPick: (pick: number) => void;
 };
 
 export function CreateCardEditor({
   text,
   type,
-  blackCardType,
-  setBlackCardType,
+  pick,
+  setPick,
   setType,
   setText,
 }: Props) {
@@ -78,32 +78,48 @@ export function CreateCardEditor({
         </div>
         {type === 'black' && (
           <div className="flex flex-row gap-6 items-center justify-start">
-            <Label htmlFor="card_text" className="text-right font-bold">
-              {t('card.editor.blackCardTypeLabel')}
+            <Label htmlFor="card_pick" className="text-right font-bold">
+              {t('card.editor.pickLabel')}
             </Label>
-            <ToggleGroup type="single" value={blackCardType}>
+            <ToggleGroup type="single" value={pick.toString()}>
               <ToggleGroupItem
-                onClick={() => setBlackCardType('normal')}
-                value="normal"
-                aria-label={t('card.editor.toggleNormal')}
+                onClick={() => setPick(1)}
+                value="1"
+                aria-label={t('card.editor.togglePick1')}
                 className="cursor-pointer"
               >
-                {t('card.editor.normal')}
+                1
               </ToggleGroupItem>
               <ToggleGroupItem
-                onClick={() => setBlackCardType('pick_2')}
-                value="pick_2"
+                onClick={() => setPick(2)}
+                value="2"
                 aria-label={t('card.editor.togglePick2')}
                 className="cursor-pointer"
               >
-                {t('card.editor.pick2')}
+                2
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                onClick={() => setPick(3)}
+                value="3"
+                aria-label={t('card.editor.togglePick3')}
+                className="cursor-pointer"
+              >
+                3
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                onClick={() => setPick(4)}
+                value="4"
+                aria-label={t('card.editor.togglePick4')}
+                className="cursor-pointer"
+              >
+                4
               </ToggleGroupItem>
             </ToggleGroup>
           </div>
         )}
       </Card>
       <Card className="w-full flex items-center justify-center lg:w-[35%]">
-        <MWHCard card={{ text, type, black_card_type: blackCardType }} />
+        <MWHCard card={{ text, type, pick }} />
       </Card>
     </div>
   );

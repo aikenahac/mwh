@@ -6,7 +6,7 @@ import { Button, buttonVariants } from '../ui/button';
 import { CreateCardEditor } from './create-card';
 import { Deck } from '@/lib/api/deck';
 import { useActionState, useEffect, useState } from 'react';
-import { BlackCardType, Card, CardType } from '@/lib/api/card';
+import { Card, CardType } from '@/lib/api/card';
 import { DeleteCardDialog } from './delete-card-dialog';
 import { updateCard } from '@/app/(app)/cards/[id]/edit/actions';
 import { toast } from 'sonner';
@@ -28,20 +28,10 @@ export function EditCardPage({ deck, card }: Props) {
 
   const [text, setText] = useState(card.text || '');
   const [type, setType] = useState<keyof typeof CardType>(card.type || 'white');
-  const [blackCardType, setBlackCardType] = useState<
-    keyof typeof BlackCardType | undefined
-  >(card.black_card_type || card.type === 'black' ? 'normal' : undefined);
+  const [pick, setPick] = useState<number>(card.pick || 1);
 
-  const onSubmit = () => updateCard({ id: card.id, text, type, blackCardType });
+  const onSubmit = () => updateCard({ id: card.id, text, type, pick });
   const [state, formAction, pending] = useActionState(onSubmit, initialState);
-
-  useEffect(() => {
-    if (type === 'black') {
-      setBlackCardType('normal');
-    } else {
-      setBlackCardType(undefined);
-    }
-  }, [type]);
 
   useEffect(() => {
     if (!state.success && state.error) {
@@ -89,8 +79,8 @@ export function EditCardPage({ deck, card }: Props) {
       <CreateCardEditor
         text={text}
         type={type}
-        blackCardType={blackCardType}
-        setBlackCardType={setBlackCardType}
+        pick={pick}
+        setPick={setPick}
         setText={setText}
         setType={setType}
       />

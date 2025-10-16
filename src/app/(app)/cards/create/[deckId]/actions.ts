@@ -1,6 +1,6 @@
 'use server';
 
-import { BlackCardType, CardType, CardWithDeck } from '@/lib/api/card';
+import { CardType, CardWithDeck } from '@/lib/api/card';
 import { Deck } from '@/lib/api/deck';
 import { db } from '@/lib/db';
 import { card } from '@/lib/db/schema';
@@ -10,7 +10,7 @@ import { canEditDeck } from '@/lib/auth/permissions';
 type Props = {
   text: string;
   type: keyof typeof CardType;
-  blackCardType?: keyof typeof BlackCardType;
+  pick?: number;
   deck: Deck;
 };
 
@@ -23,7 +23,7 @@ type Result = {
 export async function createCard({
   text,
   type,
-  blackCardType,
+  pick = 1,
   deck,
 }: Props): Promise<Result> {
   const { userId } = await auth();
@@ -32,6 +32,14 @@ export async function createCard({
     return {
       success: false,
       error: 'Unauthorized',
+    };
+  }
+
+  // Validate pick value
+  if (pick < 1 || pick > 4) {
+    return {
+      success: false,
+      error: 'Pick value must be between 1 and 4',
     };
   }
 
@@ -50,7 +58,7 @@ export async function createCard({
       .values({
         text,
         type,
-        blackCardType: type === 'black' ? blackCardType : null,
+        pick,
         deckId: deck.id,
         userId,
       })
@@ -62,7 +70,7 @@ export async function createCard({
       card: {
         id: newCard.id,
         type: newCard.type,
-        black_card_type: newCard.blackCardType,
+        pick: newCard.pick,
         text: newCard.text!,
         deck_id: newCard.deckId,
         created_at: newCard.createdAt.toISOString(),

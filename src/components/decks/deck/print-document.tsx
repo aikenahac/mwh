@@ -155,11 +155,11 @@ export function PrintDocument({ cards }: { cards?: Array<Card> }) {
                         <Text style={styles.cardFooterText}>
                           Mess With Humanity
                         </Text>
-                        {card.black_card_type === 'pick_2' && (
+                        {card.type === 'black' && card.pick && card.pick > 1 && (
                           <View style={styles.cardFooterSpecialty}>
                             <Text style={{ fontSize: 8 }}>PICK</Text>
                             <View style={styles.cardFooterSpecialtyCircle}>
-                              <Text style={{ fontSize: 10 }}>2</Text>
+                              <Text style={{ fontSize: 10 }}>{card.pick}</Text>
                             </View>
                           </View>
                         )}

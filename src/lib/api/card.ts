@@ -9,17 +9,12 @@ export const CardType = {
   black: 'black',
 } as const;
 
-export const BlackCardType = {
-  normal: 'normal',
-  pick_2: 'pick_2',
-} as const;
-
 export type Card = z.infer<typeof cardSchema>;
 export const cardSchema = z
   .object({
     id: z.string(),
     type: z.enum(['white', 'black']),
-    blackCardType: z.enum(['normal', 'pick_2']).optional().nullish(),
+    pick: z.number().int().min(1).max(4),
     text: z.string().nullish(),
     deckId: z.string(),
     userId: z.string(),
@@ -28,7 +23,7 @@ export const cardSchema = z
   .transform((c) => ({
     id: c.id,
     type: c.type,
-    black_card_type: c.blackCardType,
+    pick: c.pick,
     text: c.text,
     deck_id: c.deckId,
     created_at: c.createdAt.toISOString(),

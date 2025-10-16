@@ -1,9 +1,8 @@
-import { pgTable, text, timestamp, pgEnum, uuid, unique, index } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, pgEnum, uuid, unique, index, boolean, integer } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // Enums
 export const cardTypeEnum = pgEnum('cardtype', ['white', 'black']);
-export const blackCardTypeEnum = pgEnum('black_card_type', ['normal', 'pick_2']);
 export const sharePermissionEnum = pgEnum('share_permission', ['view', 'collaborate']);
 
 // Tables
@@ -19,11 +18,13 @@ export const card = pgTable('Card', {
   id: uuid('id').defaultRandom().primaryKey(),
   type: cardTypeEnum('type').notNull().default('white'),
   text: text('text'),
+  pick: integer('pick').notNull().default(1),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   deckId: uuid('deck_id').notNull().references(() => deck.id, { onDelete: 'cascade' }),
   userId: text('user_id').notNull(),
-  blackCardType: blackCardTypeEnum('black_card_type'),
-});
+}, (table) => ({
+  pickCheck: 'CHECK (pick >= 1 AND pick <= 4)',
+}));
 
 export const deckShare = pgTable('DeckShare', {
   id: uuid('id').defaultRandom().primaryKey(),
