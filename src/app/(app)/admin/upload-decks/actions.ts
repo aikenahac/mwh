@@ -24,10 +24,6 @@ const deckDataSchema = z.object({
   black: z.array(blackCardSchema),
 });
 
-type WhiteCard = z.infer<typeof whiteCardSchema>;
-type BlackCard = z.infer<typeof blackCardSchema>;
-type DeckData = z.infer<typeof deckDataSchema>;
-
 export interface UploadProgress {
   totalDecks: number;
   processedDecks: number;
