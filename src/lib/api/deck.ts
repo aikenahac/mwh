@@ -1,9 +1,18 @@
 import { z } from 'zod';
 import { db } from '@/lib/db';
-import { deck } from '@/lib/db/schema';
-import { eq } from 'drizzle-orm';
+import { deck, deckShare } from '@/lib/db/schema';
+import { eq, or } from 'drizzle-orm';
 import { Result } from '@/lib/utils';
 import { cardSchema } from './card';
+
+const deckShareSchema = z.object({
+  id: z.string(),
+  deckId: z.string(),
+  sharedWithUserId: z.string(),
+  sharedByUserId: z.string(),
+  permission: z.enum(['view', 'collaborate']),
+  createdAt: z.date(),
+});
 
 export type Deck = z.infer<typeof deckSchema>;
 export const deckSchema = z
@@ -13,6 +22,7 @@ export const deckSchema = z
     description: z.string().optional().nullable(),
     userId: z.string(),
     cards: z.array(cardSchema),
+    shares: z.array(deckShareSchema).optional().default([]),
     createdAt: z.date(),
   })
   .transform((d) => ({
@@ -21,16 +31,29 @@ export const deckSchema = z
     description: d.description,
     user_id: d.userId,
     cards: d.cards,
+    shares: d.shares,
     created_at: d.createdAt.toISOString(),
   }));
 
 const decksSchema = z.array(deckSchema);
 
 export async function getDecks(userId: string) {
+  // Get deck IDs shared with the user
+  const sharedDeckIds = await db
+    .select({ deckId: deckShare.deckId })
+    .from(deckShare)
+    .where(eq(deckShare.sharedWithUserId, userId));
+
+  const sharedIds = sharedDeckIds.map((s) => s.deckId);
+
+  // Get all decks (owned by user or shared with user)
   const decksWithCards = await db.query.deck.findMany({
-    where: eq(deck.userId, userId),
+    where: sharedIds.length > 0
+      ? or(eq(deck.userId, userId), ...sharedIds.map(id => eq(deck.id, id)))
+      : eq(deck.userId, userId),
     with: {
       cards: true,
+      shares: true,
     },
   });
 
@@ -50,6 +73,7 @@ export async function getDeckById(id: string): Promise<Result<Deck, Error>> {
     where: eq(deck.id, id),
     with: {
       cards: true,
+      shares: true,
     },
   });
 

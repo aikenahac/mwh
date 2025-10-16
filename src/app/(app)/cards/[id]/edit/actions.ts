@@ -4,6 +4,8 @@ import { BlackCardType, CardType } from '@/lib/api/card';
 import { db } from '@/lib/db';
 import { card } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
+import { auth } from '@clerk/nextjs/server';
+import { canEditDeck } from '@/lib/auth/permissions';
 
 type Result = {
   success: boolean;
@@ -16,6 +18,36 @@ type DeleteProps = {
 
 export async function deleteCard({ id }: DeleteProps): Promise<Result> {
   try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return {
+        success: false,
+        error: 'Unauthorized',
+      };
+    }
+
+    // Get the card to find its deck
+    const cardData = await db.query.card.findFirst({
+      where: eq(card.id, id),
+    });
+
+    if (!cardData) {
+      return {
+        success: false,
+        error: 'Card not found',
+      };
+    }
+
+    // Check if user can edit the deck (cards inherit deck permissions)
+    const canEdit = await canEditDeck(cardData.deckId, userId);
+    if (!canEdit) {
+      return {
+        success: false,
+        error: 'You do not have permission to delete this card',
+      };
+    }
+
     await db.delete(card).where(eq(card.id, id));
 
     return {
@@ -43,6 +75,36 @@ export async function updateCard({
   blackCardType,
 }: UpdateProps): Promise<Result> {
   try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return {
+        success: false,
+        error: 'Unauthorized',
+      };
+    }
+
+    // Get the card to find its deck
+    const cardData = await db.query.card.findFirst({
+      where: eq(card.id, id),
+    });
+
+    if (!cardData) {
+      return {
+        success: false,
+        error: 'Card not found',
+      };
+    }
+
+    // Check if user can edit the deck (cards inherit deck permissions)
+    const canEdit = await canEditDeck(cardData.deckId, userId);
+    if (!canEdit) {
+      return {
+        success: false,
+        error: 'You do not have permission to update this card',
+      };
+    }
+
     await db
       .update(card)
       .set({

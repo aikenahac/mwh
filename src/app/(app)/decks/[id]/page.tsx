@@ -2,9 +2,11 @@ import { MWHCard } from '@/components/cards/mwh-card';
 import { PrintDeckDialog } from '@/components/decks/deck/print-dialog';
 import { DeleteDeckDialog } from '@/components/decks/delete-deck-dialog';
 import { EditDeckDialog } from '@/components/decks/edit-deck-dialog';
+import { ShareDeckDialog } from '@/components/decks/share-deck-dialog';
 import { buttonVariants } from '@/components/ui/button';
 import { Routes } from '@/lib/routes';
 import { getDeckById } from '@/lib/api/deck';
+import { getUserDeckPermissions } from '@/lib/auth/permissions';
 import { cn } from '@/lib/utils';
 import { auth } from '@clerk/nextjs/server';
 import { getTranslations } from 'next-intl/server';
@@ -34,18 +36,40 @@ export default async function DeckPage({
     );
   }
 
+  // Check user permissions for this deck
+  const permissions = await getUserDeckPermissions(deckId, userId);
+
+  // Redirect if user has no access
+  if (!permissions.canView) {
+    redirect(Routes.DECKS);
+  }
+
   return (
     <div>
       <div className="flex flex-row items-center justify-between px-4 gap-2">
         <div>
-          <h1 className="text-2xl font-bold flex items-center">{deck.name}</h1>
+          <h1 className="text-2xl font-bold flex items-center">
+            {deck.name}
+            {permissions.isOwner && (
+              <span className="ml-2 text-xs font-normal text-muted-foreground">(Owner)</span>
+            )}
+            {!permissions.isOwner && permissions.permission === 'view' && (
+              <span className="ml-2 text-xs font-normal text-muted-foreground">(View Only)</span>
+            )}
+            {!permissions.isOwner && permissions.permission === 'collaborate' && (
+              <span className="ml-2 text-xs font-normal text-muted-foreground">(Collaborator)</span>
+            )}
+          </h1>
           <p>{deck.description}</p>
         </div>
         <div className="flex flex-row items-center gap-2">
-          <DeleteDeckDialog deckId={deck.id} />
+          {permissions.canEdit && <DeleteDeckDialog deckId={deck.id} />}
           <PrintDeckDialog cards={deck.cards} />
-          <EditDeckDialog deck={deck} />
-          {deck.user_id === userId && (
+          {permissions.canEdit && <EditDeckDialog deck={deck} />}
+          {permissions.isOwner && (
+            <ShareDeckDialog deckId={deck.id} shares={deck.shares || []} isOwner={permissions.isOwner} />
+          )}
+          {permissions.canEdit && (
             <Link
               href={Routes.CARD_CREATE(deck.id)}
               className={buttonVariants({ variant: 'default' })}
@@ -66,16 +90,24 @@ export default async function DeckPage({
         {deck.cards
           .filter((c) => c.type === 'black')
           .map((card) => (
-            <Link href={Routes.CARD_EDIT(card.id)} key={card.id}>
-              <MWHCard card={card} />
-            </Link>
+            permissions.canEdit ? (
+              <Link href={Routes.CARD_EDIT(card.id)} key={card.id}>
+                <MWHCard card={card} />
+              </Link>
+            ) : (
+              <MWHCard card={card} key={card.id} />
+            )
           ))}
         {deck.cards
           .filter((c) => c.type === 'white')
           .map((card) => (
-            <Link href={Routes.CARD_EDIT(card.id)} key={card.id}>
-              <MWHCard card={card} />
-            </Link>
+            permissions.canEdit ? (
+              <Link href={Routes.CARD_EDIT(card.id)} key={card.id}>
+                <MWHCard card={card} />
+              </Link>
+            ) : (
+              <MWHCard card={card} key={card.id} />
+            )
           ))}
       </div>
     </div>
