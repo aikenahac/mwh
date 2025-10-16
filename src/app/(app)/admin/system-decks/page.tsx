@@ -34,7 +34,7 @@ export default async function SystemDecksPage() {
   });
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto">
       <div className="mb-6">
         <Link
           href={Routes.ADMIN}
