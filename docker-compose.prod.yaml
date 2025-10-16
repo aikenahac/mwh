@@ -2,6 +2,19 @@
 # uses traefik for reverse proxy
 
 services:
+  migrations:
+    image: ghcr.io/aikenahac/mwh:master
+    container_name: mwh-migrations
+    env_file:
+      - stack.env
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - proxy
+    command: sh -c "pnpm drizzle-kit push && exit 0"
+    restart: "no"
+
   app:
     image: ghcr.io/aikenahac/mwh:master
     container_name: mwh
