@@ -15,6 +15,13 @@
       "when": 1760598404886,
       "tag": "0001_clumsy_peter_quill",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1760599391457,
+      "tag": "0002_panoramic_bulldozer",
+      "breakpoints": true
     }
   ]
 }

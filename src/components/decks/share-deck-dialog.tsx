@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -38,6 +39,7 @@ interface ShareDeckDialogProps {
 }
 
 export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProps) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [userId, setUserId] = useState('');
   const [permission, setPermission] = useState<'view' | 'collaborate'>('view');
@@ -62,7 +64,7 @@ export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProp
         setUserId('');
         setPermission('view');
         setOpen(false);
-        window.location.reload();
+        router.refresh();
       } else {
         toast.error(result.error || 'Failed to share deck');
       }
@@ -83,7 +85,7 @@ export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProp
 
       if (result.success) {
         toast.success('Share removed successfully');
-        window.location.reload();
+        router.refresh();
       } else {
         toast.error(result.error || 'Failed to remove share');
       }
@@ -101,7 +103,7 @@ export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProp
 
       if (result.success) {
         toast.success('Permission updated successfully');
-        window.location.reload();
+        router.refresh();
       } else {
         toast.error(result.error || 'Failed to update permission');
       }

@@ -3,8 +3,8 @@
 import { db } from '@/lib/db';
 import { deck, deckShare } from '@/lib/db/schema';
 import { eq, and } from 'drizzle-orm';
-import { auth } from '@clerk/nextjs/server';
-import { canShareDeck, canEditDeck } from '@/lib/auth/permissions';
+import { auth, clerkClient } from '@clerk/nextjs/server';
+import { canShareDeck, isOwnerOfDeck } from '@/lib/auth/permissions';
 import { shareDeckSchema, updateSharePermissionSchema, removeShareSchema } from '@/lib/schemas';
 
 type Result = {
@@ -27,12 +27,12 @@ export async function deleteDeck({ id }: DeleteProps): Promise<Result> {
       };
     }
 
-    // Check if user can edit this deck
-    const canEdit = await canEditDeck(id, userId);
-    if (!canEdit) {
+    // Only the owner can delete a deck
+    const isOwner = await isOwnerOfDeck(id, userId);
+    if (!isOwner) {
       return {
         success: false,
-        error: 'You do not have permission to delete this deck',
+        error: 'Only the owner can delete this deck',
       };
     }
 
@@ -70,12 +70,12 @@ export async function updateDeck({
       };
     }
 
-    // Check if user can edit this deck
-    const canEdit = await canEditDeck(id, userId);
-    if (!canEdit) {
+    // Only the owner can update deck metadata
+    const isOwner = await isOwnerOfDeck(id, userId);
+    if (!isOwner) {
       return {
         success: false,
-        error: 'You do not have permission to update this deck',
+        error: 'Only the owner can update deck metadata',
       };
     }
 
@@ -125,6 +125,17 @@ export async function shareDeck({
       return {
         success: false,
         error: validation.error.issues[0].message,
+      };
+    }
+
+    // Validate that the user exists in Clerk
+    try {
+      const clerk = await clerkClient();
+      await clerk.users.getUser(sharedWithUserId);
+    } catch {
+      return {
+        success: false,
+        error: 'User not found. Please check the user ID and try again.',
       };
     }
 

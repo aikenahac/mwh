@@ -1,0 +1,1 @@
+ALTER TABLE "DeckShare" ADD CONSTRAINT "DeckShare_deck_id_shared_with_user_id_unique" UNIQUE("deck_id","shared_with_user_id");

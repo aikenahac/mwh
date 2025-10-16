@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { deck, deckShare } from '@/lib/db/schema';
-import { eq, and } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
 export type Permission = 'view' | 'collaborate';
 
@@ -19,12 +19,18 @@ export async function getUserDeckPermissions(
   deckId: string,
   userId: string
 ): Promise<DeckPermissions> {
-  // Get the deck
-  const deckResult = await db.query.deck.findFirst({
+  // Get the deck with share information in a single query
+  const deckWithShare = await db.query.deck.findFirst({
     where: eq(deck.id, deckId),
+    with: {
+      shares: {
+        where: eq(deckShare.sharedWithUserId, userId),
+        limit: 1,
+      },
+    },
   });
 
-  if (!deckResult) {
+  if (!deckWithShare) {
     return {
       canView: false,
       canEdit: false,
@@ -34,7 +40,7 @@ export async function getUserDeckPermissions(
   }
 
   // Check if user is the owner
-  const isOwner = deckResult.userId === userId;
+  const isOwner = deckWithShare.userId === userId;
   if (isOwner) {
     return {
       canView: true,
@@ -45,13 +51,7 @@ export async function getUserDeckPermissions(
   }
 
   // Check if deck is shared with user
-  const share = await db.query.deckShare.findFirst({
-    where: and(
-      eq(deckShare.deckId, deckId),
-      eq(deckShare.sharedWithUserId, userId)
-    ),
-  });
-
+  const share = deckWithShare.shares[0];
   if (!share) {
     return {
       canView: false,
