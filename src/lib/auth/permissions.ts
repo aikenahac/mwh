@@ -1,6 +1,7 @@
 import { db } from '@/lib/db';
 import { deck, deckShare } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
+import { hasRole } from '@/lib/api/user-role';
 
 export type Permission = 'view' | 'collaborate';
 
@@ -108,4 +109,11 @@ export async function isOwnerOfDeck(deckId: string, userId: string): Promise<boo
   }
 
   return deckResult.userId === userId;
+}
+
+/**
+ * Check if user is a superadmin
+ */
+export async function isSuperAdmin(userId: string): Promise<boolean> {
+  return await hasRole(userId, 'superadmin');
 }

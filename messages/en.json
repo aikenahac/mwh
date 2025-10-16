@@ -169,13 +169,17 @@
       "textLabel": "Card text",
       "textPlaceholder": "Jungkook and Jimin cuddling",
       "addLine": "Add line",
-      "blackCardTypeLabel": "Black Card Type",
-      "normal": "Normal",
+      "pickLabel": "Pick",
+      "pick1": "Pick 1",
       "pick2": "Pick 2",
+      "pick3": "Pick 3",
+      "pick4": "Pick 4",
       "toggleWhite": "Toggle white",
       "toggleBlack": "Toggle black",
-      "toggleNormal": "Toggle normal",
-      "togglePick2": "Toggle pick 2"
+      "togglePick1": "Toggle pick 1",
+      "togglePick2": "Toggle pick 2",
+      "togglePick3": "Toggle pick 3",
+      "togglePick4": "Toggle pick 4"
     },
     "create": {
       "title": "Create Card",

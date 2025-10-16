@@ -1,6 +1,6 @@
 'use server';
 
-import { BlackCardType, CardType } from '@/lib/api/card';
+import { CardType } from '@/lib/api/card';
 import { db } from '@/lib/db';
 import { card } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
@@ -65,14 +65,14 @@ type UpdateProps = {
   id: string;
   text?: string;
   type?: keyof typeof CardType;
-  blackCardType?: keyof typeof BlackCardType;
+  pick?: number;
 };
 
 export async function updateCard({
   id,
   text,
   type,
-  blackCardType,
+  pick,
 }: UpdateProps): Promise<Result> {
   try {
     const { userId } = await auth();
@@ -81,6 +81,14 @@ export async function updateCard({
       return {
         success: false,
         error: 'Unauthorized',
+      };
+    }
+
+    // Validate pick value if provided
+    if (pick !== undefined && (pick < 1 || pick > 10)) {
+      return {
+        success: false,
+        error: 'Pick value must be between 1 and 10',
       };
     }
 
@@ -110,7 +118,7 @@ export async function updateCard({
       .set({
         text,
         type,
-        blackCardType,
+        pick,
       })
       .where(eq(card.id, id));
 

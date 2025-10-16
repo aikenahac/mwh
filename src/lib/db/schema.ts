@@ -1,10 +1,10 @@
-import { pgTable, text, timestamp, pgEnum, uuid, unique, index } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, pgEnum, uuid, unique, index, integer } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // Enums
 export const cardTypeEnum = pgEnum('cardtype', ['white', 'black']);
-export const blackCardTypeEnum = pgEnum('black_card_type', ['normal', 'pick_2']);
 export const sharePermissionEnum = pgEnum('share_permission', ['view', 'collaborate']);
+export const userRoleEnum = pgEnum('user_role', ['superadmin']);
 
 // Tables
 export const deck = pgTable('Deck', {
@@ -19,10 +19,10 @@ export const card = pgTable('Card', {
   id: uuid('id').defaultRandom().primaryKey(),
   type: cardTypeEnum('type').notNull().default('white'),
   text: text('text'),
+  pick: integer('pick').notNull().default(1),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   deckId: uuid('deck_id').notNull().references(() => deck.id, { onDelete: 'cascade' }),
   userId: text('user_id').notNull(),
-  blackCardType: blackCardTypeEnum('black_card_type'),
 });
 
 export const deckShare = pgTable('DeckShare', {
@@ -37,6 +37,12 @@ export const deckShare = pgTable('DeckShare', {
   deckIdIdx: index('DeckShare_deck_id_idx').on(table.deckId),
   sharedWithUserIdIdx: index('DeckShare_shared_with_user_id_idx').on(table.sharedWithUserId),
 }));
+
+export const userRole = pgTable('UserRole', {
+  userId: text('user_id').primaryKey(),
+  role: userRoleEnum('role').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
 
 // Relations
 export const deckRelations = relations(deck, ({ many }) => ({
@@ -65,3 +71,5 @@ export type Card = typeof card.$inferSelect;
 export type NewCard = typeof card.$inferInsert;
 export type DeckShare = typeof deckShare.$inferSelect;
 export type NewDeckShare = typeof deckShare.$inferInsert;
+export type UserRole = typeof userRole.$inferSelect;
+export type NewUserRole = typeof userRole.$inferInsert;

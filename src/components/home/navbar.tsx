@@ -10,7 +10,7 @@ import { useTheme } from 'next-themes';
 import { usePathname } from 'next/navigation';
 import { Routes } from '@/lib/routes';
 import { useTranslations } from 'next-intl';
-import { LogIn, Menu, Home, Layers } from 'lucide-react';
+import { LogIn, Menu, Home, Layers, Shield } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -20,7 +20,11 @@ import {
 } from '@/components/ui/sheet';
 import { useState } from 'react';
 
-export function Navbar() {
+interface NavbarProps {
+  isAdmin?: boolean;
+}
+
+export function Navbar({ isAdmin = false }: NavbarProps) {
   const { theme } = useTheme();
   const path = usePathname();
   const t = useTranslations();
@@ -49,6 +53,15 @@ export function Navbar() {
         >
           {t('nav.decks')}
         </Link>
+        {isAdmin && (
+          <Link
+            href={Routes.ADMIN}
+            className={getClassName(path.startsWith(Routes.ADMIN))}
+          >
+            <Shield className="mr-2 h-4 w-4" />
+            Admin
+          </Link>
+        )}
       </div>
 
       {/* Mobile Menu */}
@@ -83,6 +96,16 @@ export function Navbar() {
                 <Layers className="mr-2 h-4 w-4" />
                 {t('nav.decks')}
               </Link>
+              {isAdmin && (
+                <Link
+                  href={Routes.ADMIN}
+                  className={`${getClassName(path.startsWith(Routes.ADMIN))} w-full justify-start`}
+                  onClick={closeSheet}
+                >
+                  <Shield className="mr-2 h-4 w-4" />
+                  Admin
+                </Link>
+              )}
               <SignedOut>
                 <Link
                   href="/auth/sign-in"

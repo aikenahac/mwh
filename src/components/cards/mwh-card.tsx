@@ -26,11 +26,11 @@ export function MWHCard({ creator, card }: Props) {
 
       <div className="flex flex-row items-center justify-between gap-2">
         <p className="text-card-footer-size font-bold">{t('appName')}</p>
-        {card.black_card_type === 'pick_2' && (
+        {card.type === 'black' && card.pick && card.pick > 1 && (
           <div className="font-bold text-white flex items-center gap-1">
             PICK{' '}
             <div className="rounded-full h-6 w-6 bg-white text-black flex items-center justify-center">
-              <p>2</p>
+              <p>{card.pick}</p>
             </div>
           </div>
         )}

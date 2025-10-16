@@ -22,5 +22,10 @@ export const Routes = {
   DOCS_PRIVACY_POLICY: '/docs/privacy-policy',
   DOCS_TERMS_OF_SERVICE: '/docs/tos',
 
+  // Admin
+  ADMIN: '/admin',
+  ADMIN_SYSTEM_DECKS: '/admin/system-decks',
+  ADMIN_USER_ROLES: '/admin/user-roles',
+
   SOURCE_CODE: 'https://github.com/aikenahac/mwh'
 };

@@ -6,7 +6,7 @@ import { Routes } from '@/lib/routes';
 import Link from 'next/link';
 import { Button, buttonVariants } from '../ui/button';
 import { useActionState, useEffect, useState } from 'react';
-import { BlackCardType, CardType } from '@/lib/api/card';
+import { CardType } from '@/lib/api/card';
 import { createCard } from '@/app/(app)/cards/create/[deckId]/actions';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
@@ -28,19 +28,15 @@ export function CreateCardPage({ deck }: Props) {
   const [text, setText] = useState<string>('');
   const [type, setType] = useState<keyof typeof CardType>('white');
   const [createAnother, setCreateAnother] = useState(false);
-  const [blackCardType, setBlackCardType] = useState<
-    keyof typeof BlackCardType | undefined
-  >(undefined);
+  const [pick, setPick] = useState<number>(1);
 
-  const onSubmit = () => createCard({ text, type, blackCardType, deck });
+  const onSubmit = () => createCard({ text, type, pick, deck });
 
   const [state, formAction, pending] = useActionState(onSubmit, initialState);
 
   useEffect(() => {
     if (type === 'black') {
-      setBlackCardType('normal');
-    } else {
-      setBlackCardType(undefined);
+      setPick(1);
     }
   }, [type]);
 
@@ -59,7 +55,7 @@ export function CreateCardPage({ deck }: Props) {
       if (createAnother) {
         setText('');
         setType('white');
-        setBlackCardType(undefined);
+        setPick(1);
       }
     }
   }, [state, t, createAnother]);
@@ -109,8 +105,8 @@ export function CreateCardPage({ deck }: Props) {
       <CreateCardEditor
         text={text}
         type={type}
-        blackCardType={blackCardType}
-        setBlackCardType={setBlackCardType}
+        pick={pick}
+        setPick={setPick}
         setText={setText}
         setType={setType}
       />
