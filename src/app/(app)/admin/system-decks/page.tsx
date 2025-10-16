@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { SystemDecksTable } from './system-decks-table';
+import { UploadDecksForm } from '../upload-decks/upload-decks-form';
 
 export default async function SystemDecksPage() {
   const { userId } = await auth();
@@ -52,6 +53,10 @@ export default async function SystemDecksPage() {
             </span>
           )}
         </p>
+      </div>
+
+      <div className="mb-6">
+        <UploadDecksForm />
       </div>
 
       {systemDecks.length === 0 ? (
