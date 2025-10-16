@@ -7,7 +7,7 @@ export const createDeckFormSchema = z.object({
 
 export const shareDeckSchema = z.object({
   deckId: z.string().uuid({ message: 'Invalid deck ID' }),
-  sharedWithUserId: z.string().min(1, { message: 'User ID is required' }),
+  username: z.string().min(1, { message: 'Username is required' }),
   permission: z.enum(['view', 'collaborate'], { message: 'Permission must be either view or collaborate' }),
 });
 

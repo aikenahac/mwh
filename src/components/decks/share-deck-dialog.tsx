@@ -13,6 +13,16 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -30,6 +40,7 @@ interface Share {
   sharedByUserId: string;
   permission: 'view' | 'collaborate';
   createdAt: Date;
+  username?: string;
 }
 
 interface ShareDeckDialogProps {
@@ -41,15 +52,16 @@ interface ShareDeckDialogProps {
 export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [userId, setUserId] = useState('');
+  const [username, setUsername] = useState('');
   const [permission, setPermission] = useState<'view' | 'collaborate'>('view');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [updatingShareId, setUpdatingShareId] = useState<string | null>(null);
   const [removingShareId, setRemovingShareId] = useState<string | null>(null);
+  const [shareToRemove, setShareToRemove] = useState<string | null>(null);
 
   const handleShare = async () => {
-    if (!userId.trim()) {
-      toast.error('Please enter a user ID');
+    if (!username.trim()) {
+      toast.error('Please enter a username');
       return;
     }
 
@@ -57,13 +69,13 @@ export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProp
     try {
       const result = await shareDeck({
         deckId,
-        sharedWithUserId: userId.trim(),
+        username: username.trim(),
         permission,
       });
 
       if (result.success) {
         toast.success('Deck shared successfully');
-        setUserId('');
+        setUsername('');
         setPermission('view');
         setOpen(false);
         router.refresh();
@@ -77,14 +89,12 @@ export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProp
     }
   };
 
-  const handleRemoveShare = async (shareId: string) => {
-    if (!confirm('Are you sure you want to remove this share?')) {
-      return;
-    }
+  const handleRemoveShare = async () => {
+    if (!shareToRemove) return;
 
-    setRemovingShareId(shareId);
+    setRemovingShareId(shareToRemove);
     try {
-      const result = await removeShare({ shareId });
+      const result = await removeShare({ shareId: shareToRemove });
 
       if (result.success) {
         toast.success('Share removed successfully');
@@ -96,6 +106,7 @@ export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProp
       toast.error('An error occurred while removing the share');
     } finally {
       setRemovingShareId(null);
+      setShareToRemove(null);
     }
   };
 
@@ -125,7 +136,8 @@ export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProp
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+      <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">Share Deck</Button>
       </DialogTrigger>
@@ -138,12 +150,12 @@ export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProp
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
-            <Label htmlFor="userId">User ID</Label>
+            <Label htmlFor="username">Username</Label>
             <Input
-              id="userId"
-              placeholder="Enter user ID"
-              value={userId}
-              onChange={(e) => setUserId(e.target.value)}
+              id="username"
+              placeholder="Enter username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
           <div className="grid gap-2">
@@ -167,7 +179,7 @@ export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProp
               {shares.map((share) => (
                 <div key={share.id} className="flex items-center justify-between rounded-lg border p-3">
                   <div className="flex-1">
-                    <p className="text-sm font-medium">{share.sharedWithUserId}</p>
+                    <p className="text-sm font-medium">{share.username || share.sharedWithUserId}</p>
                     <div className="mt-1">
                       <Select
                         value={share.permission}
@@ -187,7 +199,7 @@ export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProp
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleRemoveShare(share.id)}
+                    onClick={() => setShareToRemove(share.id)}
                     disabled={removingShareId === share.id}
                   >
                     {removingShareId === share.id ? 'Removing...' : 'Remove'}
@@ -208,5 +220,21 @@ export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProp
         </DialogFooter>
       </DialogContent>
     </Dialog>
+
+    <AlertDialog open={!!shareToRemove} onOpenChange={(open) => !open && setShareToRemove(null)}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Remove Share</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to remove this share? This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={handleRemoveShare}>Remove</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }

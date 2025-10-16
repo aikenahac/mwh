@@ -100,13 +100,13 @@ export async function updateDeck({
 
 type ShareDeckProps = {
   deckId: string;
-  sharedWithUserId: string;
+  username: string;
   permission: 'view' | 'collaborate';
 };
 
 export async function shareDeck({
   deckId,
-  sharedWithUserId,
+  username,
   permission,
 }: ShareDeckProps): Promise<Result> {
   try {
@@ -120,11 +120,32 @@ export async function shareDeck({
     }
 
     // Validate input
-    const validation = shareDeckSchema.safeParse({ deckId, sharedWithUserId, permission });
+    const validation = shareDeckSchema.safeParse({ deckId, username, permission });
     if (!validation.success) {
       return {
         success: false,
         error: validation.error.issues[0].message,
+      };
+    }
+
+    // Look up user by username in Clerk
+    let sharedWithUserId: string;
+    try {
+      const clerk = await clerkClient();
+      const users = await clerk.users.getUserList({ username: [username] });
+
+      if (users.data.length === 0) {
+        return {
+          success: false,
+          error: 'User not found. Please check the username and try again.',
+        };
+      }
+
+      sharedWithUserId = users.data[0].id;
+    } catch {
+      return {
+        success: false,
+        error: 'Failed to lookup user. Please try again.',
       };
     }
 
@@ -133,17 +154,6 @@ export async function shareDeck({
       return {
         success: false,
         error: 'Cannot share deck with yourself',
-      };
-    }
-
-    // Validate that the user exists in Clerk
-    try {
-      const clerk = await clerkClient();
-      await clerk.users.getUser(sharedWithUserId);
-    } catch {
-      return {
-        success: false,
-        error: 'User not found. Please check the user ID and try again.',
       };
     }
 

@@ -8,7 +8,7 @@ import { Routes } from '@/lib/routes';
 import { getDeckById } from '@/lib/api/deck';
 import { getUserDeckPermissions } from '@/lib/auth/permissions';
 import { cn } from '@/lib/utils';
-import { auth } from '@clerk/nextjs/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -39,6 +39,25 @@ export default async function DeckPage({
   // Check user permissions for this deck
   const permissions = await getUserDeckPermissions(deckId, userId);
 
+  // Enrich shares with usernames from Clerk
+  const sharesWithUsernames = await Promise.all(
+    (deck.shares || []).map(async (share) => {
+      try {
+        const clerk = await clerkClient();
+        const user = await clerk.users.getUser(share.sharedWithUserId);
+        return {
+          ...share,
+          username: user.username || user.emailAddresses[0]?.emailAddress || share.sharedWithUserId,
+        };
+      } catch {
+        return {
+          ...share,
+          username: share.sharedWithUserId,
+        };
+      }
+    })
+  );
+
   return (
     <div>
       <div className="flex flex-row items-center justify-between px-4 gap-2">
@@ -62,7 +81,7 @@ export default async function DeckPage({
           <PrintDeckDialog cards={deck.cards} />
           {permissions.canEdit && <EditDeckDialog deck={deck} />}
           {permissions.isOwner && (
-            <ShareDeckDialog deckId={deck.id} shares={deck.shares || []} isOwner={permissions.isOwner} />
+            <ShareDeckDialog deckId={deck.id} shares={sharesWithUsernames} isOwner={permissions.isOwner} />
           )}
           {permissions.canEdit && (
             <Link
