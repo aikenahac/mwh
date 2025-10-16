@@ -4,9 +4,9 @@
 services:
   app:
     image: ghcr.io/aikenahac/mwh:master
-    container_name: mwh-app
+    container_name: mwh
     env_file:
-      - .env
+      - stack.env
     ports:
       - "3101:3000"
     depends_on:
@@ -17,7 +17,7 @@ services:
       - proxy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.mwh.loadbalancer.server.port=3101"
+      - "traefik.http.services.mwh.loadbalancer.server.port=3000"
       - "traefik.http.routers.mwh.rule=Host(`gomwh.com`)"
       - "traefik.http.routers.mwh.entrypoints=https"
       - "traefik.http.routers.mwh.service=mwh"
@@ -25,13 +25,11 @@ services:
 
   db:
     image: postgres:latest
-    container_name: aerio-auth-db
+    container_name: mwh-db
     env_file:
-      - .env
-    ports:
-      - "5432:5432"
+      - stack.env
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mwh_db_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -42,8 +40,7 @@ services:
        - proxy
 
 volumes:
-  postgres_data:
-    driver: local
+  mwh_db_data:
 
 networks:
   proxy:
