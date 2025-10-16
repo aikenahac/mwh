@@ -4,6 +4,7 @@ import { relations } from 'drizzle-orm';
 // Enums
 export const cardTypeEnum = pgEnum('cardtype', ['white', 'black']);
 export const sharePermissionEnum = pgEnum('share_permission', ['view', 'collaborate']);
+export const userRoleEnum = pgEnum('user_role', ['superadmin']);
 
 // Tables
 export const deck = pgTable('Deck', {
@@ -39,6 +40,12 @@ export const deckShare = pgTable('DeckShare', {
   sharedWithUserIdIdx: index('DeckShare_shared_with_user_id_idx').on(table.sharedWithUserId),
 }));
 
+export const userRole = pgTable('UserRole', {
+  userId: text('user_id').primaryKey(),
+  role: userRoleEnum('role').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
 // Relations
 export const deckRelations = relations(deck, ({ many }) => ({
   cards: many(card),
@@ -66,3 +73,5 @@ export type Card = typeof card.$inferSelect;
 export type NewCard = typeof card.$inferInsert;
 export type DeckShare = typeof deckShare.$inferSelect;
 export type NewDeckShare = typeof deckShare.$inferInsert;
+export type UserRole = typeof userRole.$inferSelect;
+export type NewUserRole = typeof userRole.$inferInsert;

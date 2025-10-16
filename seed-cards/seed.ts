@@ -6,7 +6,7 @@ import * as schema from '@/lib/db/schema';
 
 // Create a connection pool
 const pool = new Pool({
-  connectionString: "postgres://postgres:postgres@localhost:5432/mwh",
+  connectionString: "postgres://postgres:postgres@localhost:5432",
 });
 
 // Create the drizzle instance with schema for relational queries
