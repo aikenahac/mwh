@@ -59,7 +59,7 @@ export function EditCardPage({ deck, card }: Props) {
 
   return (
     <div>
-      <div className="flex flex-row items-center justify-between">
+      <div className="flex flex-col gap-4 md:flex-row items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold flex items-center">
             {t('card.edit.title')}

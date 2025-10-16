@@ -60,7 +60,7 @@ export default async function DeckPage({
 
   return (
     <div>
-      <div className="flex flex-row items-center justify-between px-4 gap-2">
+      <div className="flex flex-col md:flex-row items-center justify-between px-4 gap-2">
         <div>
           <h1 className="text-2xl font-bold flex items-center">
             {deck.name}
