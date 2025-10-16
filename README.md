@@ -141,9 +141,5 @@ src/
 └── i18n/                   # Internationalization
 ```
 
-## License
-
-MIT
-
 ---
 ###### To my girlfriend, who just complained about there not being a K-Pop expansion once
