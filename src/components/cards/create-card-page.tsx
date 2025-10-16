@@ -62,7 +62,7 @@ export function CreateCardPage({ deck }: Props) {
         setBlackCardType(undefined);
       }
     }
-  }, [state, t]);
+  }, [state, t, createAnother]);
 
   return (
     <div>
