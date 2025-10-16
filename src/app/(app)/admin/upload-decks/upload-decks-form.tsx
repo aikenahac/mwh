@@ -35,6 +35,13 @@ export function UploadDecksForm() {
       return;
     }
 
+    // Validate file size (5MB limit)
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+    if (file.size > MAX_FILE_SIZE) {
+      alert('File size must be under 5MB');
+      return;
+    }
+
     setIsUploading(true);
     setProgress(null);
 

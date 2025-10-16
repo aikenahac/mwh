@@ -25,7 +25,7 @@ export async function addUserRole(userId: string, role: 'superadmin') {
   const client = await clerkClient();
   try {
     await client.users.getUser(userId);
-  } catch (error) {
+  } catch {
     throw new Error('User not found in Clerk. Please verify the user ID.');
   }
 

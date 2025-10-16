@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, pgEnum, uuid, unique, index, boolean, integer } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, pgEnum, uuid, unique, index, integer } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // Enums
@@ -23,9 +23,7 @@ export const card = pgTable('Card', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   deckId: uuid('deck_id').notNull().references(() => deck.id, { onDelete: 'cascade' }),
   userId: text('user_id').notNull(),
-}, (table) => ({
-  pickCheck: 'CHECK (pick >= 1 AND pick <= 4)',
-}));
+});
 
 export const deckShare = pgTable('DeckShare', {
   id: uuid('id').defaultRandom().primaryKey(),

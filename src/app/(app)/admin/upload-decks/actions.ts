@@ -5,23 +5,28 @@ import { db } from '@/lib/db';
 import { deck, card } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { isSuperAdmin } from '@/lib/auth/permissions';
+import { z } from 'zod';
 
-interface WhiteCard {
-  text: string;
-  pack: number;
-}
+const whiteCardSchema = z.object({
+  text: z.string().min(1, 'Card text cannot be empty').max(1000, 'Card text too long'),
+  pack: z.number().int(),
+});
 
-interface BlackCard {
-  text: string;
-  pick: number;
-  pack: number;
-}
+const blackCardSchema = z.object({
+  text: z.string().min(1, 'Card text cannot be empty').max(1000, 'Card text too long'),
+  pick: z.number().int().min(1).max(4),
+  pack: z.number().int(),
+});
 
-interface DeckData {
-  name: string;
-  white: WhiteCard[];
-  black: BlackCard[];
-}
+const deckDataSchema = z.object({
+  name: z.string().min(1, 'Deck name cannot be empty').max(255, 'Deck name too long'),
+  white: z.array(whiteCardSchema),
+  black: z.array(blackCardSchema),
+});
+
+type WhiteCard = z.infer<typeof whiteCardSchema>;
+type BlackCard = z.infer<typeof blackCardSchema>;
+type DeckData = z.infer<typeof deckDataSchema>;
 
 export interface UploadProgress {
   totalDecks: number;
@@ -50,18 +55,29 @@ export async function uploadSystemDecks(
     throw new Error('Forbidden: Only superadmins can upload system decks');
   }
 
-  let decks: DeckData[];
-
+  let parsedContent: unknown;
   try {
-    decks = JSON.parse(jsonContent) as DeckData[];
-  } catch (error) {
+    parsedContent = JSON.parse(jsonContent);
+  } catch {
     throw new Error('Invalid JSON file format');
   }
 
-  // Validate the structure
-  if (!Array.isArray(decks)) {
+  // Validate the structure with Zod
+  if (!Array.isArray(parsedContent)) {
     throw new Error('JSON must be an array of decks');
   }
+
+  const decksArraySchema = z.array(deckDataSchema);
+  const validationResult = decksArraySchema.safeParse(parsedContent);
+
+  if (!validationResult.success) {
+    const firstError = validationResult.error.errors[0];
+    throw new Error(
+      `Invalid deck data: ${firstError.path.join('.')} - ${firstError.message}`
+    );
+  }
+
+  const decks = validationResult.data;
 
   const progress: UploadProgress = {
     totalDecks: decks.length,

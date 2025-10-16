@@ -42,7 +42,7 @@ export function DeleteDeckButton({ deckId, deckName }: DeleteDeckButtonProps) {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete the deck "{deckName}" and all of its cards.
+            This will permanently delete the deck &ldquo;{deckName}&rdquo; and all of its cards.
             This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>

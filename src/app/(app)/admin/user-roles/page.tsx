@@ -42,7 +42,7 @@ export default async function UserRolesPage() {
             imageUrl: user.imageUrl,
           },
         };
-      } catch (error) {
+      } catch {
         // User might have been deleted from Clerk
         return {
           ...userRole,
