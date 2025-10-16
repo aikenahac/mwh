@@ -128,6 +128,14 @@ export async function shareDeck({
       };
     }
 
+    // Prevent self-sharing
+    if (sharedWithUserId === userId) {
+      return {
+        success: false,
+        error: 'Cannot share deck with yourself',
+      };
+    }
+
     // Validate that the user exists in Clerk
     try {
       const clerk = await clerkClient();

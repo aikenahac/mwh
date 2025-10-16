@@ -22,6 +22,13 @@
       "when": 1760599391457,
       "tag": "0002_panoramic_bulldozer",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1760600430589,
+      "tag": "0003_tan_abomination",
+      "breakpoints": true
     }
   ]
 }

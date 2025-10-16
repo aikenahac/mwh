@@ -23,7 +23,7 @@ export default async function CreateCardPageRoot({
     redirect(Routes.DECKS);
   }
 
-  const { data: deck } = await getDeckById(deckId);
+  const { data: deck } = await getDeckById(deckId, userId);
 
   if (!deck) {
     return (

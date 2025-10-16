@@ -24,7 +24,7 @@ export default async function DeckPage({
 
   if (!userId) redirect(Routes.SIGN_IN);
 
-  const { data: deck, error } = await getDeckById(deckId);
+  const { data: deck, error } = await getDeckById(deckId, userId);
 
   if (!deck) {
     return (
@@ -38,11 +38,6 @@ export default async function DeckPage({
 
   // Check user permissions for this deck
   const permissions = await getUserDeckPermissions(deckId, userId);
-
-  // Redirect if user has no access
-  if (!permissions.canView) {
-    redirect(Routes.DECKS);
-  }
 
   return (
     <div>

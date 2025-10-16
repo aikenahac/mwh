@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, pgEnum, uuid, unique } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, pgEnum, uuid, unique, index } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // Enums
@@ -34,6 +34,8 @@ export const deckShare = pgTable('DeckShare', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => ({
   uniqueShare: unique().on(table.deckId, table.sharedWithUserId),
+  deckIdIdx: index('DeckShare_deck_id_idx').on(table.deckId),
+  sharedWithUserIdIdx: index('DeckShare_shared_with_user_id_idx').on(table.sharedWithUserId),
 }));
 
 // Relations

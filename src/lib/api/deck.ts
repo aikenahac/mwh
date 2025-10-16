@@ -1,9 +1,10 @@
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import { deck, deckShare } from '@/lib/db/schema';
-import { eq, or } from 'drizzle-orm';
+import { eq, or, inArray } from 'drizzle-orm';
 import { Result } from '@/lib/utils';
 import { cardSchema } from './card';
+import { canViewDeck } from '@/lib/auth/permissions';
 
 const deckShareSchema = z.object({
   id: z.string(),
@@ -49,7 +50,7 @@ export async function getDecks(userId: string) {
   // Get all decks (owned by user or shared with user)
   const decksWithCards = await db.query.deck.findMany({
     where: sharedIds.length > 0
-      ? or(eq(deck.userId, userId), ...sharedIds.map(id => eq(deck.id, id)))
+      ? or(eq(deck.userId, userId), inArray(deck.id, sharedIds))
       : eq(deck.userId, userId),
     with: {
       cards: true,
@@ -61,11 +62,20 @@ export async function getDecks(userId: string) {
   return res;
 }
 
-export async function getDeckById(id: string): Promise<Result<Deck, Error>> {
+export async function getDeckById(id: string, userId: string): Promise<Result<Deck, Error>> {
   if (!id) {
     return {
       data: null,
       error: Error('Deck ID not found'),
+    };
+  }
+
+  // Check if user has permission to view this deck
+  const hasAccess = await canViewDeck(id, userId);
+  if (!hasAccess) {
+    return {
+      data: null,
+      error: new Error('You do not have permission to view this deck'),
     };
   }
 

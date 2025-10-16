@@ -44,6 +44,8 @@ export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProp
   const [userId, setUserId] = useState('');
   const [permission, setPermission] = useState<'view' | 'collaborate'>('view');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [updatingShareId, setUpdatingShareId] = useState<string | null>(null);
+  const [removingShareId, setRemovingShareId] = useState<string | null>(null);
 
   const handleShare = async () => {
     if (!userId.trim()) {
@@ -80,6 +82,7 @@ export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProp
       return;
     }
 
+    setRemovingShareId(shareId);
     try {
       const result = await removeShare({ shareId });
 
@@ -91,10 +94,13 @@ export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProp
       }
     } catch {
       toast.error('An error occurred while removing the share');
+    } finally {
+      setRemovingShareId(null);
     }
   };
 
   const handleUpdatePermission = async (shareId: string, newPermission: 'view' | 'collaborate') => {
+    setUpdatingShareId(shareId);
     try {
       const result = await updateSharePermission({
         shareId,
@@ -109,6 +115,8 @@ export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProp
       }
     } catch {
       toast.error('An error occurred while updating the permission');
+    } finally {
+      setUpdatingShareId(null);
     }
   };
 
@@ -164,6 +172,7 @@ export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProp
                       <Select
                         value={share.permission}
                         onValueChange={(value) => handleUpdatePermission(share.id, value as 'view' | 'collaborate')}
+                        disabled={updatingShareId === share.id}
                       >
                         <SelectTrigger className="h-8 w-[140px]">
                           <SelectValue />
@@ -179,8 +188,9 @@ export function ShareDeckDialog({ deckId, shares, isOwner }: ShareDeckDialogProp
                     variant="ghost"
                     size="sm"
                     onClick={() => handleRemoveShare(share.id)}
+                    disabled={removingShareId === share.id}
                   >
-                    Remove
+                    {removingShareId === share.id ? 'Removing...' : 'Remove'}
                   </Button>
                 </div>
               ))}
