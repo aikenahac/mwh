@@ -19,6 +19,13 @@ export async function Footer() {
           </div>
           <nav className="flex gap-6">
             <Link
+              href={Routes.SOURCE_CODE}
+              target='_blank'
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {t('footer.source')}
+            </Link>
+            <Link
               href={Routes.DOCS_PRIVACY_POLICY}
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >

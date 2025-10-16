@@ -140,6 +140,7 @@
 
   "footer": {
     "copyright": "© {year} {appName}. All rights reserved.",
+    "source": "Source",
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "documents": "Documents"

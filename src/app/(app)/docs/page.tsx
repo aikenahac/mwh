@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Routes } from '@/lib/routes';
 
 export default function DocsPage() {
   return (
@@ -14,7 +15,7 @@ export default function DocsPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Link href="/docs/privacy-policy" className="group">
+        <Link href={Routes.DOCS_PRIVACY_POLICY} className="group">
           <Card className="h-full transition-all hover:shadow-lg hover:border-primary/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 group-hover:text-primary transition-colors">
@@ -31,7 +32,7 @@ export default function DocsPage() {
           </Card>
         </Link>
 
-        <Link href="/docs/tos" className="group">
+        <Link href={Routes.DOCS_TERMS_OF_SERVICE} className="group">
           <Card className="h-full transition-all hover:shadow-lg hover:border-primary/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 group-hover:text-primary transition-colors">
@@ -43,6 +44,22 @@ export default function DocsPage() {
               <p className="text-muted-foreground">
                 Review the terms and conditions for using Mess With Humanity,
                 including user responsibilities and service limitations.
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link href={Routes.SOURCE_CODE} target='_blank' className="group">
+          <Card className="h-full transition-all hover:shadow-lg hover:border-primary/50">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3 group-hover:text-primary transition-colors">
+                <span className="text-2xl">💻</span>
+                Source Code
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">
+                Review the source code for Mess With Humanity on GitHub.
               </p>
             </CardContent>
           </Card>

@@ -21,4 +21,6 @@ export const Routes = {
   DOCS: '/docs',
   DOCS_PRIVACY_POLICY: '/docs/privacy-policy',
   DOCS_TERMS_OF_SERVICE: '/docs/tos',
+
+  SOURCE_CODE: 'https://github.com/aikenahac/mwh'
 };
