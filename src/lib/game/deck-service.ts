@@ -10,7 +10,7 @@
 
 import { db } from '@/lib/db';
 import { deck, card, deckShare } from '@/lib/db/schema';
-import { eq, and, or, inArray } from 'drizzle-orm';
+import { eq, and, inArray } from 'drizzle-orm';
 import type { DeckInfo, DeckWithCards, SelectedDecksInfo } from './types';
 import type { Card } from '@/lib/db/schema';
 

@@ -21,19 +21,16 @@ import {
   round,
   submission,
   card,
-  type GameSession,
   type Player,
   type Round,
   type Card,
 } from '@/lib/db/schema';
-import { eq, and, inArray } from 'drizzle-orm';
-import { aggregateCardPool, getSelectedDecksInfo, validateCardPool } from './deck-service';
+import { eq } from 'drizzle-orm';
+import { aggregateCardPool, validateCardPool } from './deck-service';
 import type {
   GameSettings,
   PlayerData,
   GameSessionData,
-  RoundData,
-  SubmissionData,
   GameStatus,
 } from './types';
 import { GameError, GameErrorCode, DEFAULT_GAME_SETTINGS } from './types';

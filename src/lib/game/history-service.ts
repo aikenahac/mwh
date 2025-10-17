@@ -10,16 +10,15 @@ import {
   completedGame,
   completedGamePlayer,
   completedGameDeck,
-  completedRound,
   playerStatistic,
   deck,
-  card,
 } from '@/lib/db/schema';
 import { eq, desc, asc, and, gte, lte, or, sql } from 'drizzle-orm';
 import type {
   GameHistoryItem,
   PaginatedGameHistory,
   GameDetailsData,
+  GameSettings,
   UserStatistics,
   LeaderboardData,
   LeaderboardMetric,
@@ -278,7 +277,7 @@ export async function getGameDetails(
     durationMinutes: game.durationMinutes,
     totalRoundsPlayed: game.totalRoundsPlayed,
     wasAbandoned: game.wasAbandoned,
-    settings: game.settings as any,
+    settings: game.settings as GameSettings,
     winner: {
       userId: game.winnerUserId,
       nickname: winner?.nickname || 'Unknown',

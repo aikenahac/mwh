@@ -5,7 +5,7 @@
  * including socket events, game state, and data structures.
  */
 
-import type { Card, Deck, Player, GameSession, Round, Submission } from '@/lib/db/schema';
+import type { Card, Deck } from '@/lib/db/schema';
 
 // ============================================
 // GAME SETTINGS

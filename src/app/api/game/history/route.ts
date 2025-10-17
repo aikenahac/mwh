@@ -7,8 +7,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { completedGame, completedGamePlayer, completedGameDeck, deck } from '@/lib/db/schema';
-import { eq, and, desc } from 'drizzle-orm';
+import { completedGamePlayer } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
 import type { ApiResponse, PaginatedGameHistory, GameHistoryItem } from '@/lib/game/types';
 
 export async function GET(request: NextRequest) {

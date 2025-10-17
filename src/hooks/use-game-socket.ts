@@ -5,7 +5,7 @@
  * Auto-connects on mount and provides utilities for emitting events.
  */
 
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import type { ClientToServerEvents, ServerToClientEvents } from '@/lib/game/types';
 
@@ -64,9 +64,11 @@ export function useGameSocketListener<K extends keyof ServerToClientEvents>(
   useEffect(() => {
     if (!socket) return;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     socket.on(event, handler as any);
 
     return () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       socket.off(event, handler as any);
     };
   }, [socket, event, handler]);
