@@ -10,7 +10,8 @@
 
   "nav": {
     "home": "Home",
-    "decks": "Decks"
+    "decks": "Decks",
+    "game": "Play"
   },
   "authNav": {
     "signIn": "Sign In",
@@ -189,5 +190,103 @@
       "saveAndCreateButton": "Save & Create Another",
       "success": "Card created successfully."
     }
+  },
+
+  "game": {
+    "title": "Play Game",
+    "subtitle": "Create or join a multiplayer game",
+    "connecting": "Connecting to game server...",
+
+    "createGame": "Create Game",
+    "createGameDescription": "Start a new game and invite friends",
+    "joinGame": "Join Game",
+    "joinGameDescription": "Enter a code to join an existing game",
+    "viewHistory": "Game History",
+    "viewLeaderboard": "Leaderboard",
+
+    "lobby": "Game Lobby",
+    "joinCode": "Join Code",
+    "players": "Players",
+    "selectDecks": "Select Decks",
+    "startGame": "Start Game",
+    "starting": "Starting...",
+
+    "nickname": "Nickname",
+    "nicknamePlaceholder": "Enter your nickname",
+    "joinCodePlaceholder": "Enter 8-digit code",
+    "create": "Create",
+    "creating": "Creating...",
+    "join": "Join",
+    "joining": "Joining...",
+
+    "gameCreated": "Game created!",
+    "joined": "Joined game!",
+    "gameOver": "Game Over",
+    "wins": "Wins!",
+    "won": "won",
+    "youWon": "You Won!",
+    "finalScores": "Final Scores",
+    "backToLobby": "Back to Lobby",
+    "backToGames": "Back to Games",
+    "backToHistory": "Back to History",
+    "viewDetails": "View Details",
+
+    "systemDecks": "System Decks",
+    "myDecks": "My Decks",
+    "selectAll": "Select All",
+    "deselectAll": "Deselect All",
+    "selected": "Selected",
+    "deck": "deck",
+    "decks": "decks",
+    "black": "black",
+    "white": "white",
+    "sharedBy": "shared by",
+    "updateDecks": "Update Decks",
+    "updating": "Updating...",
+    "decksUpdated": "Decks updated",
+
+    "yourHand": "Your Hand",
+    "submitCards": "Submit Cards",
+    "cardsSubmitted": "Cards submitted!",
+    "selectWinner": "Select the Winning Submission",
+    "czar": "Czar",
+
+    "history": "Game History",
+    "gameDetails": "Game Details",
+    "noGamesYet": "You haven't played any games yet",
+    "startPlaying": "Start Playing",
+    "abandoned": "Game Abandoned",
+    "winner": "Winner",
+    "duration": "Duration",
+    "minutes": "min",
+    "rounds": "rounds",
+    "round": "Round",
+    "roundsWon": "rounds won",
+    "wonThisRound": "won this round",
+    "roundHistory": "Round History",
+    "allSubmissions": "All Submissions",
+    "points": "pts",
+    "placement": "Placement",
+    "gameNotFound": "Game not found",
+
+    "errors": {
+      "notConnected": "Not connected to game server",
+      "nicknameRequired": "Nickname is required",
+      "joinCodeRequired": "Join code is required",
+      "createFailed": "Failed to create game",
+      "joinFailed": "Failed to join game",
+      "noDecksSelected": "Please select at least one deck",
+      "fetchDecksFailed": "Failed to load decks",
+      "updateDecksFailed": "Failed to update decks",
+      "wrongCardCount": "Please select the correct number of cards"
+    }
+  },
+
+  "common": {
+    "cancel": "Cancel",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "of": "of"
   }
 }
