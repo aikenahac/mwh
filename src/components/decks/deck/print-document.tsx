@@ -155,19 +155,30 @@ export function PrintDocument({ cards }: { cards?: Array<Card> }) {
                         <Text style={styles.cardFooterText}>
                           Mess With Humanity
                         </Text>
-                        {card.type === 'black' && card.pick && card.pick > 1 && (
-                          <View style={styles.cardFooterSpecialty}>
-                            <Text style={{ fontSize: 8 }}>PICK</Text>
-                            <View style={styles.cardFooterSpecialtyCircle}>
-                              <Text style={{ fontSize: 10 }}>{card.pick}</Text>
+                        {card.type === 'black' &&
+                          card.pick &&
+                          card.pick > 1 && (
+                            <View style={styles.cardFooterSpecialty}>
+                              <Text style={{ fontSize: 8 }}>PICK</Text>
+                              <View style={styles.cardFooterSpecialtyCircle}>
+                                <Text style={{ fontSize: 10 }}>
+                                  {card.pick}
+                                </Text>
+                              </View>
                             </View>
-                          </View>
-                        )}
+                          )}
                       </View>
                     </View>
                   );
                 } else {
-                  return <BackCardComponent key={`back-${index}`} type={alternatingElements[index-1].data?.type || 'white'} />;
+                  return (
+                    <BackCardComponent
+                      key={`back-${index}`}
+                      type={
+                        alternatingElements[index - 1].data?.type || 'white'
+                      }
+                    />
+                  );
                 }
               })}
             </View>
@@ -181,7 +192,11 @@ export function PrintDocument({ cards }: { cards?: Array<Card> }) {
 function BackCardComponent({ type }: { type: 'black' | 'white' }) {
   return (
     <View style={type === 'black' ? styles.backCard : styles.backCardWhite}>
-      <Text style={type === 'black' ? styles.backCardText : styles.backCardWhiteText}>
+      <Text
+        style={
+          type === 'black' ? styles.backCardText : styles.backCardWhiteText
+        }
+      >
         Mess{'\n'}With{'\n'}Humanity
       </Text>
     </View>

@@ -134,23 +134,64 @@ export interface PlayingState extends GameSessionData {
  */
 export interface ClientToServerEvents {
   // Lobby events
-  'create-game': (data: { nickname: string; clerkUserId: string | null }, callback: (response: SocketResponse<{ sessionId: string; joinCode: string }>) => void) => void;
-  'join-game': (data: { joinCode: string; nickname: string; clerkUserId: string | null }, callback: (response: SocketResponse<{ session: GameSessionData }>) => void) => void;
-  'leave-game': (data: { sessionId: string }, callback: (response: SocketResponse<void>) => void) => void;
+  'create-game': (
+    data: { nickname: string; clerkUserId: string | null },
+    callback: (
+      response: SocketResponse<{ sessionId: string; joinCode: string }>,
+    ) => void,
+  ) => void;
+  'join-game': (
+    data: { joinCode: string; nickname: string; clerkUserId: string | null },
+    callback: (response: SocketResponse<{ session: GameSessionData }>) => void,
+  ) => void;
+  'leave-game': (
+    data: { sessionId: string },
+    callback: (response: SocketResponse<void>) => void,
+  ) => void;
 
   // Owner-only events
-  'update-decks': (data: { sessionId: string; deckIds: string[]; clerkUserId: string | null }, callback: (response: SocketResponse<SelectedDecksInfo>) => void) => void;
-  'update-settings': (data: { sessionId: string; settings: GameSettings; clerkUserId: string | null }, callback: (response: SocketResponse<void>) => void) => void;
-  'start-game': (data: { sessionId: string; clerkUserId: string | null }, callback: (response: SocketResponse<void>) => void) => void;
-  'kick-player': (data: { sessionId: string; playerId: string; clerkUserId: string | null }, callback: (response: SocketResponse<void>) => void) => void;
-  'end-game-early': (data: { sessionId: string; clerkUserId: string | null }, callback: (response: SocketResponse<void>) => void) => void;
+  'update-decks': (
+    data: { sessionId: string; deckIds: string[]; clerkUserId: string | null },
+    callback: (response: SocketResponse<SelectedDecksInfo>) => void,
+  ) => void;
+  'update-settings': (
+    data: {
+      sessionId: string;
+      settings: GameSettings;
+      clerkUserId: string | null;
+    },
+    callback: (response: SocketResponse<void>) => void,
+  ) => void;
+  'start-game': (
+    data: { sessionId: string; clerkUserId: string | null },
+    callback: (response: SocketResponse<void>) => void,
+  ) => void;
+  'kick-player': (
+    data: { sessionId: string; playerId: string; clerkUserId: string | null },
+    callback: (response: SocketResponse<void>) => void,
+  ) => void;
+  'end-game-early': (
+    data: { sessionId: string; clerkUserId: string | null },
+    callback: (response: SocketResponse<void>) => void,
+  ) => void;
 
   // Gameplay events
-  'submit-cards': (data: { roundId: string; cardIds: string[] }, callback: (response: SocketResponse<void>) => void) => void;
-  'select-winner': (data: { roundId: string; submissionId: string }, callback: (response: SocketResponse<void>) => void) => void;
+  'submit-cards': (
+    data: { roundId: string; cardIds: string[] },
+    callback: (response: SocketResponse<void>) => void,
+  ) => void;
+  'select-winner': (
+    data: { roundId: string; submissionId: string },
+    callback: (response: SocketResponse<void>) => void,
+  ) => void;
 
   // Connection events
-  'reconnect-to-game': (data: { sessionId: string; clerkUserId: string | null; playerId?: string }, callback: (response: SocketResponse<{ session: GameSessionData; hand?: string[] }>) => void) => void;
+  'reconnect-to-game': (
+    data: { sessionId: string; clerkUserId: string | null; playerId?: string },
+    callback: (
+      response: SocketResponse<{ session: GameSessionData; hand?: string[] }>,
+    ) => void,
+  ) => void;
 }
 
 /**
@@ -159,7 +200,11 @@ export interface ClientToServerEvents {
  */
 export interface ServerToClientEvents {
   // Lobby events
-  'game-created': (data: { sessionId: string; joinCode: string; ownerId: string }) => void;
+  'game-created': (data: {
+    sessionId: string;
+    joinCode: string;
+    ownerId: string;
+  }) => void;
   'player-joined': (data: { player: PlayerData }) => void;
   'player-left': (data: { playerId: string; playerNickname: string }) => void;
   'player-disconnected': (data: { playerId: string }) => void;
@@ -170,12 +215,18 @@ export interface ServerToClientEvents {
   'settings-updated': (data: { settings: GameSettings }) => void;
 
   // Game start
-  'game-started': (data: { players: PlayerData[]; settings: GameSettings }) => void;
+  'game-started': (data: {
+    players: PlayerData[];
+    settings: GameSettings;
+  }) => void;
 
   // Round events
   'round-started': (data: RoundData) => void;
   'cards-dealt': (data: { hand: string[] }) => void; // Individual event
-  'card-submitted': (data: { submissionCount: number; totalPlayers: number }) => void;
+  'card-submitted': (data: {
+    submissionCount: number;
+    totalPlayers: number;
+  }) => void;
   'all-cards-submitted': (data: { submissions: SubmissionData[] }) => void; // To czar only
 
   // Winner selection
@@ -186,16 +237,22 @@ export interface ServerToClientEvents {
     points: number;
     allSubmissions: SubmissionData[]; // Now revealed with nicknames
   }) => void;
-  'round-ended': (data: { scores: Array<{ playerId: string; score: number }>; nextCzarId: string }) => void;
+  'round-ended': (data: {
+    scores: Array<{ playerId: string; score: number }>;
+    nextCzarId: string;
+  }) => void;
 
   // Game end
   'game-ended': (data: GameEndData) => void;
 
   // Ownership transfer
-  'owner-changed': (data: { newOwnerId: string; newOwnerNickname: string }) => void;
+  'owner-changed': (data: {
+    newOwnerId: string;
+    newOwnerNickname: string;
+  }) => void;
 
   // Error handling
-  'error': (data: { message: string; code: string }) => void;
+  error: (data: { message: string; code: string }) => void;
 }
 
 /**
@@ -261,7 +318,11 @@ export interface GameHistoryFilters {
 }
 
 export interface GameHistorySortOption {
-  field: 'completed_at' | 'created_at' | 'duration_minutes' | 'total_rounds_played';
+  field:
+    | 'completed_at'
+    | 'created_at'
+    | 'duration_minutes'
+    | 'total_rounds_played';
   direction: 'asc' | 'desc';
 }
 

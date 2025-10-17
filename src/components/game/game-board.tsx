@@ -18,7 +18,10 @@ import { toast } from 'sonner';
 import type { Card as CardData } from '@/lib/db/schema';
 import type { RoundData, SubmissionData } from '@/lib/game/types';
 import type { Socket } from 'socket.io-client';
-import type { ClientToServerEvents, ServerToClientEvents } from '@/lib/game/types';
+import type {
+  ClientToServerEvents,
+  ServerToClientEvents,
+} from '@/lib/game/types';
 
 type GameSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -144,11 +147,14 @@ export function GameBoard({
           ) : (
             <>
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 mb-3 sm:mb-4">
-                <h2 className="text-lg sm:text-xl font-semibold">{t('game.yourHand')}</h2>
+                <h2 className="text-lg sm:text-xl font-semibold">
+                  {t('game.yourHand')}
+                </h2>
                 <Button
                   onClick={handleSubmit}
                   disabled={
-                    submitting || selectedCards.length !== currentRound.blackCard.pick
+                    submitting ||
+                    selectedCards.length !== currentRound.blackCard.pick
                   }
                   className="w-full sm:w-auto"
                 >
@@ -162,8 +168,12 @@ export function GameBoard({
                     key={card.id}
                     onClick={() => {
                       if (selectedCards.includes(card.id)) {
-                        setSelectedCards(selectedCards.filter((id) => id !== card.id));
-                      } else if (selectedCards.length < currentRound.blackCard.pick) {
+                        setSelectedCards(
+                          selectedCards.filter((id) => id !== card.id),
+                        );
+                      } else if (
+                        selectedCards.length < currentRound.blackCard.pick
+                      ) {
                         setSelectedCards([...selectedCards, card.id]);
                       }
                     }}

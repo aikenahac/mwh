@@ -13,7 +13,10 @@ export async function GET(request: NextRequest) {
 
   if (!userId) {
     return NextResponse.json(
-      { success: false, error: { message: 'User ID required', code: 'VALIDATION_ERROR' } },
+      {
+        success: false,
+        error: { message: 'User ID required', code: 'VALIDATION_ERROR' },
+      },
       { status: 400 },
     );
   }
@@ -31,7 +34,8 @@ export async function GET(request: NextRequest) {
       {
         success: false,
         error: {
-          message: error instanceof Error ? error.message : 'Failed to fetch decks',
+          message:
+            error instanceof Error ? error.message : 'Failed to fetch decks',
           code: 'INTERNAL_ERROR',
         },
       },

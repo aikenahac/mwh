@@ -108,22 +108,36 @@ export async function joinGameSession(
   });
 
   if (!session) {
-    throw new GameError(GameErrorCode.GAME_NOT_FOUND, 'Game not found with that join code');
+    throw new GameError(
+      GameErrorCode.GAME_NOT_FOUND,
+      'Game not found with that join code',
+    );
   }
 
   if (session.status !== 'lobby') {
-    throw new GameError(GameErrorCode.GAME_ALREADY_STARTED, 'Game has already started');
+    throw new GameError(
+      GameErrorCode.GAME_ALREADY_STARTED,
+      'Game has already started',
+    );
   }
 
   // Check if player limit reached (max 20 players)
   if (session.players.length >= 20) {
-    throw new GameError(GameErrorCode.GAME_FULL, 'Game is full (20 players max)');
+    throw new GameError(
+      GameErrorCode.GAME_FULL,
+      'Game is full (20 players max)',
+    );
   }
 
   // Check if user already in game
-  const existingPlayer = session.players.find(p => p.clerkUserId === userId && userId !== null);
+  const existingPlayer = session.players.find(
+    (p) => p.clerkUserId === userId && userId !== null,
+  );
   if (existingPlayer) {
-    throw new GameError(GameErrorCode.VALIDATION_ERROR, 'You are already in this game');
+    throw new GameError(
+      GameErrorCode.VALIDATION_ERROR,
+      'You are already in this game',
+    );
   }
 
   // Add player
@@ -144,7 +158,10 @@ export async function joinGameSession(
 /**
  * Leave a game session
  */
-export async function leaveGameSession(sessionId: string, playerId: string): Promise<void> {
+export async function leaveGameSession(
+  sessionId: string,
+  playerId: string,
+): Promise<void> {
   const session = await db.query.gameSession.findFirst({
     where: eq(gameSession.id, sessionId),
     with: { players: true },
@@ -154,7 +171,7 @@ export async function leaveGameSession(sessionId: string, playerId: string): Pro
     throw new GameError(GameErrorCode.GAME_NOT_FOUND, 'Game not found');
   }
 
-  const leavingPlayer = session.players.find(p => p.id === playerId);
+  const leavingPlayer = session.players.find((p) => p.id === playerId);
   if (!leavingPlayer) {
     throw new GameError(GameErrorCode.NOT_IN_GAME, 'Player not in game');
   }
@@ -164,11 +181,14 @@ export async function leaveGameSession(sessionId: string, playerId: string): Pro
 
   // If owner left, transfer ownership or end game
   if (leavingPlayer.isOwner) {
-    const remainingPlayers = session.players.filter(p => p.id !== playerId);
+    const remainingPlayers = session.players.filter((p) => p.id !== playerId);
     if (remainingPlayers.length > 0) {
       // Transfer ownership to next player
       const newOwner = remainingPlayers[0];
-      await db.update(player).set({ isOwner: true }).where(eq(player.id, newOwner.id));
+      await db
+        .update(player)
+        .set({ isOwner: true })
+        .where(eq(player.id, newOwner.id));
     } else {
       // No players left, delete session
       await db.delete(gameSession).where(eq(gameSession.id, sessionId));
@@ -195,16 +215,21 @@ export async function updateSessionDecks(
   }
 
   if (session.status !== 'lobby') {
-    throw new GameError(GameErrorCode.GAME_NOT_IN_LOBBY, 'Cannot change decks after game started');
+    throw new GameError(
+      GameErrorCode.GAME_NOT_IN_LOBBY,
+      'Cannot change decks after game started',
+    );
   }
 
   // Remove existing deck selections
-  await db.delete(gameSessionDeck).where(eq(gameSessionDeck.sessionId, sessionId));
+  await db
+    .delete(gameSessionDeck)
+    .where(eq(gameSessionDeck.sessionId, sessionId));
 
   // Add new deck selections
   if (deckIds.length > 0) {
     await db.insert(gameSessionDeck).values(
-      deckIds.map(deckId => ({
+      deckIds.map((deckId) => ({
         sessionId,
         deckId,
       })),
@@ -231,10 +256,16 @@ export async function updateGameSettings(
   }
 
   if (session.status !== 'lobby') {
-    throw new GameError(GameErrorCode.GAME_NOT_IN_LOBBY, 'Cannot change settings after game started');
+    throw new GameError(
+      GameErrorCode.GAME_NOT_IN_LOBBY,
+      'Cannot change settings after game started',
+    );
   }
 
-  await db.update(gameSession).set({ settings }).where(eq(gameSession.id, sessionId));
+  await db
+    .update(gameSession)
+    .set({ settings })
+    .where(eq(gameSession.id, sessionId));
 }
 
 /**
@@ -259,19 +290,28 @@ export async function startGame(
   }
 
   if (session.status !== 'lobby') {
-    throw new GameError(GameErrorCode.GAME_ALREADY_STARTED, 'Game has already started');
+    throw new GameError(
+      GameErrorCode.GAME_ALREADY_STARTED,
+      'Game has already started',
+    );
   }
 
   if (session.players.length < 3) {
-    throw new GameError(GameErrorCode.VALIDATION_ERROR, 'Need at least 3 players to start');
+    throw new GameError(
+      GameErrorCode.VALIDATION_ERROR,
+      'Need at least 3 players to start',
+    );
   }
 
   if (session.decks.length === 0) {
-    throw new GameError(GameErrorCode.NO_DECKS_SELECTED, 'Must select at least one deck');
+    throw new GameError(
+      GameErrorCode.NO_DECKS_SELECTED,
+      'Must select at least one deck',
+    );
   }
 
   // Validate card pool
-  const deckIds = session.decks.map(d => d.deckId);
+  const deckIds = session.decks.map((d) => d.deckId);
   const validation = await validateCardPool(
     deckIds,
     session.players.length,
@@ -286,7 +326,10 @@ export async function startGame(
   const { blackCards, whiteCards } = await aggregateCardPool(deckIds);
 
   // Update game status
-  await db.update(gameSession).set({ status: 'playing', currentRound: 1 }).where(eq(gameSession.id, sessionId));
+  await db
+    .update(gameSession)
+    .set({ status: 'playing', currentRound: 1 })
+    .where(eq(gameSession.id, sessionId));
 
   // Deal initial hands to all players
   await dealInitialHands(sessionId, whiteCards, session.settings.handSize);
@@ -308,8 +351,14 @@ export async function startRound(
   czarPlayerId: string,
 ): Promise<Round> {
   // Set czar flag
-  await db.update(player).set({ isCardCzar: false }).where(eq(player.sessionId, sessionId));
-  await db.update(player).set({ isCardCzar: true }).where(eq(player.id, czarPlayerId));
+  await db
+    .update(player)
+    .set({ isCardCzar: false })
+    .where(eq(player.sessionId, sessionId));
+  await db
+    .update(player)
+    .set({ isCardCzar: true })
+    .where(eq(player.id, czarPlayerId));
 
   // Create round
   const [newRound] = await db
@@ -346,18 +395,29 @@ export async function submitCards(
   }
 
   if (currentRound.status !== 'playing') {
-    throw new GameError(GameErrorCode.VALIDATION_ERROR, 'Round is not accepting submissions');
+    throw new GameError(
+      GameErrorCode.VALIDATION_ERROR,
+      'Round is not accepting submissions',
+    );
   }
 
   // Check if player is czar
   if (currentRound.czarPlayerId === playerId) {
-    throw new GameError(GameErrorCode.VALIDATION_ERROR, 'Card Czar cannot submit cards');
+    throw new GameError(
+      GameErrorCode.VALIDATION_ERROR,
+      'Card Czar cannot submit cards',
+    );
   }
 
   // Check if already submitted
-  const existingSubmission = currentRound.submissions.find(s => s.playerId === playerId);
+  const existingSubmission = currentRound.submissions.find(
+    (s) => s.playerId === playerId,
+  );
   if (existingSubmission) {
-    throw new GameError(GameErrorCode.ALREADY_SUBMITTED, 'You have already submitted cards');
+    throw new GameError(
+      GameErrorCode.ALREADY_SUBMITTED,
+      'You have already submitted cards',
+    );
   }
 
   // Get black card to check pick count
@@ -387,10 +447,13 @@ export async function submitCards(
   }
 
   const hand = playerData.hand as string[];
-  const allCardsInHand = cardIds.every(cardId => hand.includes(cardId));
+  const allCardsInHand = cardIds.every((cardId) => hand.includes(cardId));
 
   if (!allCardsInHand) {
-    throw new GameError(GameErrorCode.CARDS_NOT_IN_HAND, 'Some cards are not in your hand');
+    throw new GameError(
+      GameErrorCode.CARDS_NOT_IN_HAND,
+      'Some cards are not in your hand',
+    );
   }
 
   // Create submission
@@ -401,7 +464,7 @@ export async function submitCards(
   });
 
   // Remove submitted cards from hand
-  const newHand = hand.filter(cardId => !cardIds.includes(cardId));
+  const newHand = hand.filter((cardId) => !cardIds.includes(cardId));
   await db.update(player).set({ hand: newHand }).where(eq(player.id, playerId));
 }
 
@@ -426,16 +489,27 @@ export async function selectWinner(
   }
 
   if (currentRound.czarPlayerId !== czarPlayerId) {
-    throw new GameError(GameErrorCode.NOT_CZAR, 'Only the Card Czar can select winner');
+    throw new GameError(
+      GameErrorCode.NOT_CZAR,
+      'Only the Card Czar can select winner',
+    );
   }
 
   if (currentRound.status !== 'playing') {
-    throw new GameError(GameErrorCode.VALIDATION_ERROR, 'Round is not in playing state');
+    throw new GameError(
+      GameErrorCode.VALIDATION_ERROR,
+      'Round is not in playing state',
+    );
   }
 
-  const winningSubmission = currentRound.submissions.find(s => s.id === submissionId);
+  const winningSubmission = currentRound.submissions.find(
+    (s) => s.id === submissionId,
+  );
   if (!winningSubmission) {
-    throw new GameError(GameErrorCode.INVALID_WINNER_SELECTION, 'Submission not found');
+    throw new GameError(
+      GameErrorCode.INVALID_WINNER_SELECTION,
+      'Submission not found',
+    );
   }
 
   // Update round with winner
@@ -454,11 +528,17 @@ export async function selectWinner(
   });
 
   if (!winner) {
-    throw new GameError(GameErrorCode.INTERNAL_ERROR, 'Winner player not found');
+    throw new GameError(
+      GameErrorCode.INTERNAL_ERROR,
+      'Winner player not found',
+    );
   }
 
   const newScore = winner.score + 1;
-  await db.update(player).set({ score: newScore }).where(eq(player.id, winner.id));
+  await db
+    .update(player)
+    .set({ score: newScore })
+    .where(eq(player.id, winner.id));
 
   return {
     winnerId: winner.id,
@@ -486,7 +566,9 @@ export async function dealReplacementCards(
     const cardsNeeded = handSize - hand.length;
 
     if (cardsNeeded > 0 && cardIndex < whiteCards.length) {
-      const newCards = whiteCards.slice(cardIndex, cardIndex + cardsNeeded).map(c => c.id);
+      const newCards = whiteCards
+        .slice(cardIndex, cardIndex + cardsNeeded)
+        .map((c) => c.id);
       cardIndex += cardsNeeded;
 
       const newHand = [...hand, ...newCards];
@@ -520,11 +602,14 @@ export async function checkGameEnd(sessionId: string): Promise<{
   }
 
   const pointsToWin = session.settings.pointsToWin;
-  const winner = session.players.find(p => p.score >= pointsToWin);
+  const winner = session.players.find((p) => p.score >= pointsToWin);
 
   if (winner) {
     // Update session status
-    await db.update(gameSession).set({ status: 'ended' }).where(eq(gameSession.id, sessionId));
+    await db
+      .update(gameSession)
+      .set({ status: 'ended' })
+      .where(eq(gameSession.id, sessionId));
     return { shouldEnd: true, winner };
   }
 
@@ -534,13 +619,16 @@ export async function checkGameEnd(sessionId: string): Promise<{
 /**
  * Get next Card Czar (rotate through players)
  */
-export async function getNextCzar(sessionId: string, currentCzarId: string): Promise<Player> {
+export async function getNextCzar(
+  sessionId: string,
+  currentCzarId: string,
+): Promise<Player> {
   const players = await db.query.player.findMany({
     where: eq(player.sessionId, sessionId),
     orderBy: player.joinedAt,
   });
 
-  const currentIndex = players.findIndex(p => p.id === currentCzarId);
+  const currentIndex = players.findIndex((p) => p.id === currentCzarId);
   const nextIndex = (currentIndex + 1) % players.length;
 
   return players[nextIndex];
@@ -565,7 +653,9 @@ async function dealInitialHands(
   let cardIndex = 0;
 
   for (const p of players) {
-    const hand = whiteCards.slice(cardIndex, cardIndex + handSize).map(c => c.id);
+    const hand = whiteCards
+      .slice(cardIndex, cardIndex + handSize)
+      .map((c) => c.id);
     cardIndex += handSize;
 
     await db.update(player).set({ hand }).where(eq(player.id, p.id));
@@ -575,7 +665,10 @@ async function dealInitialHands(
 /**
  * Validate that requesting user is the owner
  */
-async function validateOwnership(sessionId: string, userId: string): Promise<void> {
+async function validateOwnership(
+  sessionId: string,
+  userId: string,
+): Promise<void> {
   const session = await db.query.gameSession.findFirst({
     where: eq(gameSession.id, sessionId),
     with: { players: true },
@@ -585,16 +678,21 @@ async function validateOwnership(sessionId: string, userId: string): Promise<voi
     throw new GameError(GameErrorCode.GAME_NOT_FOUND, 'Game not found');
   }
 
-  const ownerPlayer = session.players.find(p => p.isOwner);
+  const ownerPlayer = session.players.find((p) => p.isOwner);
   if (!ownerPlayer || ownerPlayer.clerkUserId !== userId) {
-    throw new GameError(GameErrorCode.NOT_OWNER, 'Only the game owner can perform this action');
+    throw new GameError(
+      GameErrorCode.NOT_OWNER,
+      'Only the game owner can perform this action',
+    );
   }
 }
 
 /**
  * Get full game session data
  */
-export async function getGameSessionData(sessionId: string): Promise<GameSessionData> {
+export async function getGameSessionData(
+  sessionId: string,
+): Promise<GameSessionData> {
   const session = await db.query.gameSession.findFirst({
     where: eq(gameSession.id, sessionId),
     with: {
@@ -615,7 +713,7 @@ export async function getGameSessionData(sessionId: string): Promise<GameSession
     currentRound: session.currentRound,
     settings: session.settings as GameSettings,
     players: session.players.map(toPlayerData),
-    selectedDeckIds: session.decks.map(d => d.deckId),
+    selectedDeckIds: session.decks.map((d) => d.deckId),
     createdAt: session.createdAt,
   };
 }

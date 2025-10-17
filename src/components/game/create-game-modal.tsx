@@ -9,14 +9,23 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import type { Socket } from 'socket.io-client';
-import type { ClientToServerEvents, ServerToClientEvents } from '@/lib/game/types';
+import type {
+  ClientToServerEvents,
+  ServerToClientEvents,
+} from '@/lib/game/types';
 
 type GameSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -26,7 +35,11 @@ interface CreateGameModalProps {
   socket: GameSocket | null;
 }
 
-export function CreateGameModal({ open, onOpenChange, socket }: CreateGameModalProps) {
+export function CreateGameModal({
+  open,
+  onOpenChange,
+  socket,
+}: CreateGameModalProps) {
   const t = useTranslations();
   const router = useRouter();
   const { user } = useUser();
@@ -104,10 +117,7 @@ export function CreateGameModal({ open, onOpenChange, socket }: CreateGameModalP
           >
             {t('common.cancel')}
           </Button>
-          <Button
-            onClick={handleCreateGame}
-            disabled={isCreating || !socket}
-          >
+          <Button onClick={handleCreateGame} disabled={isCreating || !socket}>
             {isCreating ? t('game.creating') : t('game.create')}
           </Button>
         </div>

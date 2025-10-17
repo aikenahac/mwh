@@ -49,7 +49,8 @@ export default async function SystemDecksPage() {
           {systemDecks.length > 0 && (
             <span className="ml-2">
               ({systemDecks.length} deck{systemDecks.length !== 1 ? 's' : ''},{' '}
-              {systemDecks.reduce((sum, d) => sum + d.cards.length, 0)} cards total)
+              {systemDecks.reduce((sum, d) => sum + d.cards.length, 0)} cards
+              total)
             </span>
           )}
         </p>

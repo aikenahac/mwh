@@ -74,9 +74,15 @@ export default function GamePage() {
           toast.success(t('game.joined'));
 
           // Store player ID in sessionStorage for reconnection
-          const myPlayer = response.data.session.players[response.data.session.players.length - 1];
+          const myPlayer =
+            response.data.session.players[
+              response.data.session.players.length - 1
+            ];
           if (myPlayer) {
-            sessionStorage.setItem(`game_player_${response.data.session.id}`, myPlayer.id);
+            sessionStorage.setItem(
+              `game_player_${response.data.session.id}`,
+              myPlayer.id,
+            );
           }
 
           router.push(`/game/${response.data.session.id}`);
@@ -120,7 +126,9 @@ export default function GamePage() {
                 <Plus className="h-8 w-8 text-blue-600 dark:text-blue-400" />
               </div>
               <div className="space-y-1 text-center">
-                <h2 className="text-xl font-semibold">{t('game.createGame')}</h2>
+                <h2 className="text-xl font-semibold">
+                  {t('game.createGame')}
+                </h2>
                 <p className="text-sm text-muted-foreground">
                   {t('game.createGameDescription')}
                 </p>
@@ -220,10 +228,7 @@ export default function GamePage() {
             >
               {t('common.cancel')}
             </Button>
-            <Button
-              onClick={handleJoinGame}
-              disabled={isJoining || !socket}
-            >
+            <Button onClick={handleJoinGame} disabled={isJoining || !socket}>
               {isJoining ? t('game.joining') : t('game.join')}
             </Button>
           </div>

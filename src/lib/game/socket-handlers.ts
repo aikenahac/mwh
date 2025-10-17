@@ -25,14 +25,20 @@ import type { Card } from '@/lib/db/schema';
 
 // In-memory storage for active game card pools
 // Key: sessionId, Value: { blackCards, whiteCards, currentBlackIndex }
-const gameCardPools = new Map<string, {
-  blackCards: Card[];
-  whiteCards: Card[];
-  currentBlackIndex: number;
-}>();
+const gameCardPools = new Map<
+  string,
+  {
+    blackCards: Card[];
+    whiteCards: Card[];
+    currentBlackIndex: number;
+  }
+>();
 
 // Socket ID to player ID mapping (for quick lookups)
-const socketToPlayer = new Map<string, { playerId: string; sessionId: string }>();
+const socketToPlayer = new Map<
+  string,
+  { playerId: string; sessionId: string }
+>();
 
 type GameSocket = Socket<ClientToServerEvents, ServerToClientEvents>;
 type GameIO = SocketIOServer<ClientToServerEvents, ServerToClientEvents>;
@@ -58,7 +64,7 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
 
       // Get the created session with player data
       const session = await gameService.getGameSessionData(sessionId);
-      const ownerPlayer = session.players.find(p => p.isOwner)!;
+      const ownerPlayer = session.players.find((p) => p.isOwner)!;
 
       // Join socket room
       socket.join(sessionId);
@@ -84,8 +90,12 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
       callback({
         success: false,
         error: {
-          message: error instanceof Error ? error.message : 'Failed to create game',
-          code: error instanceof GameError ? error.code : GameErrorCode.INTERNAL_ERROR,
+          message:
+            error instanceof Error ? error.message : 'Failed to create game',
+          code:
+            error instanceof GameError
+              ? error.code
+              : GameErrorCode.INTERNAL_ERROR,
         },
       });
     }
@@ -110,7 +120,10 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
       const newPlayer = session.players[session.players.length - 1];
 
       // Map socket to player
-      socketToPlayer.set(socket.id, { playerId: newPlayer.id, sessionId: session.id });
+      socketToPlayer.set(socket.id, {
+        playerId: newPlayer.id,
+        sessionId: session.id,
+      });
 
       console.log(`[Game] Player ${data.nickname} joined ${session.id}`);
 
@@ -123,8 +136,12 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
       callback({
         success: false,
         error: {
-          message: error instanceof Error ? error.message : 'Failed to join game',
-          code: error instanceof GameError ? error.code : GameErrorCode.INTERNAL_ERROR,
+          message:
+            error instanceof Error ? error.message : 'Failed to join game',
+          code:
+            error instanceof GameError
+              ? error.code
+              : GameErrorCode.INTERNAL_ERROR,
         },
       });
     }
@@ -152,7 +169,9 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
       socket.leave(data.sessionId);
       socketToPlayer.delete(socket.id);
 
-      console.log(`[Game] Player ${playerData?.nickname} left ${data.sessionId}`);
+      console.log(
+        `[Game] Player ${playerData?.nickname} left ${data.sessionId}`,
+      );
 
       callback({ success: true });
 
@@ -166,8 +185,12 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
       callback({
         success: false,
         error: {
-          message: error instanceof Error ? error.message : 'Failed to leave game',
-          code: error instanceof GameError ? error.code : GameErrorCode.INTERNAL_ERROR,
+          message:
+            error instanceof Error ? error.message : 'Failed to leave game',
+          code:
+            error instanceof GameError
+              ? error.code
+              : GameErrorCode.INTERNAL_ERROR,
         },
       });
     }
@@ -189,7 +212,9 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
 
       const decksInfo = await deckService.getSelectedDecksInfo(data.deckIds);
 
-      console.log(`[Game] Decks updated for ${data.sessionId}: ${data.deckIds.length} decks`);
+      console.log(
+        `[Game] Decks updated for ${data.sessionId}: ${data.deckIds.length} decks`,
+      );
 
       callback({ success: true, data: decksInfo });
 
@@ -200,8 +225,12 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
       callback({
         success: false,
         error: {
-          message: error instanceof Error ? error.message : 'Failed to update decks',
-          code: error instanceof GameError ? error.code : GameErrorCode.INTERNAL_ERROR,
+          message:
+            error instanceof Error ? error.message : 'Failed to update decks',
+          code:
+            error instanceof GameError
+              ? error.code
+              : GameErrorCode.INTERNAL_ERROR,
         },
       });
     }
@@ -226,14 +255,22 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
       callback({ success: true });
 
       // Broadcast to all in room
-      io.to(data.sessionId).emit('settings-updated', { settings: data.settings });
+      io.to(data.sessionId).emit('settings-updated', {
+        settings: data.settings,
+      });
     } catch (error) {
       console.error('[update-settings] Error:', error);
       callback({
         success: false,
         error: {
-          message: error instanceof Error ? error.message : 'Failed to update settings',
-          code: error instanceof GameError ? error.code : GameErrorCode.INTERNAL_ERROR,
+          message:
+            error instanceof Error
+              ? error.message
+              : 'Failed to update settings',
+          code:
+            error instanceof GameError
+              ? error.code
+              : GameErrorCode.INTERNAL_ERROR,
         },
       });
     }
@@ -285,7 +322,9 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
         // Find socket for this player
         const playerSocketId = findSocketIdByPlayerId(p.id);
         if (playerSocketId) {
-          io.to(playerSocketId).emit('cards-dealt', { hand: p.hand as string[] });
+          io.to(playerSocketId).emit('cards-dealt', {
+            hand: p.hand as string[],
+          });
         }
       }
 
@@ -319,8 +358,12 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
       callback({
         success: false,
         error: {
-          message: error instanceof Error ? error.message : 'Failed to start game',
-          code: error instanceof GameError ? error.code : GameErrorCode.INTERNAL_ERROR,
+          message:
+            error instanceof Error ? error.message : 'Failed to start game',
+          code:
+            error instanceof GameError
+              ? error.code
+              : GameErrorCode.INTERNAL_ERROR,
         },
       });
     }
@@ -341,7 +384,11 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
         throw new GameError(GameErrorCode.NOT_IN_GAME, 'Not in a game');
       }
 
-      await gameService.submitCards(data.roundId, playerInfo.playerId, data.cardIds);
+      await gameService.submitCards(
+        data.roundId,
+        playerInfo.playerId,
+        data.cardIds,
+      );
 
       console.log(`[Game] Cards submitted for round ${data.roundId}`);
 
@@ -377,7 +424,8 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
         const submissionsWithCards = await Promise.all(
           currentRound.submissions.map(async (sub) => {
             const cards = await db.query.card.findMany({
-              where: (card, { inArray }) => inArray(card.id, sub.cardIds as string[]),
+              where: (card, { inArray }) =>
+                inArray(card.id, sub.cardIds as string[]),
             });
             return {
               id: sub.id,
@@ -404,8 +452,12 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
       callback({
         success: false,
         error: {
-          message: error instanceof Error ? error.message : 'Failed to submit cards',
-          code: error instanceof GameError ? error.code : GameErrorCode.INTERNAL_ERROR,
+          message:
+            error instanceof Error ? error.message : 'Failed to submit cards',
+          code:
+            error instanceof GameError
+              ? error.code
+              : GameErrorCode.INTERNAL_ERROR,
         },
       });
     }
@@ -448,20 +500,28 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
       if (!currentRound) return;
 
       // Get winner player
-      const winner = currentRound.session.players.find(p => p.id === winnerId)!;
+      const winner = currentRound.session.players.find(
+        (p) => p.id === winnerId,
+      )!;
 
       // Get winning submission with cards
-      const winningSubmission = currentRound.submissions.find(s => s.id === data.submissionId)!;
+      const winningSubmission = currentRound.submissions.find(
+        (s) => s.id === data.submissionId,
+      )!;
       const winningCards = await db.query.card.findMany({
-        where: (card, { inArray }) => inArray(card.id, winningSubmission.cardIds as string[]),
+        where: (card, { inArray }) =>
+          inArray(card.id, winningSubmission.cardIds as string[]),
       });
 
       // Get all submissions with player info and cards
       const allSubmissions = await Promise.all(
         currentRound.submissions.map(async (sub) => {
-          const submitter = currentRound.session.players.find(p => p.id === sub.playerId)!;
+          const submitter = currentRound.session.players.find(
+            (p) => p.id === sub.playerId,
+          )!;
           const cards = await db.query.card.findMany({
-            where: (card, { inArray }) => inArray(card.id, sub.cardIds as string[]),
+            where: (card, { inArray }) =>
+              inArray(card.id, sub.cardIds as string[]),
           });
           return {
             id: sub.id,
@@ -499,7 +559,9 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
           currentRound.sessionId,
         );
 
-        console.log(`[Game] Ended: ${currentRound.sessionId}, winner: ${gameWinner.nickname}`);
+        console.log(
+          `[Game] Ended: ${currentRound.sessionId}, winner: ${gameWinner.nickname}`,
+        );
 
         // Emit game ended
         io.to(currentRound.sessionId).emit('game-ended', gameEndData);
@@ -508,15 +570,23 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
         gameCardPools.delete(currentRound.sessionId);
       } else {
         // Continue to next round
-        await startNextRound(currentRound.sessionId, currentRound.roundNumber, io);
+        await startNextRound(
+          currentRound.sessionId,
+          currentRound.roundNumber,
+          io,
+        );
       }
     } catch (error) {
       console.error('[select-winner] Error:', error);
       callback({
         success: false,
         error: {
-          message: error instanceof Error ? error.message : 'Failed to select winner',
-          code: error instanceof GameError ? error.code : GameErrorCode.INTERNAL_ERROR,
+          message:
+            error instanceof Error ? error.message : 'Failed to select winner',
+          code:
+            error instanceof GameError
+              ? error.code
+              : GameErrorCode.INTERNAL_ERROR,
         },
       });
     }
@@ -540,9 +610,12 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
         throw new GameError(GameErrorCode.GAME_NOT_FOUND, 'Game not found');
       }
 
-      const owner = session.players.find(p => p.isOwner);
+      const owner = session.players.find((p) => p.isOwner);
       if (!owner || owner.clerkUserId !== userId) {
-        throw new GameError(GameErrorCode.NOT_OWNER, 'Only owner can kick players');
+        throw new GameError(
+          GameErrorCode.NOT_OWNER,
+          'Only owner can kick players',
+        );
       }
 
       // Get kicked player data
@@ -560,7 +633,9 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
         socketToPlayer.delete(kickedSocketId);
       }
 
-      console.log(`[Game] Player ${kickedPlayer?.nickname} kicked from ${data.sessionId}`);
+      console.log(
+        `[Game] Player ${kickedPlayer?.nickname} kicked from ${data.sessionId}`,
+      );
 
       callback({ success: true });
 
@@ -574,8 +649,12 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
       callback({
         success: false,
         error: {
-          message: error instanceof Error ? error.message : 'Failed to kick player',
-          code: error instanceof GameError ? error.code : GameErrorCode.INTERNAL_ERROR,
+          message:
+            error instanceof Error ? error.message : 'Failed to kick player',
+          code:
+            error instanceof GameError
+              ? error.code
+              : GameErrorCode.INTERNAL_ERROR,
         },
       });
     }
@@ -599,13 +678,15 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
         throw new GameError(GameErrorCode.GAME_NOT_FOUND, 'Game not found');
       }
 
-      const owner = session.players.find(p => p.isOwner);
+      const owner = session.players.find((p) => p.isOwner);
       if (!owner || owner.clerkUserId !== userId) {
         throw new GameError(GameErrorCode.NOT_OWNER, 'Only owner can end game');
       }
 
       // Archive game
-      const gameEndData = await archiveService.archiveCompletedGame(data.sessionId);
+      const gameEndData = await archiveService.archiveCompletedGame(
+        data.sessionId,
+      );
 
       console.log(`[Game] Ended early: ${data.sessionId}`);
 
@@ -621,8 +702,12 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
       callback({
         success: false,
         error: {
-          message: error instanceof Error ? error.message : 'Failed to end game',
-          code: error instanceof GameError ? error.code : GameErrorCode.INTERNAL_ERROR,
+          message:
+            error instanceof Error ? error.message : 'Failed to end game',
+          code:
+            error instanceof GameError
+              ? error.code
+              : GameErrorCode.INTERNAL_ERROR,
         },
       });
     }
@@ -634,10 +719,14 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
    */
   socket.on('reconnect-to-game', async (data, callback) => {
     try {
-      console.log(`[reconnect-to-game] Attempt - sessionId: ${data.sessionId}, clerkUserId: ${data.clerkUserId}, playerId: ${data.playerId}, socketId: ${socket.id}`);
+      console.log(
+        `[reconnect-to-game] Attempt - sessionId: ${data.sessionId}, clerkUserId: ${data.clerkUserId}, playerId: ${data.playerId}, socketId: ${socket.id}`,
+      );
 
       const session = await gameService.getGameSessionData(data.sessionId);
-      console.log(`[reconnect-to-game] Session found with ${session.players.length} players`);
+      console.log(
+        `[reconnect-to-game] Session found with ${session.players.length} players`,
+      );
 
       // Find player in session
       let playerData;
@@ -645,36 +734,53 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
       // 1. Try by clerkUserId (for authenticated users)
       if (data.clerkUserId) {
         playerData = session.players.find(
-          p => p.clerkUserId === data.clerkUserId && data.clerkUserId !== null,
+          (p) =>
+            p.clerkUserId === data.clerkUserId && data.clerkUserId !== null,
         );
-        console.log(`[reconnect-to-game] Player found by clerkUserId: ${!!playerData}`);
+        console.log(
+          `[reconnect-to-game] Player found by clerkUserId: ${!!playerData}`,
+        );
       }
 
       // 2. Try by playerId from sessionStorage (for guests who just joined)
       if (!playerData && data.playerId) {
-        playerData = session.players.find(p => p.id === data.playerId);
-        console.log(`[reconnect-to-game] Player found by playerId: ${!!playerData}`);
+        playerData = session.players.find((p) => p.id === data.playerId);
+        console.log(
+          `[reconnect-to-game] Player found by playerId: ${!!playerData}`,
+        );
       }
 
       // 3. Check if this socket is already mapped to a player in this session
       if (!playerData) {
         const existingMapping = socketToPlayer.get(socket.id);
-        console.log(`[reconnect-to-game] Existing socket mapping: ${JSON.stringify(existingMapping)}`);
+        console.log(
+          `[reconnect-to-game] Existing socket mapping: ${JSON.stringify(existingMapping)}`,
+        );
 
         if (existingMapping && existingMapping.sessionId === data.sessionId) {
-          playerData = session.players.find(p => p.id === existingMapping.playerId);
-          console.log(`[reconnect-to-game] Player found by socket mapping: ${!!playerData}`);
+          playerData = session.players.find(
+            (p) => p.id === existingMapping.playerId,
+          );
+          console.log(
+            `[reconnect-to-game] Player found by socket mapping: ${!!playerData}`,
+          );
         }
       }
 
       // 4. Fallback: if there's only one guest player, use them
       if (!playerData) {
-        const guestPlayers = session.players.filter(p => p.clerkUserId === null);
-        console.log(`[reconnect-to-game] Found ${guestPlayers.length} guest players in session`);
+        const guestPlayers = session.players.filter(
+          (p) => p.clerkUserId === null,
+        );
+        console.log(
+          `[reconnect-to-game] Found ${guestPlayers.length} guest players in session`,
+        );
 
         if (guestPlayers.length === 1) {
           playerData = guestPlayers[0];
-          console.log(`[reconnect-to-game] Using sole guest player: ${playerData.nickname}`);
+          console.log(
+            `[reconnect-to-game] Using sole guest player: ${playerData.nickname}`,
+          );
         }
       }
 
@@ -684,36 +790,50 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
       }
 
       // Update player connection status
-      await db.update(player).set({ isConnected: true }).where(eq(player.id, playerData.id));
+      await db
+        .update(player)
+        .set({ isConnected: true })
+        .where(eq(player.id, playerData.id));
 
       // Rejoin socket room
       socket.join(data.sessionId);
-      socketToPlayer.set(socket.id, { playerId: playerData.id, sessionId: data.sessionId });
+      socketToPlayer.set(socket.id, {
+        playerId: playerData.id,
+        sessionId: data.sessionId,
+      });
 
       // Get player's hand
       const fullPlayer = await db.query.player.findFirst({
         where: eq(player.id, playerData.id),
       });
 
-      console.log(`[Game] Player reconnected: ${playerData.nickname} to ${data.sessionId}`);
+      console.log(
+        `[Game] Player reconnected: ${playerData.nickname} to ${data.sessionId}`,
+      );
 
       callback({
         success: true,
         data: {
           session,
-          hand: fullPlayer?.hand as string[] || [],
+          hand: (fullPlayer?.hand as string[]) || [],
         },
       });
 
       // Notify others
-      io.to(data.sessionId).emit('player-reconnected', { playerId: playerData.id });
+      io.to(data.sessionId).emit('player-reconnected', {
+        playerId: playerData.id,
+      });
     } catch (error) {
       console.error('[reconnect-to-game] Error:', error);
       callback({
         success: false,
         error: {
-          message: error instanceof Error ? error.message : 'Failed to reconnect',
-          code: error instanceof GameError ? error.code : GameErrorCode.INTERNAL_ERROR,
+          message:
+            error instanceof Error ? error.message : 'Failed to reconnect',
+          code:
+            error instanceof GameError
+              ? error.code
+              : GameErrorCode.INTERNAL_ERROR,
         },
       });
     }
@@ -728,7 +848,10 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
     if (playerInfo) {
       try {
         // Mark player as disconnected
-        await db.update(player).set({ isConnected: false }).where(eq(player.id, playerInfo.playerId));
+        await db
+          .update(player)
+          .set({ isConnected: false })
+          .where(eq(player.id, playerInfo.playerId));
 
         // Notify others
         io.to(playerInfo.sessionId).emit('player-disconnected', {
@@ -738,26 +861,34 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
         console.log(`[Game] Player disconnected from ${playerInfo.sessionId}`);
 
         // Clean up after 5 minutes if not reconnected
-        setTimeout(async () => {
-          const stillDisconnected = await db.query.player.findFirst({
-            where: and(
-              eq(player.id, playerInfo.playerId),
-              eq(player.isConnected, false),
-            ),
-          });
-
-          if (stillDisconnected) {
-            // Remove player from game
-            await gameService.leaveGameSession(playerInfo.sessionId, playerInfo.playerId);
-
-            io.to(playerInfo.sessionId).emit('player-left', {
-              playerId: playerInfo.playerId,
-              playerNickname: stillDisconnected.nickname,
+        setTimeout(
+          async () => {
+            const stillDisconnected = await db.query.player.findFirst({
+              where: and(
+                eq(player.id, playerInfo.playerId),
+                eq(player.isConnected, false),
+              ),
             });
 
-            console.log(`[Game] Player ${stillDisconnected.nickname} removed after timeout`);
-          }
-        }, 5 * 60 * 1000);
+            if (stillDisconnected) {
+              // Remove player from game
+              await gameService.leaveGameSession(
+                playerInfo.sessionId,
+                playerInfo.playerId,
+              );
+
+              io.to(playerInfo.sessionId).emit('player-left', {
+                playerId: playerInfo.playerId,
+                playerNickname: stillDisconnected.nickname,
+              });
+
+              console.log(
+                `[Game] Player ${stillDisconnected.nickname} removed after timeout`,
+              );
+            }
+          },
+          5 * 60 * 1000,
+        );
       } catch (error) {
         console.error('[disconnect] Error handling disconnection:', error);
       }
@@ -783,7 +914,9 @@ async function startNextRound(
   const pools = gameCardPools.get(sessionId);
 
   if (!pools) {
-    console.error(`[startNextRound] No card pools found for session ${sessionId}`);
+    console.error(
+      `[startNextRound] No card pools found for session ${sessionId}`,
+    );
     return;
   }
 
@@ -795,13 +928,15 @@ async function startNextRound(
   );
 
   // Get next czar
-  const currentCzar = session.players.find(p => p.isCardCzar)!;
+  const currentCzar = session.players.find((p) => p.isCardCzar)!;
   const nextCzar = await gameService.getNextCzar(sessionId, currentCzar.id);
 
   // Get next black card
   const nextBlackCard = pools.blackCards[pools.currentBlackIndex];
   if (!nextBlackCard) {
-    console.error(`[startNextRound] No more black cards for session ${sessionId}`);
+    console.error(
+      `[startNextRound] No more black cards for session ${sessionId}`,
+    );
     return;
   }
 

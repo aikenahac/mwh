@@ -9,7 +9,12 @@
 
 'use client';
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -44,7 +49,9 @@ export function GameEndModal({ open, gameEndData }: GameEndModalProps) {
           <Card>
             <CardContent className="text-center space-y-3 p-6">
               <Trophy className="h-16 w-16 text-yellow-500 mx-auto" />
-              <h3 className="text-xl font-bold">{gameEndData.winner.nickname}</h3>
+              <h3 className="text-xl font-bold">
+                {gameEndData.winner.nickname}
+              </h3>
               <Badge variant="default" className="text-sm">
                 {t('game.wins')}
               </Badge>
@@ -78,7 +85,9 @@ export function GameEndModal({ open, gameEndData }: GameEndModalProps) {
               {t('game.backToLobby')}
             </Button>
             <Button
-              onClick={() => router.push(`/game/history/${gameEndData.completedGameId}`)}
+              onClick={() =>
+                router.push(`/game/history/${gameEndData.completedGameId}`)
+              }
               className="flex-1"
             >
               {t('game.viewDetails')}

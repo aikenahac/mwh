@@ -85,7 +85,10 @@ export default function GameDetailsPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold">{t('game.gameDetails')}</h1>
-          <Button variant="outline" onClick={() => router.push('/game/history')}>
+          <Button
+            variant="outline"
+            onClick={() => router.push('/game/history')}
+          >
             {t('game.backToHistory')}
           </Button>
         </div>
@@ -142,7 +145,9 @@ export default function GameDetailsPage() {
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      {player.wasOwner && <Crown className="h-4 w-4 text-yellow-500" />}
+                      {player.wasOwner && (
+                        <Crown className="h-4 w-4 text-yellow-500" />
+                      )}
                       <span className="font-medium">{player.nickname}</span>
                     </div>
                     <div className="text-sm text-gray-600">
@@ -160,7 +165,10 @@ export default function GameDetailsPage() {
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">{t('game.roundHistory')}</h2>
           {gameDetails.rounds.map((round) => (
-            <div key={round.roundNumber} className="p-6 rounded-lg border bg-card space-y-4">
+            <div
+              key={round.roundNumber}
+              className="p-6 rounded-lg border bg-card space-y-4"
+            >
               {/* Round Header */}
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold">

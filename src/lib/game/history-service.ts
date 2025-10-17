@@ -65,7 +65,10 @@ export async function getUserGameHistory(
       player: completedGamePlayer,
     })
     .from(completedGamePlayer)
-    .innerJoin(completedGame, eq(completedGamePlayer.completedGameId, completedGame.id))
+    .innerJoin(
+      completedGame,
+      eq(completedGamePlayer.completedGameId, completedGame.id),
+    )
     .where(and(...conditions))
     .orderBy(
       sort?.direction === 'asc'
@@ -81,7 +84,10 @@ export async function getUserGameHistory(
   const countResult = await db
     .select({ count: sql<number>`count(*)` })
     .from(completedGamePlayer)
-    .innerJoin(completedGame, eq(completedGamePlayer.completedGameId, completedGame.id))
+    .innerJoin(
+      completedGame,
+      eq(completedGamePlayer.completedGameId, completedGame.id),
+    )
     .where(and(...conditions));
 
   const totalCount = countResult[0]?.count || 0;
@@ -95,10 +101,12 @@ export async function getUserGameHistory(
     })
     .from(completedGameDeck)
     .innerJoin(deck, eq(completedGameDeck.deckId, deck.id))
-    .where((completedGameDeck, { inArray }) => inArray(completedGameDeck.completedGameId, gameIds));
+    .where((completedGameDeck, { inArray }) =>
+      inArray(completedGameDeck.completedGameId, gameIds),
+    );
 
   // Group decks by game
-  const decksByGame = new Map<string, typeof deck.$inferSelect[]>();
+  const decksByGame = new Map<string, (typeof deck.$inferSelect)[]>();
   for (const d of decksData) {
     if (!decksByGame.has(d.gameId)) {
       decksByGame.set(d.gameId, []);
@@ -107,7 +115,9 @@ export async function getUserGameHistory(
   }
 
   // Get winner nicknames
-  const winnerIds = [...new Set(gamesData.map((g) => g.game.winnerUserId).filter(Boolean))];
+  const winnerIds = [
+    ...new Set(gamesData.map((g) => g.game.winnerUserId).filter(Boolean)),
+  ];
   const winnersData = await db
     .select({
       gameId: completedGamePlayer.completedGameId,
@@ -118,9 +128,7 @@ export async function getUserGameHistory(
     .where((completedGamePlayer, { inArray }) =>
       and(
         inArray(completedGamePlayer.completedGameId, gameIds),
-        or(
-          ...winnerIds.map((wId) => eq(completedGamePlayer.clerkUserId, wId)),
-        ),
+        or(...winnerIds.map((wId) => eq(completedGamePlayer.clerkUserId, wId))),
       ),
     );
 
@@ -143,7 +151,9 @@ export async function getUserGameHistory(
     )
     .groupBy(completedGamePlayer.completedGameId);
 
-  const playerCountMap = new Map(playerCounts.map((pc) => [pc.gameId, pc.count]));
+  const playerCountMap = new Map(
+    playerCounts.map((pc) => [pc.gameId, pc.count]),
+  );
 
   // Build history items
   const items: GameHistoryItem[] = gamesData.map(({ game, player }) => ({
@@ -168,10 +178,14 @@ export async function getUserGameHistory(
   // Apply player count filter if specified
   let filteredItems = items;
   if (filters?.minPlayers) {
-    filteredItems = filteredItems.filter((item) => item.playerCount >= filters.minPlayers!);
+    filteredItems = filteredItems.filter(
+      (item) => item.playerCount >= filters.minPlayers!,
+    );
   }
   if (filters?.maxPlayers) {
-    filteredItems = filteredItems.filter((item) => item.playerCount <= filters.maxPlayers!);
+    filteredItems = filteredItems.filter(
+      (item) => item.playerCount <= filters.maxPlayers!,
+    );
   }
 
   return {
@@ -233,7 +247,11 @@ export async function getGameDetails(
     for (const cardId of round.winningSubmission as string[]) {
       allCardIds.add(cardId);
     }
-    for (const sub of round.allSubmissions as Array<{ playerId: string; nickname: string; cardIds: string[] }>) {
+    for (const sub of round.allSubmissions as Array<{
+      playerId: string;
+      nickname: string;
+      cardIds: string[];
+    }>) {
       for (const cardId of sub.cardIds) {
         allCardIds.add(cardId);
       }
@@ -249,10 +267,16 @@ export async function getGameDetails(
   // Build rounds with full card data
   const roundsData = game.rounds.map((round) => {
     const blackCard = cardMap.get(round.blackCardId)!;
-    const winningCards = (round.winningSubmission as string[]).map((id) => cardMap.get(id)!);
+    const winningCards = (round.winningSubmission as string[]).map(
+      (id) => cardMap.get(id)!,
+    );
 
     const allSubmissions = (
-      round.allSubmissions as Array<{ playerId: string; nickname: string; cardIds: string[] }>
+      round.allSubmissions as Array<{
+        playerId: string;
+        nickname: string;
+        cardIds: string[];
+      }>
     ).map((sub) => ({
       playerNickname: sub.nickname,
       cards: sub.cardIds.map((id) => cardMap.get(id)!).filter(Boolean),
@@ -261,8 +285,12 @@ export async function getGameDetails(
     return {
       roundNumber: round.roundNumber,
       blackCard,
-      czarNickname: game.players.find((p) => p.clerkUserId === round.czarUserId)?.nickname || 'Unknown',
-      winnerNickname: game.players.find((p) => p.clerkUserId === round.winnerUserId)?.nickname || 'Unknown',
+      czarNickname:
+        game.players.find((p) => p.clerkUserId === round.czarUserId)
+          ?.nickname || 'Unknown',
+      winnerNickname:
+        game.players.find((p) => p.clerkUserId === round.winnerUserId)
+          ?.nickname || 'Unknown',
       winningSubmission: winningCards,
       allSubmissions,
       completedAt: round.completedAt,
@@ -307,7 +335,9 @@ export async function getGameDetails(
 /**
  * Get user's aggregate statistics
  */
-export async function getUserStatistics(userId: string): Promise<UserStatistics> {
+export async function getUserStatistics(
+  userId: string,
+): Promise<UserStatistics> {
   const stats = await db.query.playerStatistic.findFirst({
     where: eq(playerStatistic.userId, userId),
   });
@@ -327,7 +357,9 @@ export async function getUserStatistics(userId: string): Promise<UserStatistics>
   }
 
   // Get favorite winning cards
-  const favoriteCardIds = (stats.favoriteWinningCards as Array<{ cardId: string; winCount: number }>)
+  const favoriteCardIds = (
+    stats.favoriteWinningCards as Array<{ cardId: string; winCount: number }>
+  )
     .slice(0, 5)
     .map((f) => f.cardId);
 
@@ -337,7 +369,9 @@ export async function getUserStatistics(userId: string): Promise<UserStatistics>
 
   const cardMap = new Map(favoriteCards.map((c) => [c.id, c]));
 
-  const favoriteWinningCards = (stats.favoriteWinningCards as Array<{ cardId: string; winCount: number }>)
+  const favoriteWinningCards = (
+    stats.favoriteWinningCards as Array<{ cardId: string; winCount: number }>
+  )
     .slice(0, 5)
     .map((f) => ({
       card: cardMap.get(f.cardId)!,
@@ -435,7 +469,9 @@ export async function getLeaderboard(
       const betterPlayers = await db
         .select({ count: sql<number>`count(*)` })
         .from(playerStatistic)
-        .where(sql`${orderByField} > ${userStats[orderByField.name as keyof typeof userStats]}`);
+        .where(
+          sql`${orderByField} > ${userStats[orderByField.name as keyof typeof userStats]}`,
+        );
 
       currentUserRank = (betterPlayers[0]?.count || 0) + 1;
     }
@@ -493,7 +529,10 @@ export async function getQuickStats(userId: string): Promise<{
 /**
  * Check if user participated in a game (for access control)
  */
-export async function didUserParticipate(gameId: string, userId: string): Promise<boolean> {
+export async function didUserParticipate(
+  gameId: string,
+  userId: string,
+): Promise<boolean> {
   const participation = await db.query.completedGamePlayer.findFirst({
     where: and(
       eq(completedGamePlayer.completedGameId, gameId),

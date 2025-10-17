@@ -49,7 +49,7 @@ export default function DocsPage() {
           </Card>
         </Link>
 
-        <Link href={Routes.SOURCE_CODE} target='_blank' className="group">
+        <Link href={Routes.SOURCE_CODE} target="_blank" className="group">
           <Card className="h-full transition-all hover:shadow-lg hover:border-primary/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 group-hover:text-primary transition-colors">

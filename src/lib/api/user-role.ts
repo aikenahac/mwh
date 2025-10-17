@@ -30,7 +30,10 @@ export async function getUserRole(userId: string): Promise<UserRole | null> {
 /**
  * Check if a user has a specific role
  */
-export async function hasRole(userId: string, role: 'superadmin'): Promise<boolean> {
+export async function hasRole(
+  userId: string,
+  role: 'superadmin',
+): Promise<boolean> {
   const userRoleData = await getUserRole(userId);
   return userRoleData?.role === role;
 }

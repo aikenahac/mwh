@@ -50,7 +50,14 @@ export async function getAvailableDecksForUser(userId: string): Promise<{
     .where(eq(deckShare.sharedWithUserId, userId));
 
   // Group shared decks by deck ID
-  const sharedDecksMap = new Map<string, { deck: typeof deck.$inferSelect; cards: (typeof card.$inferSelect)[]; sharedBy: string }>();
+  const sharedDecksMap = new Map<
+    string,
+    {
+      deck: typeof deck.$inferSelect;
+      cards: (typeof card.$inferSelect)[];
+      sharedBy: string;
+    }
+  >();
   for (const row of sharedDecksData) {
     if (!sharedDecksMap.has(row.deck.id)) {
       sharedDecksMap.set(row.deck.id, {
@@ -65,11 +72,12 @@ export async function getAvailableDecksForUser(userId: string): Promise<{
   }
 
   // Convert to DeckInfo format
-  const systemDecks = systemDecksData.map(d => toDeckInfo(d, true));
+  const systemDecks = systemDecksData.map((d) => toDeckInfo(d, true));
   const userDecks = [
-    ...ownedDecksData.map(d => toDeckInfo(d, false)),
-    ...Array.from(sharedDecksMap.values()).map(({ deck: d, cards: c, sharedBy }) =>
-      toDeckInfo({ ...d, cards: c }, false, sharedBy),
+    ...ownedDecksData.map((d) => toDeckInfo(d, false)),
+    ...Array.from(sharedDecksMap.values()).map(
+      ({ deck: d, cards: c, sharedBy }) =>
+        toDeckInfo({ ...d, cards: c }, false, sharedBy),
     ),
   ];
 
@@ -79,7 +87,9 @@ export async function getAvailableDecksForUser(userId: string): Promise<{
 /**
  * Get specific decks by IDs with full card data
  */
-export async function getDecksByIds(deckIds: string[]): Promise<DeckWithCards[]> {
+export async function getDecksByIds(
+  deckIds: string[],
+): Promise<DeckWithCards[]> {
   if (deckIds.length === 0) return [];
 
   const decksData = await db.query.deck.findMany({
@@ -96,7 +106,10 @@ export async function getDecksByIds(deckIds: string[]): Promise<DeckWithCards[]>
  * Validate that decks exist and are accessible by user
  * Returns array of valid deck IDs
  */
-export async function validateDeckAccess(deckIds: string[], userId: string): Promise<string[]> {
+export async function validateDeckAccess(
+  deckIds: string[],
+  userId: string,
+): Promise<string[]> {
   if (deckIds.length === 0) return [];
 
   const decksData = await db
@@ -104,7 +117,7 @@ export async function validateDeckAccess(deckIds: string[], userId: string): Pro
     .from(deck)
     .where(inArray(deck.id, deckIds));
 
-  const deckUserIds = new Map(decksData.map(d => [d.id, d.userId]));
+  const deckUserIds = new Map(decksData.map((d) => [d.id, d.userId]));
 
   // Get shared decks
   const sharedDeckIds = await db
@@ -117,13 +130,15 @@ export async function validateDeckAccess(deckIds: string[], userId: string): Pro
       ),
     );
 
-  const sharedIds = new Set(sharedDeckIds.map(s => s.deckId));
+  const sharedIds = new Set(sharedDeckIds.map((s) => s.deckId));
 
   // Filter valid deck IDs (system, owned, or shared with user)
-  const validDeckIds = deckIds.filter(deckId => {
+  const validDeckIds = deckIds.filter((deckId) => {
     const deckUserId = deckUserIds.get(deckId);
     if (!deckUserId) return false;
-    return deckUserId === 'system' || deckUserId === userId || sharedIds.has(deckId);
+    return (
+      deckUserId === 'system' || deckUserId === userId || sharedIds.has(deckId)
+    );
   });
 
   return validDeckIds;
@@ -132,7 +147,9 @@ export async function validateDeckAccess(deckIds: string[], userId: string): Pro
 /**
  * Get selected decks info (counts, names, etc.)
  */
-export async function getSelectedDecksInfo(deckIds: string[]): Promise<SelectedDecksInfo> {
+export async function getSelectedDecksInfo(
+  deckIds: string[],
+): Promise<SelectedDecksInfo> {
   if (deckIds.length === 0) {
     return {
       decks: [],
@@ -148,9 +165,9 @@ export async function getSelectedDecksInfo(deckIds: string[]): Promise<SelectedD
     },
   });
 
-  const decks: DeckInfo[] = decksData.map(d => {
-    const blackCardCount = d.cards.filter(c => c.type === 'black').length;
-    const whiteCardCount = d.cards.filter(c => c.type === 'white').length;
+  const decks: DeckInfo[] = decksData.map((d) => {
+    const blackCardCount = d.cards.filter((c) => c.type === 'black').length;
+    const whiteCardCount = d.cards.filter((c) => c.type === 'white').length;
     return {
       id: d.id,
       name: d.name,
@@ -183,18 +200,18 @@ export async function aggregateCardPool(deckIds: string[]): Promise<{
   const decksData = await getDecksByIds(deckIds);
 
   // Flatten all cards from all decks
-  const allCards = decksData.flatMap(d => d.cards);
+  const allCards = decksData.flatMap((d) => d.cards);
 
   // Separate by type
-  const blackCards = allCards.filter(c => c.type === 'black');
-  const whiteCards = allCards.filter(c => c.type === 'white');
+  const blackCards = allCards.filter((c) => c.type === 'black');
+  const whiteCards = allCards.filter((c) => c.type === 'white');
 
   // Remove duplicates (same card ID)
   const uniqueBlackCards = Array.from(
-    new Map(blackCards.map(c => [c.id, c])).values(),
+    new Map(blackCards.map((c) => [c.id, c])).values(),
   );
   const uniqueWhiteCards = Array.from(
-    new Map(whiteCards.map(c => [c.id, c])).values(),
+    new Map(whiteCards.map((c) => [c.id, c])).values(),
   );
 
   // Shuffle both arrays
@@ -245,12 +262,22 @@ export async function validateCardPool(
  * Convert deck with cards to DeckInfo format
  */
 function toDeckInfo(
-  deckData: { id: string; name: string; description: string | null; userId: string; cards: Card[] },
+  deckData: {
+    id: string;
+    name: string;
+    description: string | null;
+    userId: string;
+    cards: Card[];
+  },
   isSystem: boolean,
   sharedBy?: string,
 ): DeckInfo {
-  const blackCardCount = deckData.cards.filter(c => c.type === 'black').length;
-  const whiteCardCount = deckData.cards.filter(c => c.type === 'white').length;
+  const blackCardCount = deckData.cards.filter(
+    (c) => c.type === 'black',
+  ).length;
+  const whiteCardCount = deckData.cards.filter(
+    (c) => c.type === 'white',
+  ).length;
 
   return {
     id: deckData.id,

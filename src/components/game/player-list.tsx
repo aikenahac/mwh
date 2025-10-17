@@ -30,16 +30,27 @@ export function PlayerList({ players, czarId }: PlayerListProps) {
         <Card key={player.id}>
           <CardContent className="flex items-center justify-between p-2 sm:p-3">
             <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
-              {player.isOwner && <Crown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-yellow-500 flex-shrink-0" />}
-              {player.id === czarId && <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-500 flex-shrink-0" />}
-              <span className="text-sm sm:text-base font-medium truncate">{player.nickname}</span>
+              {player.isOwner && (
+                <Crown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-yellow-500 flex-shrink-0" />
+              )}
+              {player.id === czarId && (
+                <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-500 flex-shrink-0" />
+              )}
+              <span className="text-sm sm:text-base font-medium truncate">
+                {player.nickname}
+              </span>
               {!player.isConnected && (
-                <Badge variant="secondary" className="text-[10px] sm:text-xs flex-shrink-0 px-1 py-0">
+                <Badge
+                  variant="secondary"
+                  className="text-[10px] sm:text-xs flex-shrink-0 px-1 py-0"
+                >
                   disconnected
                 </Badge>
               )}
             </div>
-            <div className="text-sm sm:text-base font-bold flex-shrink-0 ml-2">{player.score}</div>
+            <div className="text-sm sm:text-base font-bold flex-shrink-0 ml-2">
+              {player.score}
+            </div>
           </CardContent>
         </Card>
       ))}

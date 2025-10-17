@@ -9,7 +9,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { completedGamePlayer } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
-import type { ApiResponse, PaginatedGameHistory, GameHistoryItem } from '@/lib/game/types';
+import type {
+  ApiResponse,
+  PaginatedGameHistory,
+  GameHistoryItem,
+} from '@/lib/game/types';
 
 export async function GET(request: NextRequest) {
   try {
@@ -60,11 +64,15 @@ export async function GET(request: NextRequest) {
       offset,
     });
 
-    console.log(`[game/history] Found ${playerGames.length} games for page ${page}`);
+    console.log(
+      `[game/history] Found ${playerGames.length} games for page ${page}`,
+    );
 
     // Sort by completion date (most recent first)
-    playerGames.sort((a, b) =>
-      new Date(b.completedGame.completedAt).getTime() - new Date(a.completedGame.completedAt).getTime()
+    playerGames.sort(
+      (a, b) =>
+        new Date(b.completedGame.completedAt).getTime() -
+        new Date(a.completedGame.completedAt).getTime(),
     );
 
     // Transform to GameHistoryItem format
