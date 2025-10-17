@@ -53,19 +53,37 @@ export default function GameSessionPage() {
   useEffect(() => {
     if (!socket || !connected || !sessionId) return;
 
+    // For guests, check if we have a stored player ID
+    const storedPlayerId = sessionStorage.getItem(`game_player_${sessionId}`);
+    console.log('[GameSession] Reconnecting with storedPlayerId:', storedPlayerId, 'clerkUserId:', user?.id);
+
     // Try to reconnect first (in case we disconnected)
     socket.emit(
       'reconnect-to-game',
-      { sessionId, clerkUserId: user?.id || null },
-      (response) => {
+      { sessionId, clerkUserId: user?.id || null, playerId: storedPlayerId || undefined },
+      async (response) => {
         if (response.success && response.data) {
           setSession(response.data.session);
-          if (response.data.hand) {
-            // TODO: Fetch full card data for hand
+          if (response.data.hand && response.data.hand.length > 0) {
+            // Fetch full card data for hand
+            try {
+              const cardResponse = await fetch('/api/game/cards', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cardIds: response.data.hand }),
+              });
+              const cardResult = await cardResponse.json();
+              if (cardResult.success) {
+                setMyHand(cardResult.data);
+              }
+            } catch (error) {
+              console.error('Failed to fetch reconnect hand cards:', error);
+            }
           }
           setLoading(false);
         } else {
           // Not in game yet or can't reconnect
+          console.log('[GameSession] Reconnect failed:', response.error);
           setLoading(false);
         }
       },
@@ -165,10 +183,21 @@ export default function GameSessionPage() {
       setSubmissions([]);
     });
 
-    socket.on('cards-dealt', (data) => {
-      // TODO: Fetch full card data from IDs
-      // For now, store IDs
-      console.log('Cards dealt:', data.hand);
+    socket.on('cards-dealt', async (data) => {
+      // Fetch full card data from IDs
+      try {
+        const response = await fetch('/api/game/cards', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cardIds: data.hand }),
+        });
+        const result = await response.json();
+        if (result.success) {
+          setMyHand(result.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch hand cards:', error);
+      }
     });
 
     socket.on('card-submitted', (data) => {
@@ -190,6 +219,17 @@ export default function GameSessionPage() {
     socket.on('winner-selected', (data) => {
       toast.success(`${data.winnerNickname} won the round!`);
       setSubmissions(data.allSubmissions);
+
+      // Update player scores
+      setSession((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          players: prev.players.map((p) =>
+            p.id === data.winnerId ? { ...p, score: data.points } : p
+          ),
+        };
+      });
     });
 
     socket.on('round-ended', (data) => {
@@ -286,14 +326,9 @@ export default function GameSessionPage() {
 
       {/* Playing State */}
       {session.status === 'playing' && currentRound && (
-        <div className="space-y-6">
-          {/* Sidebar with players */}
-          <div className="fixed right-4 top-20 w-64 max-h-[calc(100vh-6rem)] overflow-y-auto">
-            <PlayerList players={session.players} czarId={currentRound.czarPlayerId} />
-          </div>
-
-          {/* Main game board */}
-          <div className="mr-72">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 p-4">
+          {/* Main game board - full width on mobile, flex-grow on desktop */}
+          <div className="flex-1 min-w-0">
             <GameBoard
               socket={socket}
               currentRound={currentRound}
@@ -301,6 +336,13 @@ export default function GameSessionPage() {
               isCzar={isCzar || false}
               submissions={isCzar ? submissions : undefined}
             />
+          </div>
+
+          {/* Sidebar with players - bottom on mobile, right sidebar on desktop */}
+          <div className="lg:w-64 lg:flex-shrink-0">
+            <div className="lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
+              <PlayerList players={session.players} czarId={currentRound.czarPlayerId} />
+            </div>
           </div>
         </div>
       )}

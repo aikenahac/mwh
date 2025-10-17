@@ -12,6 +12,12 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { useTranslations } from 'next-intl';
 import type { PaginatedGameHistory } from '@/lib/game/types';
 import { Trophy, Users, Clock } from 'lucide-react';
@@ -24,6 +30,10 @@ export default function GameHistoryPage() {
   const [history, setHistory] = useState<PaginatedGameHistory | null>(null);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const [deckDialogOpen, setDeckDialogOpen] = useState(false);
+  const [selectedGameDecks, setSelectedGameDecks] = useState<Array<{ id: string; name: string }>>([]);
+
+  const MAX_VISIBLE_DECKS = 15;
 
   useEffect(() => {
     if (!user) return;
@@ -36,8 +46,12 @@ export default function GameHistoryPage() {
         );
         const data = await response.json();
 
+        console.log('[GameHistory] Response:', data);
+
         if (data.success) {
           setHistory(data.data);
+        } else {
+          console.error('[GameHistory] API error:', data.error);
         }
       } catch (error) {
         console.error('[GameHistory] Error fetching history:', error);
@@ -115,11 +129,24 @@ export default function GameHistoryPage() {
 
                     {/* Decks */}
                     <div className="flex flex-wrap gap-2">
-                      {game.decks.map((deck) => (
+                      {game.decks.slice(0, MAX_VISIBLE_DECKS).map((deck) => (
                         <Badge key={deck.id} variant="secondary">
                           {deck.name}
                         </Badge>
                       ))}
+                      {game.decks.length > MAX_VISIBLE_DECKS && (
+                        <Badge
+                          variant="outline"
+                          className="cursor-pointer hover:bg-accent"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedGameDecks(game.decks);
+                            setDeckDialogOpen(true);
+                          }}
+                        >
+                          +{game.decks.length - MAX_VISIBLE_DECKS} more
+                        </Badge>
+                      )}
                     </div>
 
                     {/* Stats */}
@@ -179,6 +206,26 @@ export default function GameHistoryPage() {
           </div>
         )}
       </div>
+
+      {/* All Decks Dialog */}
+      <Dialog open={deckDialogOpen} onOpenChange={setDeckDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>All Decks ({selectedGameDecks.length})</DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-4">
+            {selectedGameDecks.map((deck) => (
+              <div
+                key={deck.id}
+                className="p-2 rounded-md border bg-card text-sm truncate"
+                title={deck.name}
+              >
+                {deck.name}
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

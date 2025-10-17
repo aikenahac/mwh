@@ -9,6 +9,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useUser } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { PlayerList } from './player-list';
@@ -29,6 +30,7 @@ interface GameLobbyProps {
 
 export function GameLobby({ session, socket, isOwner }: GameLobbyProps) {
   const t = useTranslations();
+  const { user } = useUser();
   const [starting, setStarting] = useState(false);
 
   const handleStartGame = () => {
@@ -39,7 +41,10 @@ export function GameLobby({ session, socket, isOwner }: GameLobbyProps) {
     }
 
     setStarting(true);
-    socket.emit('start-game', { sessionId: session.id }, (response) => {
+    socket.emit('start-game', {
+      sessionId: session.id,
+      clerkUserId: user?.id || null
+    }, (response) => {
       if (!response.success) {
         toast.error(response.error?.message);
         setStarting(false);
@@ -48,39 +53,19 @@ export function GameLobby({ session, socket, isOwner }: GameLobbyProps) {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6">
+    <div className="max-w-6xl mx-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold">{t('game.lobby')}</h1>
+      <div className="text-center space-y-3 sm:space-y-4">
+        <h1 className="text-2xl sm:text-3xl font-bold">{t('game.lobby')}</h1>
         <Card>
-          <CardContent className="flex items-center justify-center gap-2 p-4">
-            <span className="text-sm">{t('game.joinCode')}:</span>
-            <span className="text-2xl font-mono font-bold">{session.joinCode}</span>
+          <CardContent className="flex items-center justify-center gap-2 p-3 sm:p-4">
+            <span className="text-xs sm:text-sm">{t('game.joinCode')}:</span>
+            <span className="text-xl sm:text-2xl font-mono font-bold">{session.joinCode}</span>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Players */}
-        <div>
-          <h2 className="text-xl font-semibold mb-4">{t('game.players')}</h2>
-          <PlayerList players={session.players} />
-        </div>
-
-        {/* Deck Selection (Owner Only) */}
-        {isOwner && (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">{t('game.selectDecks')}</h2>
-            <DeckSelector
-              sessionId={session.id}
-              socket={socket}
-              selectedDeckIds={session.selectedDeckIds}
-            />
-          </div>
-        )}
-      </div>
-
-      {/* Start Button (Owner Only) */}
+      {/* Start Button (Owner Only) - Moved to top */}
       {isOwner && (
         <div className="flex justify-center">
           <Button
@@ -91,11 +76,32 @@ export function GameLobby({ session, socket, isOwner }: GameLobbyProps) {
               session.players.length < 3 ||
               session.selectedDeckIds.length === 0
             }
+            className="w-full sm:w-auto"
           >
             {starting ? t('game.starting') : t('game.startGame')}
           </Button>
         </div>
       )}
+
+      <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
+        {/* Players */}
+        <div>
+          <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">{t('game.players')}</h2>
+          <PlayerList players={session.players} />
+        </div>
+
+        {/* Deck Selection (Owner Only) */}
+        {isOwner && (
+          <div>
+            <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">{t('game.selectDecks')}</h2>
+            <DeckSelector
+              sessionId={session.id}
+              socket={socket}
+              selectedDeckIds={session.selectedDeckIds}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
