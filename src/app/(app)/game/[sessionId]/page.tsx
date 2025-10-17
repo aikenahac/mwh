@@ -22,7 +22,6 @@ import type {
   RoundData,
   SubmissionData,
   GameEndData,
-  PlayerData,
 } from '@/lib/game/types';
 import type { Card } from '@/lib/db/schema';
 

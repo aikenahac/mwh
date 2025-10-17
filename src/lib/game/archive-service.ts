@@ -17,24 +17,17 @@
 import { db } from '@/lib/db';
 import {
   gameSession,
-  player,
-  round,
-  submission,
-  gameSessionDeck,
   completedGame,
   completedGameDeck,
   completedGamePlayer,
   completedRound,
   playerStatistic,
-  card,
-  type GameSession,
   type Player,
   type Round,
-  type Submission,
 } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { sql } from 'drizzle-orm';
-import type { GameEndData, GameSettings } from './types';
+import type { GameEndData } from './types';
 import { GameError, GameErrorCode } from './types';
 
 /**
@@ -184,6 +177,7 @@ export async function archiveCompletedGame(sessionId: string): Promise<GameEndDa
  * Called within transaction for each player
  */
 async function updatePlayerStatistics(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tx: any,
   userId: string,
   gameData: {

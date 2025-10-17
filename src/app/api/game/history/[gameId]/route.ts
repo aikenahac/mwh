@@ -7,9 +7,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { completedGame, completedGamePlayer, completedRound, card } from '@/lib/db/schema';
+import { completedGame, card } from '@/lib/db/schema';
 import { eq, inArray } from 'drizzle-orm';
-import type { ApiResponse, GameDetailsData } from '@/lib/game/types';
+import type { ApiResponse, GameDetailsData, GameSettings } from '@/lib/game/types';
 
 export async function GET(
   request: NextRequest,
@@ -129,7 +129,7 @@ export async function GET(
       durationMinutes: game.durationMinutes,
       totalRoundsPlayed: game.totalRoundsPlayed,
       wasAbandoned: game.wasAbandoned,
-      settings: game.settings as any,
+      settings: game.settings as GameSettings,
       winner: {
         userId: winner.clerkUserId,
         nickname: winner.nickname,

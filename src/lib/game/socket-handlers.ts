@@ -13,12 +13,12 @@
  */
 
 import type { Socket, Server as SocketIOServer } from 'socket.io';
-import type { ClientToServerEvents, ServerToClientEvents, SocketResponse } from './types';
+import type { ClientToServerEvents, ServerToClientEvents } from './types';
 import * as gameService from './game-service';
 import * as deckService from './deck-service';
 import * as archiveService from './archive-service';
 import { db } from '@/lib/db';
-import { player, round, submission, card, gameSession } from '@/lib/db/schema';
+import { player, round, gameSession } from '@/lib/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { GameError, GameErrorCode } from './types';
 import type { Card } from '@/lib/db/schema';
