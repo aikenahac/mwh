@@ -29,10 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Fetch cards from database
-    const cards = await db
-      .select()
-      .from(card)
-      .where(inArray(card.id, cardIds));
+    const cards = await db.select().from(card).where(inArray(card.id, cardIds));
 
     // Maintain the order of cardIds
     const orderedCards = cardIds

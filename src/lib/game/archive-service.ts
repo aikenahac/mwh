@@ -34,7 +34,9 @@ import { GameError, GameErrorCode } from './types';
  * Archive a completed game
  * Uses PostgreSQL transaction to ensure atomicity
  */
-export async function archiveCompletedGame(sessionId: string): Promise<GameEndData> {
+export async function archiveCompletedGame(
+  sessionId: string,
+): Promise<GameEndData> {
   return await db.transaction(async (tx) => {
     // 1. Fetch all game data
     const session = await tx.query.gameSession.findFirst({
@@ -52,7 +54,10 @@ export async function archiveCompletedGame(sessionId: string): Promise<GameEndDa
     });
 
     if (!session) {
-      throw new GameError(GameErrorCode.GAME_NOT_FOUND, 'Game session not found');
+      throw new GameError(
+        GameErrorCode.GAME_NOT_FOUND,
+        'Game session not found',
+      );
     }
 
     // 2. Calculate game statistics
@@ -62,7 +67,9 @@ export async function archiveCompletedGame(sessionId: string): Promise<GameEndDa
     );
 
     // Sort players by score (descending)
-    const sortedPlayers = [...session.players].sort((a, b) => b.score - a.score);
+    const sortedPlayers = [...session.players].sort(
+      (a, b) => b.score - a.score,
+    );
     const winner = sortedPlayers[0];
 
     // Calculate placements (handle ties)
@@ -128,8 +135,12 @@ export async function archiveCompletedGame(sessionId: string): Promise<GameEndDa
         completedGameId: completedGameRecord.id,
         roundNumber: r.roundNumber,
         blackCardId: r.blackCardId,
-        czarUserId: session.players.find((p) => p.id === r.czarPlayerId)?.clerkUserId || null,
-        winnerUserId: session.players.find((p) => p.id === r.winnerPlayerId)?.clerkUserId || null,
+        czarUserId:
+          session.players.find((p) => p.id === r.czarPlayerId)?.clerkUserId ||
+          null,
+        winnerUserId:
+          session.players.find((p) => p.id === r.winnerPlayerId)?.clerkUserId ||
+          null,
         winningSubmission: (winningSubmission?.cardIds as string[]) || [],
         allSubmissions: roundSubmissions,
         completedAt: r.completedAt || now,
@@ -196,7 +207,8 @@ async function updatePlayerStatistics(
   if (existing) {
     // Update existing stats
     const newTotalGamesPlayed = existing.totalGamesPlayed + 1;
-    const newTotalGamesWon = existing.totalGamesWon + (gameData.gameWon ? 1 : 0);
+    const newTotalGamesWon =
+      existing.totalGamesWon + (gameData.gameWon ? 1 : 0);
     const newWinRate = newTotalGamesWon / newTotalGamesPlayed;
 
     await tx

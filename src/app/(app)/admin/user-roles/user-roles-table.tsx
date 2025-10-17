@@ -109,8 +109,8 @@ function ActionsCell({ row }: { row: { original: UserRoleData } }) {
           <AlertDialogTitle>Remove user role?</AlertDialogTitle>
           <AlertDialogDescription>
             This will remove the role assignment for {displayName} (
-            {row.original.clerkUser.email}). This action cannot be undone, but you
-            can re-add the user later.
+            {row.original.clerkUser.email}). This action cannot be undone, but
+            you can re-add the user later.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -217,7 +217,7 @@ export function UserRolesTable({ users }: UserRolesTableProps) {
         cell: ({ row }) => <ActionsCell row={row} />,
       },
     ],
-    []
+    [],
   );
 
   const table = useReactTable({
@@ -260,7 +260,7 @@ export function UserRolesTable({ users }: UserRolesTableProps) {
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                 </TableHead>
               ))}

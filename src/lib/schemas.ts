@@ -8,12 +8,16 @@ export const createDeckFormSchema = z.object({
 export const shareDeckSchema = z.object({
   deckId: z.string().uuid({ message: 'Invalid deck ID' }),
   username: z.string().min(1, { message: 'Username is required' }),
-  permission: z.enum(['view', 'collaborate'], { message: 'Permission must be either view or collaborate' }),
+  permission: z.enum(['view', 'collaborate'], {
+    message: 'Permission must be either view or collaborate',
+  }),
 });
 
 export const updateSharePermissionSchema = z.object({
   shareId: z.string().uuid({ message: 'Invalid share ID' }),
-  permission: z.enum(['view', 'collaborate'], { message: 'Permission must be either view or collaborate' }),
+  permission: z.enum(['view', 'collaborate'], {
+    message: 'Permission must be either view or collaborate',
+  }),
 });
 
 export const removeShareSchema = z.object({

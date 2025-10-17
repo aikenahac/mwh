@@ -31,7 +31,9 @@ export default function GameHistoryPage() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [deckDialogOpen, setDeckDialogOpen] = useState(false);
-  const [selectedGameDecks, setSelectedGameDecks] = useState<Array<{ id: string; name: string }>>([]);
+  const [selectedGameDecks, setSelectedGameDecks] = useState<
+    Array<{ id: string; name: string }>
+  >([]);
 
   const MAX_VISIBLE_DECKS = 15;
 
@@ -153,11 +155,15 @@ export default function GameHistoryPage() {
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Users className="h-4 w-4" />
-                        <span>{game.playerCount} {t('game.players')}</span>
+                        <span>
+                          {game.playerCount} {t('game.players')}
+                        </span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Clock className="h-4 w-4" />
-                        <span>{game.durationMinutes} {t('game.minutes')}</span>
+                        <span>
+                          {game.durationMinutes} {t('game.minutes')}
+                        </span>
                       </div>
                       <span>
                         {game.totalRoundsPlayed} {t('game.rounds')}
@@ -198,7 +204,9 @@ export default function GameHistoryPage() {
             </span>
             <Button
               variant="outline"
-              onClick={() => setPage((p) => Math.min(history.totalPages, p + 1))}
+              onClick={() =>
+                setPage((p) => Math.min(history.totalPages, p + 1))
+              }
               disabled={page === history.totalPages}
             >
               {t('common.next')}

@@ -18,7 +18,10 @@ import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import type { GameSessionData } from '@/lib/game/types';
 import type { Socket } from 'socket.io-client';
-import type { ClientToServerEvents, ServerToClientEvents } from '@/lib/game/types';
+import type {
+  ClientToServerEvents,
+  ServerToClientEvents,
+} from '@/lib/game/types';
 
 type GameSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -41,15 +44,19 @@ export function GameLobby({ session, socket, isOwner }: GameLobbyProps) {
     }
 
     setStarting(true);
-    socket.emit('start-game', {
-      sessionId: session.id,
-      clerkUserId: user?.id || null
-    }, (response) => {
-      if (!response.success) {
-        toast.error(response.error?.message);
-        setStarting(false);
-      }
-    });
+    socket.emit(
+      'start-game',
+      {
+        sessionId: session.id,
+        clerkUserId: user?.id || null,
+      },
+      (response) => {
+        if (!response.success) {
+          toast.error(response.error?.message);
+          setStarting(false);
+        }
+      },
+    );
   };
 
   return (
@@ -60,7 +67,9 @@ export function GameLobby({ session, socket, isOwner }: GameLobbyProps) {
         <Card>
           <CardContent className="flex items-center justify-center gap-2 p-3 sm:p-4">
             <span className="text-xs sm:text-sm">{t('game.joinCode')}:</span>
-            <span className="text-xl sm:text-2xl font-mono font-bold">{session.joinCode}</span>
+            <span className="text-xl sm:text-2xl font-mono font-bold">
+              {session.joinCode}
+            </span>
           </CardContent>
         </Card>
       </div>
@@ -86,14 +95,18 @@ export function GameLobby({ session, socket, isOwner }: GameLobbyProps) {
       <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
         {/* Players */}
         <div>
-          <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">{t('game.players')}</h2>
+          <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">
+            {t('game.players')}
+          </h2>
           <PlayerList players={session.players} />
         </div>
 
         {/* Deck Selection (Owner Only) */}
         {isOwner && (
           <div>
-            <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">{t('game.selectDecks')}</h2>
+            <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">
+              {t('game.selectDecks')}
+            </h2>
             <DeckSelector
               sessionId={session.id}
               socket={socket}

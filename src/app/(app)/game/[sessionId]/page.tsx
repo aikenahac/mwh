@@ -54,12 +54,21 @@ export default function GameSessionPage() {
 
     // For guests, check if we have a stored player ID
     const storedPlayerId = sessionStorage.getItem(`game_player_${sessionId}`);
-    console.log('[GameSession] Reconnecting with storedPlayerId:', storedPlayerId, 'clerkUserId:', user?.id);
+    console.log(
+      '[GameSession] Reconnecting with storedPlayerId:',
+      storedPlayerId,
+      'clerkUserId:',
+      user?.id,
+    );
 
     // Try to reconnect first (in case we disconnected)
     socket.emit(
       'reconnect-to-game',
-      { sessionId, clerkUserId: user?.id || null, playerId: storedPlayerId || undefined },
+      {
+        sessionId,
+        clerkUserId: user?.id || null,
+        playerId: storedPlayerId || undefined,
+      },
       async (response) => {
         if (response.success && response.data) {
           setSession(response.data.session);
@@ -225,7 +234,7 @@ export default function GameSessionPage() {
         return {
           ...prev,
           players: prev.players.map((p) =>
-            p.id === data.winnerId ? { ...p, score: data.points } : p
+            p.id === data.winnerId ? { ...p, score: data.points } : p,
           ),
         };
       });
@@ -340,7 +349,10 @@ export default function GameSessionPage() {
           {/* Sidebar with players - bottom on mobile, right sidebar on desktop */}
           <div className="lg:w-64 lg:flex-shrink-0">
             <div className="lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
-              <PlayerList players={session.players} czarId={currentRound.czarPlayerId} />
+              <PlayerList
+                players={session.players}
+                czarId={currentRound.czarPlayerId}
+              />
             </div>
           </div>
         </div>

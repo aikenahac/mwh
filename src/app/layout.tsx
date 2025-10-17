@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_BASE_URL || 'https://gomwh.com'
+    process.env.NEXT_PUBLIC_BASE_URL || 'https://gomwh.com',
   ),
   title: {
     default: 'Mess with Humanity - Create Custom Cards Against Humanity Decks',

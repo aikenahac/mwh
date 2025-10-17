@@ -9,11 +9,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { completedGame, card } from '@/lib/db/schema';
 import { eq, inArray } from 'drizzle-orm';
-import type { ApiResponse, GameDetailsData, GameSettings } from '@/lib/game/types';
+import type {
+  ApiResponse,
+  GameDetailsData,
+  GameSettings,
+} from '@/lib/game/types';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { gameId: string } }
+  { params }: { params: { gameId: string } },
 ) {
   try {
     const searchParams = request.nextUrl.searchParams;
@@ -69,19 +73,24 @@ export async function GET(
     }
 
     // Get winner
-    const winner = game.players.find((p) => p.placement === 1) || game.players[0];
+    const winner =
+      game.players.find((p) => p.placement === 1) || game.players[0];
 
     // Fetch all card IDs needed for rounds
     const allCardIds = new Set<string>();
     for (const round of game.rounds) {
       allCardIds.add(round.blackCardId);
       if (round.winningSubmission) {
-        (round.winningSubmission as string[]).forEach((id) => allCardIds.add(id));
+        (round.winningSubmission as string[]).forEach((id) =>
+          allCardIds.add(id),
+        );
       }
       if (round.allSubmissions) {
-        (round.allSubmissions as Array<{ cardIds: string[] }>).forEach((sub) => {
-          sub.cardIds.forEach((id) => allCardIds.add(id));
-        });
+        (round.allSubmissions as Array<{ cardIds: string[] }>).forEach(
+          (sub) => {
+            sub.cardIds.forEach((id) => allCardIds.add(id));
+          },
+        );
       }
     }
 
@@ -95,15 +104,17 @@ export async function GET(
     // Transform rounds data
     const roundsData = game.rounds.map((round) => {
       const blackCard = cardMap.get(round.blackCardId)!;
-      const winningCards = (round.winningSubmission as string[] || [])
+      const winningCards = ((round.winningSubmission as string[]) || [])
         .map((id) => cardMap.get(id))
         .filter((c) => c !== undefined);
 
-      const allSubmissions = (round.allSubmissions as Array<{
-        playerId: string;
-        nickname: string;
-        cardIds: string[];
-      }> || []).map((sub) => ({
+      const allSubmissions = (
+        (round.allSubmissions as Array<{
+          playerId: string;
+          nickname: string;
+          cardIds: string[];
+        }>) || []
+      ).map((sub) => ({
         playerNickname: sub.nickname,
         cards: sub.cardIds
           .map((id) => cardMap.get(id))
@@ -113,8 +124,12 @@ export async function GET(
       return {
         roundNumber: round.roundNumber,
         blackCard,
-        czarNickname: game.players.find((p) => p.clerkUserId === round.czarUserId)?.nickname || 'Unknown',
-        winnerNickname: game.players.find((p) => p.clerkUserId === round.winnerUserId)?.nickname || 'Unknown',
+        czarNickname:
+          game.players.find((p) => p.clerkUserId === round.czarUserId)
+            ?.nickname || 'Unknown',
+        winnerNickname:
+          game.players.find((p) => p.clerkUserId === round.winnerUserId)
+            ?.nickname || 'Unknown',
         winningSubmission: winningCards,
         allSubmissions,
         completedAt: round.completedAt,
@@ -156,7 +171,10 @@ export async function GET(
       data: gameDetails,
     });
   } catch (error) {
-    console.error('[game/history/[gameId]] Error fetching game details:', error);
+    console.error(
+      '[game/history/[gameId]] Error fetching game details:',
+      error,
+    );
     return NextResponse.json<ApiResponse>({
       success: false,
       error: {

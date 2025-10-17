@@ -49,9 +49,10 @@ export async function getDecks(userId: string) {
 
   // Get all decks (owned by user or shared with user)
   const decksWithCards = await db.query.deck.findMany({
-    where: sharedIds.length > 0
-      ? or(eq(deck.userId, userId), inArray(deck.id, sharedIds))
-      : eq(deck.userId, userId),
+    where:
+      sharedIds.length > 0
+        ? or(eq(deck.userId, userId), inArray(deck.id, sharedIds))
+        : eq(deck.userId, userId),
     with: {
       cards: true,
       shares: true,
@@ -62,7 +63,10 @@ export async function getDecks(userId: string) {
   return res;
 }
 
-export async function getDeckById(id: string, userId: string): Promise<Result<Deck, Error>> {
+export async function getDeckById(
+  id: string,
+  userId: string,
+): Promise<Result<Deck, Error>> {
   if (!id) {
     return {
       data: null,

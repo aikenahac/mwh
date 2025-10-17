@@ -7,7 +7,10 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
-import type { ClientToServerEvents, ServerToClientEvents } from '@/lib/game/types';
+import type {
+  ClientToServerEvents,
+  ServerToClientEvents,
+} from '@/lib/game/types';
 
 type GameSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 

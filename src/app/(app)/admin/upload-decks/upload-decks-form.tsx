@@ -98,12 +98,20 @@ export function UploadDecksForm() {
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>File Source</AlertTitle>
           <AlertDescription className="block">
-            Download the <span className="font-mono text-sm">full.json</span> file from <a
+            Download the <span className="font-mono text-sm">full.json</span>{' '}
+            file from{' '}
+            <a
               href="https://crhallberg.com/cah"
               target="_blank"
               rel="noopener noreferrer"
               className="underline hover:text-primary"
-            >crhallberg.com/cah</a>. The file must follow the exact format with <span className="font-mono text-sm">name</span>, <span className="font-mono text-sm">white</span>, and <span className="font-mono text-sm">black</span> arrays.
+            >
+              crhallberg.com/cah
+            </a>
+            . The file must follow the exact format with{' '}
+            <span className="font-mono text-sm">name</span>,{' '}
+            <span className="font-mono text-sm">white</span>, and{' '}
+            <span className="font-mono text-sm">black</span> arrays.
           </AlertDescription>
         </Alert>
 
@@ -178,10 +186,17 @@ export function UploadDecksForm() {
                   Upload Successful!
                 </AlertTitle>
                 <AlertDescription className="text-green-600 block">
-                  Successfully imported {progress.processedDecks - progress.skippedDecks.length} deck(s) with {(progress.processedCards - progress.skippedCards).toLocaleString()} card(s).
+                  Successfully imported{' '}
+                  {progress.processedDecks - progress.skippedDecks.length}{' '}
+                  deck(s) with{' '}
+                  {(
+                    progress.processedCards - progress.skippedCards
+                  ).toLocaleString()}{' '}
+                  card(s).
                   {progress.skippedDecks.length > 0 && (
                     <span className="block mt-1">
-                      Skipped {progress.skippedDecks.length} existing deck(s) with {progress.skippedCards.toLocaleString()} card(s).
+                      Skipped {progress.skippedDecks.length} existing deck(s)
+                      with {progress.skippedCards.toLocaleString()} card(s).
                     </span>
                   )}
                 </AlertDescription>
@@ -191,8 +206,10 @@ export function UploadDecksForm() {
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Upload Completed with Errors</AlertTitle>
                 <AlertDescription className="block">
-                  {progress.processedDecks - progress.errors.length - progress.skippedDecks.length} deck(s)
-                  imported successfully.
+                  {progress.processedDecks -
+                    progress.errors.length -
+                    progress.skippedDecks.length}{' '}
+                  deck(s) imported successfully.
                 </AlertDescription>
               </Alert>
             )}

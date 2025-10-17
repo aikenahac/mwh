@@ -18,7 +18,7 @@ export interface DeckPermissions {
  */
 export async function getUserDeckPermissions(
   deckId: string,
-  userId: string
+  userId: string,
 ): Promise<DeckPermissions> {
   // Get the deck with share information in a single query
   const deckWithShare = await db.query.deck.findFirst({
@@ -75,7 +75,10 @@ export async function getUserDeckPermissions(
 /**
  * Check if user can view a deck
  */
-export async function canViewDeck(deckId: string, userId: string): Promise<boolean> {
+export async function canViewDeck(
+  deckId: string,
+  userId: string,
+): Promise<boolean> {
   const permissions = await getUserDeckPermissions(deckId, userId);
   return permissions.canView;
 }
@@ -83,7 +86,10 @@ export async function canViewDeck(deckId: string, userId: string): Promise<boole
 /**
  * Check if user can edit a deck or its cards
  */
-export async function canEditDeck(deckId: string, userId: string): Promise<boolean> {
+export async function canEditDeck(
+  deckId: string,
+  userId: string,
+): Promise<boolean> {
   const permissions = await getUserDeckPermissions(deckId, userId);
   return permissions.canEdit;
 }
@@ -91,7 +97,10 @@ export async function canEditDeck(deckId: string, userId: string): Promise<boole
 /**
  * Check if user can share a deck
  */
-export async function canShareDeck(deckId: string, userId: string): Promise<boolean> {
+export async function canShareDeck(
+  deckId: string,
+  userId: string,
+): Promise<boolean> {
   const permissions = await getUserDeckPermissions(deckId, userId);
   return permissions.canShare;
 }
@@ -99,7 +108,10 @@ export async function canShareDeck(deckId: string, userId: string): Promise<bool
 /**
  * Check if user is the owner of a deck
  */
-export async function isOwnerOfDeck(deckId: string, userId: string): Promise<boolean> {
+export async function isOwnerOfDeck(
+  deckId: string,
+  userId: string,
+): Promise<boolean> {
   const deckResult = await db.query.deck.findFirst({
     where: eq(deck.id, deckId),
   });

@@ -84,7 +84,10 @@ export function CreateCardEditor({
               <Label htmlFor="card_pick" className="text-right font-bold">
                 {t('card.editor.pickLabel')}
               </Label>
-              <ToggleGroup type="single" value={isCustomPick ? 'custom' : pick.toString()}>
+              <ToggleGroup
+                type="single"
+                value={isCustomPick ? 'custom' : pick.toString()}
+              >
                 <ToggleGroupItem
                   onClick={() => setPick(1)}
                   value="1"
@@ -129,7 +132,10 @@ export function CreateCardEditor({
             </div>
             {isCustomPick && (
               <div className="flex flex-row gap-4 items-center">
-                <Label htmlFor="custom_pick" className="text-right font-bold whitespace-nowrap">
+                <Label
+                  htmlFor="custom_pick"
+                  className="text-right font-bold whitespace-nowrap"
+                >
                   Custom Value:
                 </Label>
                 <Input

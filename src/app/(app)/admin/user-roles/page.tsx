@@ -56,7 +56,7 @@ export default async function UserRolesPage() {
           },
         };
       }
-    })
+    }),
   );
 
   return (
@@ -92,8 +92,8 @@ export default async function UserRolesPage() {
           <div className="mb-4">
             <h2 className="text-xl font-semibold">Users with Roles</h2>
             <p className="text-sm text-muted-foreground">
-              {usersData.length} user{usersData.length !== 1 ? 's' : ''} with assigned
-              roles
+              {usersData.length} user{usersData.length !== 1 ? 's' : ''} with
+              assigned roles
             </p>
           </div>
           <UserRolesTable users={usersData} />

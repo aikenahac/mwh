@@ -88,7 +88,7 @@ export function SystemDecksTable({ decks }: SystemDecksTableProps) {
         ),
       },
     ],
-    []
+    [],
   );
 
   const table = useReactTable({
@@ -133,7 +133,7 @@ export function SystemDecksTable({ decks }: SystemDecksTableProps) {
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                 </TableHead>
               ))}
@@ -155,14 +155,17 @@ export function SystemDecksTable({ decks }: SystemDecksTableProps) {
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
                 </TableRow>
                 {row.getIsExpanded() && (
                   <TableRow>
-                    <TableCell colSpan={columns.length} className="bg-muted/30 p-0">
+                    <TableCell
+                      colSpan={columns.length}
+                      className="bg-muted/30 p-0"
+                    >
                       <div className="p-4">
                         <h4 className="text-sm font-semibold mb-3">
                           Cards ({row.original.cards.length})
@@ -190,7 +193,9 @@ export function SystemDecksTable({ decks }: SystemDecksTableProps) {
                                     : '—'}
                                 </span>
                                 <span className="text-muted-foreground text-xs text-right">
-                                  {new Date(card.createdAt).toLocaleDateString()}
+                                  {new Date(
+                                    card.createdAt,
+                                  ).toLocaleDateString()}
                                 </span>
                               </div>
                             ))}

@@ -34,5 +34,5 @@ export const Routes = {
   ADMIN_SYSTEM_DECKS: '/admin/system-decks',
   ADMIN_USER_ROLES: '/admin/user-roles',
 
-  SOURCE_CODE: 'https://github.com/aikenahac/mwh'
+  SOURCE_CODE: 'https://github.com/aikenahac/mwh',
 };

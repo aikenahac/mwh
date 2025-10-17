@@ -18,9 +18,9 @@ export default function PrivacyPolicyPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">1. Who We Are</h2>
             <p className="mb-4">
-              Mess With Humanity (&quot;the App&quot;, &quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is operated and
-              distributed by Aerio, Aiken Tine Ahac s.p., registered in Slovenia
-              (EU).
+              Mess With Humanity (&quot;the App&quot;, &quot;we&quot;,
+              &quot;us&quot;, &quot;our&quot;) is operated and distributed by
+              Aerio, Aiken Tine Ahac s.p., registered in Slovenia (EU).
             </p>
             <p className="mb-4">
               If you have any questions, contact us at:
@@ -91,8 +91,8 @@ export default function PrivacyPolicyPage() {
             <p className="mb-4">
               If the app allows submissions, uploads, or user-generated content,
               we&apos;ll store that data for the purpose of displaying and
-              maintaining the app&apos;s functionality. You can delete your content
-              or request removal at any time.
+              maintaining the app&apos;s functionality. You can delete your
+              content or request removal at any time.
             </p>
           </section>
 
@@ -108,8 +108,8 @@ export default function PrivacyPolicyPage() {
               <li>Respond to support requests</li>
             </ul>
             <p className="mb-4">
-              We don&apos;t sell, rent, or share your data with third parties for
-              advertising or marketing.
+              We don&apos;t sell, rent, or share your data with third parties
+              for advertising or marketing.
             </p>
           </section>
 
@@ -147,7 +147,7 @@ export default function PrivacyPolicyPage() {
               <li>Lodge a complaint with your local data authority</li>
             </ul>
             <p className="mb-4">
-              To exercise these rights, contact us at {' '}
+              To exercise these rights, contact us at{' '}
               <a
                 href="mailto:info@gomwh.com"
                 className="text-primary hover:underline"
@@ -178,8 +178,8 @@ export default function PrivacyPolicyPage() {
             </h2>
             <p className="mb-4">
               We may update this Privacy Policy occasionally. Updates will be
-              posted here with a revised &quot;Effective Date.&quot; Continued use of the
-              app means you accept the changes.
+              posted here with a revised &quot;Effective Date.&quot; Continued
+              use of the app means you accept the changes.
             </p>
           </section>
         </CardContent>

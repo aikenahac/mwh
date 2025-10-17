@@ -8,18 +8,27 @@ import { isSuperAdmin } from '@/lib/auth/permissions';
 import { z } from 'zod';
 
 const whiteCardSchema = z.object({
-  text: z.string().min(1, 'Card text cannot be empty').max(1000, 'Card text too long'),
+  text: z
+    .string()
+    .min(1, 'Card text cannot be empty')
+    .max(1000, 'Card text too long'),
   pack: z.number().int(),
 });
 
 const blackCardSchema = z.object({
-  text: z.string().min(1, 'Card text cannot be empty').max(1000, 'Card text too long'),
+  text: z
+    .string()
+    .min(1, 'Card text cannot be empty')
+    .max(1000, 'Card text too long'),
   pick: z.number().int().min(1).max(10),
   pack: z.number().int(),
 });
 
 const deckDataSchema = z.object({
-  name: z.string().min(1, 'Deck name cannot be empty').max(255, 'Deck name too long'),
+  name: z
+    .string()
+    .min(1, 'Deck name cannot be empty')
+    .max(255, 'Deck name too long'),
   white: z.array(whiteCardSchema),
   black: z.array(blackCardSchema),
 });
@@ -37,7 +46,7 @@ export interface UploadProgress {
 }
 
 export async function uploadSystemDecks(
-  jsonContent: string
+  jsonContent: string,
 ): Promise<UploadProgress> {
   const { userId } = await auth();
 
@@ -71,7 +80,7 @@ export async function uploadSystemDecks(
     if (issues.length > 0) {
       const firstIssue = issues[0];
       throw new Error(
-        `Invalid deck data at ${firstIssue.path.join('.')}: ${firstIssue.message}`
+        `Invalid deck data at ${firstIssue.path.join('.')}: ${firstIssue.message}`,
       );
     }
     throw new Error('Invalid deck data format');
@@ -83,7 +92,10 @@ export async function uploadSystemDecks(
     totalDecks: decks.length,
     processedDecks: 0,
     currentDeck: null,
-    totalCards: decks.reduce((sum, d) => sum + d.white.length + d.black.length, 0),
+    totalCards: decks.reduce(
+      (sum, d) => sum + d.white.length + d.black.length,
+      0,
+    ),
     processedCards: 0,
     skippedDecks: [],
     skippedCards: 0,
@@ -96,14 +108,20 @@ export async function uploadSystemDecks(
     where: eq(deck.userId, 'system'),
     columns: { name: true },
   });
-  const existingDeckNames = new Set(existingDecks.map(d => d.name));
+  const existingDeckNames = new Set(existingDecks.map((d) => d.name));
 
   for (const deckData of decks) {
     progress.currentDeck = deckData.name;
 
     // Validate deck structure
-    if (!deckData.name || !Array.isArray(deckData.white) || !Array.isArray(deckData.black)) {
-      progress.errors.push(`Invalid deck structure: ${deckData.name || 'Unknown'}`);
+    if (
+      !deckData.name ||
+      !Array.isArray(deckData.white) ||
+      !Array.isArray(deckData.black)
+    ) {
+      progress.errors.push(
+        `Invalid deck structure: ${deckData.name || 'Unknown'}`,
+      );
       progress.processedDecks++;
       continue;
     }
@@ -142,7 +160,7 @@ export async function uploadSystemDecks(
             type: 'white' as const,
             deckId: newDeck.id,
             userId: 'system',
-          }))
+          })),
         );
         progress.processedCards += batch.length;
       }
@@ -161,7 +179,7 @@ export async function uploadSystemDecks(
             pick: c.pick,
             deckId: newDeck.id,
             userId: 'system',
-          }))
+          })),
         );
         progress.processedCards += batch.length;
       }
@@ -169,7 +187,7 @@ export async function uploadSystemDecks(
       progress.processedDecks++;
     } catch (error) {
       progress.errors.push(
-        `Failed to import deck "${deckData.name}": ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Failed to import deck "${deckData.name}": ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
       progress.processedDecks++;
     }
