@@ -9,7 +9,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MWHCard } from '@/components/cards/mwh-card';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -40,6 +40,15 @@ export function GameBoard({
   const t = useTranslations();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [submittedCardIds, setSubmittedCardIds] = useState<string[]>([]);
+
+  // Reset submission state when round changes
+  useEffect(() => {
+    setHasSubmitted(false);
+    setSubmittedCardIds([]);
+    setSelectedCards([]);
+  }, [currentRound.id]);
 
   const handleSubmit = () => {
     if (!socket || selectedCards.length !== currentRound.blackCard.pick) {
@@ -54,6 +63,8 @@ export function GameBoard({
       (response) => {
         if (response.success) {
           toast.success(t('game.cardsSubmitted'));
+          setHasSubmitted(true);
+          setSubmittedCardIds(selectedCards);
           setSelectedCards([]);
         } else {
           toast.error(response.error?.message);
@@ -78,10 +89,10 @@ export function GameBoard({
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Black Card */}
       <div className="flex justify-center">
-        <div className="w-64">
+        <div className="w-48 sm:w-56 md:w-64">
           <MWHCard card={currentRound.blackCard} />
         </div>
       </div>
@@ -89,19 +100,21 @@ export function GameBoard({
       {/* Czar View - Show Submissions */}
       {isCzar && submissions && (
         <div>
-          <h2 className="text-xl font-semibold mb-4 text-center">
+          <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-center">
             {t('game.selectWinner')}
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {submissions.map((sub) => (
               <Card
                 key={sub.id}
                 className="cursor-pointer hover:border-primary transition-colors"
                 onClick={() => handleSelectWinner(sub.id)}
               >
-                <CardContent className="p-4 space-y-2">
+                <CardContent className="p-3 sm:p-4 space-y-2">
                   {sub.cards.map((card) => (
-                    <MWHCard key={card.id} card={card} />
+                    <div key={card.id} className="w-full max-w-xs mx-auto">
+                      <MWHCard card={card} />
+                    </div>
                   ))}
                 </CardContent>
               </Card>
@@ -110,38 +123,58 @@ export function GameBoard({
         </div>
       )}
 
-      {/* Player View - Show Hand */}
+      {/* Player View - Show Hand or Submitted Cards */}
       {!isCzar && (
         <div>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">{t('game.yourHand')}</h2>
-            <Button
-              onClick={handleSubmit}
-              disabled={
-                submitting || selectedCards.length !== currentRound.blackCard.pick
-              }
-            >
-              {t('game.submitCards')}
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {myHand.map((card) => (
-              <button
-                key={card.id}
-                onClick={() => {
-                  if (selectedCards.includes(card.id)) {
-                    setSelectedCards(selectedCards.filter((id) => id !== card.id));
-                  } else if (selectedCards.length < currentRound.blackCard.pick) {
-                    setSelectedCards([...selectedCards, card.id]);
+          {hasSubmitted ? (
+            <div>
+              <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-center">
+                {t('game.waitingForOthers')}
+              </h2>
+              <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
+                {myHand
+                  .filter((card) => submittedCardIds.includes(card.id))
+                  .map((card) => (
+                    <div key={card.id} className="w-36 sm:w-40 md:w-48">
+                      <MWHCard card={card} />
+                    </div>
+                  ))}
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 mb-3 sm:mb-4">
+                <h2 className="text-lg sm:text-xl font-semibold">{t('game.yourHand')}</h2>
+                <Button
+                  onClick={handleSubmit}
+                  disabled={
+                    submitting || selectedCards.length !== currentRound.blackCard.pick
                   }
-                }}
-                className={selectedCards.includes(card.id) ? 'ring-4 ring-blue-500' : ''}
-              >
-                <MWHCard card={card} />
-              </button>
-            ))}
-          </div>
+                  className="w-full sm:w-auto"
+                >
+                  {t('game.submitCards')}
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
+                {myHand.map((card) => (
+                  <button
+                    key={card.id}
+                    onClick={() => {
+                      if (selectedCards.includes(card.id)) {
+                        setSelectedCards(selectedCards.filter((id) => id !== card.id));
+                      } else if (selectedCards.length < currentRound.blackCard.pick) {
+                        setSelectedCards([...selectedCards, card.id]);
+                      }
+                    }}
+                    className={`transition-all ${selectedCards.includes(card.id) ? 'ring-2 sm:ring-4 ring-blue-500 scale-95' : ''}`}
+                  >
+                    <MWHCard card={card} />
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>

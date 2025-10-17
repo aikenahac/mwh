@@ -139,18 +139,18 @@ export interface ClientToServerEvents {
   'leave-game': (data: { sessionId: string }, callback: (response: SocketResponse<void>) => void) => void;
 
   // Owner-only events
-  'update-decks': (data: { sessionId: string; deckIds: string[] }, callback: (response: SocketResponse<SelectedDecksInfo>) => void) => void;
-  'update-settings': (data: { sessionId: string; settings: GameSettings }, callback: (response: SocketResponse<void>) => void) => void;
-  'start-game': (data: { sessionId: string }, callback: (response: SocketResponse<void>) => void) => void;
-  'kick-player': (data: { sessionId: string; playerId: string }, callback: (response: SocketResponse<void>) => void) => void;
-  'end-game-early': (data: { sessionId: string }, callback: (response: SocketResponse<void>) => void) => void;
+  'update-decks': (data: { sessionId: string; deckIds: string[]; clerkUserId: string | null }, callback: (response: SocketResponse<SelectedDecksInfo>) => void) => void;
+  'update-settings': (data: { sessionId: string; settings: GameSettings; clerkUserId: string | null }, callback: (response: SocketResponse<void>) => void) => void;
+  'start-game': (data: { sessionId: string; clerkUserId: string | null }, callback: (response: SocketResponse<void>) => void) => void;
+  'kick-player': (data: { sessionId: string; playerId: string; clerkUserId: string | null }, callback: (response: SocketResponse<void>) => void) => void;
+  'end-game-early': (data: { sessionId: string; clerkUserId: string | null }, callback: (response: SocketResponse<void>) => void) => void;
 
   // Gameplay events
   'submit-cards': (data: { roundId: string; cardIds: string[] }, callback: (response: SocketResponse<void>) => void) => void;
   'select-winner': (data: { roundId: string; submissionId: string }, callback: (response: SocketResponse<void>) => void) => void;
 
   // Connection events
-  'reconnect-to-game': (data: { sessionId: string; clerkUserId: string | null }, callback: (response: SocketResponse<{ session: GameSessionData; hand?: string[] }>) => void) => void;
+  'reconnect-to-game': (data: { sessionId: string; clerkUserId: string | null; playerId?: string }, callback: (response: SocketResponse<{ session: GameSessionData; hand?: string[] }>) => void) => void;
 }
 
 /**

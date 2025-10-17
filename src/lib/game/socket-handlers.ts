@@ -634,14 +634,52 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
    */
   socket.on('reconnect-to-game', async (data, callback) => {
     try {
+      console.log(`[reconnect-to-game] Attempt - sessionId: ${data.sessionId}, clerkUserId: ${data.clerkUserId}, playerId: ${data.playerId}, socketId: ${socket.id}`);
+
       const session = await gameService.getGameSessionData(data.sessionId);
+      console.log(`[reconnect-to-game] Session found with ${session.players.length} players`);
 
       // Find player in session
-      const playerData = session.players.find(
-        p => p.clerkUserId === data.clerkUserId && data.clerkUserId !== null,
-      );
+      let playerData;
+
+      // 1. Try by clerkUserId (for authenticated users)
+      if (data.clerkUserId) {
+        playerData = session.players.find(
+          p => p.clerkUserId === data.clerkUserId && data.clerkUserId !== null,
+        );
+        console.log(`[reconnect-to-game] Player found by clerkUserId: ${!!playerData}`);
+      }
+
+      // 2. Try by playerId from sessionStorage (for guests who just joined)
+      if (!playerData && data.playerId) {
+        playerData = session.players.find(p => p.id === data.playerId);
+        console.log(`[reconnect-to-game] Player found by playerId: ${!!playerData}`);
+      }
+
+      // 3. Check if this socket is already mapped to a player in this session
+      if (!playerData) {
+        const existingMapping = socketToPlayer.get(socket.id);
+        console.log(`[reconnect-to-game] Existing socket mapping: ${JSON.stringify(existingMapping)}`);
+
+        if (existingMapping && existingMapping.sessionId === data.sessionId) {
+          playerData = session.players.find(p => p.id === existingMapping.playerId);
+          console.log(`[reconnect-to-game] Player found by socket mapping: ${!!playerData}`);
+        }
+      }
+
+      // 4. Fallback: if there's only one guest player, use them
+      if (!playerData) {
+        const guestPlayers = session.players.filter(p => p.clerkUserId === null);
+        console.log(`[reconnect-to-game] Found ${guestPlayers.length} guest players in session`);
+
+        if (guestPlayers.length === 1) {
+          playerData = guestPlayers[0];
+          console.log(`[reconnect-to-game] Using sole guest player: ${playerData.nickname}`);
+        }
+      }
 
       if (!playerData) {
+        console.log(`[reconnect-to-game] No player found - FAILING`);
         throw new GameError(GameErrorCode.NOT_IN_GAME, 'Not in this game');
       }
 

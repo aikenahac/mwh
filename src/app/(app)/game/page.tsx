@@ -72,6 +72,13 @@ export default function GamePage() {
 
         if (response.success && response.data) {
           toast.success(t('game.joined'));
+
+          // Store player ID in sessionStorage for reconnection
+          const myPlayer = response.data.session.players[response.data.session.players.length - 1];
+          if (myPlayer) {
+            sessionStorage.setItem(`game_player_${response.data.session.id}`, myPlayer.id);
+          }
+
           router.push(`/game/${response.data.session.id}`);
           setJoinModalOpen(false);
         } else {
