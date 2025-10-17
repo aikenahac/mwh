@@ -123,7 +123,7 @@ export function CreateCardEditor({
                   aria-label="Custom pick value"
                   className="cursor-pointer"
                 >
-                  Custom
+                  N
                 </ToggleGroupItem>
               </ToggleGroup>
             </div>
