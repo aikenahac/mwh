@@ -179,7 +179,8 @@
       "togglePick1": "Toggle pick 1",
       "togglePick2": "Toggle pick 2",
       "togglePick3": "Toggle pick 3",
-      "togglePick4": "Toggle pick 4"
+      "togglePick4": "Toggle pick 4",
+      "toggleCustomValue": "Custom Value"
     },
     "create": {
       "title": "Create Card",

@@ -123,14 +123,14 @@ export function CreateCardEditor({
                   aria-label="Custom pick value"
                   className="cursor-pointer"
                 >
-                  Custom
+                  N
                 </ToggleGroupItem>
               </ToggleGroup>
             </div>
             {isCustomPick && (
               <div className="flex flex-row gap-4 items-center">
                 <Label htmlFor="custom_pick" className="text-right font-bold whitespace-nowrap">
-                  Custom Value:
+                  {`${t("card.editor.toggleCustomValue")}:`}
                 </Label>
                 <Input
                   id="custom_pick"
