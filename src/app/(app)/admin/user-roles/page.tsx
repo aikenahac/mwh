@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { AddUserRole } from './add-user-role';
-import { UserRolesTable } from './user-roles-table';
+import { AllUsersTable } from './all-users-table';
 
 export default async function UserRolesPage() {
   const { userId } = await auth();
@@ -25,39 +25,26 @@ export default async function UserRolesPage() {
   // Fetch all user roles
   const userRoles = await getAllUserRoles();
 
-  // Fetch user data from Clerk for each user with a role
+  // Fetch all users from Clerk
   const client = await clerkClient();
-  const usersData = await Promise.all(
-    userRoles.map(async (userRole) => {
-      try {
-        const user = await client.users.getUser(userRole.userId);
-        return {
-          ...userRole,
-          clerkUser: {
-            id: user.id,
-            email: user.emailAddresses[0]?.emailAddress || 'No email',
-            username: user.username,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            imageUrl: user.imageUrl,
-          },
-        };
-      } catch {
-        // User might have been deleted from Clerk
-        return {
-          ...userRole,
-          clerkUser: {
-            id: userRole.userId,
-            email: 'User not found in Clerk',
-            username: null,
-            firstName: null,
-            lastName: null,
-            imageUrl: null,
-          },
-        };
-      }
-    })
-  );
+  const allUsersResponse = await client.users.getUserList({ limit: 100 });
+  const allUsers = allUsersResponse.data
+    .map((user) => ({
+      id: user.id,
+      email: user.emailAddresses[0]?.emailAddress || 'No email',
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      imageUrl: user.imageUrl,
+      createdAt: user.createdAt,
+      role: userRoles.find((ur) => ur.userId === user.id)?.role || null,
+    }))
+    // Sort users with roles to the top
+    .sort((a, b) => {
+      if (a.role && !b.role) return -1;
+      if (!a.role && b.role) return 1;
+      return 0;
+    });
 
   return (
     <div className="container mx-auto">
@@ -75,30 +62,15 @@ export default async function UserRolesPage() {
         </p>
       </div>
 
-      <div className="mb-6">
-        <AddUserRole />
-      </div>
-
-      {usersData.length === 0 ? (
-        <Card>
-          <CardContent className="py-8">
-            <p className="text-center text-muted-foreground">
-              No users with roles found.
-            </p>
-          </CardContent>
-        </Card>
-      ) : (
-        <div>
-          <div className="mb-4">
-            <h2 className="text-xl font-semibold">Users with Roles</h2>
-            <p className="text-sm text-muted-foreground">
-              {usersData.length} user{usersData.length !== 1 ? 's' : ''} with assigned
-              roles
-            </p>
-          </div>
-          <UserRolesTable users={usersData} />
+      <div>
+        <div className="mb-4">
+          <h2 className="text-xl font-semibold">All Users</h2>
+          <p className="text-sm text-muted-foreground">
+            {allUsers.length} user{allUsers.length !== 1 ? 's' : ''} in the system
+          </p>
         </div>
-      )}
+        <AllUsersTable users={allUsers} />
+      </div>
     </div>
   );
 }

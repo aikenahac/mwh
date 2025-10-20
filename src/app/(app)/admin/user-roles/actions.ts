@@ -35,14 +35,15 @@ export async function addUserRole(userId: string, role: 'superadmin') {
   });
 
   if (existingRole) {
-    throw new Error('User already has a role assigned');
+    // Update the existing role instead of throwing an error
+    await db.update(userRole).set({ role }).where(eq(userRole.userId, userId));
+  } else {
+    // Insert the new role
+    await db.insert(userRole).values({
+      userId,
+      role,
+    });
   }
-
-  // Insert the new role
-  await db.insert(userRole).values({
-    userId,
-    role,
-  });
 
   revalidatePath(Routes.ADMIN_USER_ROLES);
 }
