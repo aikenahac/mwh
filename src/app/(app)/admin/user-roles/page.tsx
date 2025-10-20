@@ -3,10 +3,8 @@ import { redirect } from 'next/navigation';
 import { isSuperAdmin } from '@/lib/auth/permissions';
 import { Routes } from '@/lib/routes';
 import { getAllUserRoles } from '@/lib/api/user-role';
-import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { AddUserRole } from './add-user-role';
 import { AllUsersTable } from './all-users-table';
 
 export default async function UserRolesPage() {

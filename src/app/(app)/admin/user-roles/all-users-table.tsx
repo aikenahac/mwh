@@ -6,7 +6,6 @@ import {
   getCoreRowModel,
   ColumnDef,
   flexRender,
-  getFilteredRowModel,
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import {
