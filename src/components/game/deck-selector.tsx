@@ -217,6 +217,67 @@ export function DeckSelector({
         </CardContent>
       </Card>
 
+      {/* User Decks */}
+      {userDecks.length > 0 && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold">{t('game.myDecks')}</h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleSelectAllUser}
+              className="text-xs"
+            >
+              {userDecks.every((d) => selectedIds.has(d.id))
+                ? t('game.deselectAll')
+                : t('game.selectAll')}
+            </Button>
+          </div>
+
+          <div className="space-y-2">
+            {userDecks.map((deck) => (
+              <Card key={deck.id}>
+                <CardContent className="flex items-start space-x-3 p-3">
+                  <Checkbox
+                    id={`deck-${deck.id}`}
+                    checked={selectedIds.has(deck.id)}
+                    onCheckedChange={() => handleToggleDeck(deck.id)}
+                  />
+                  <div className="flex-1 space-y-1">
+                    <div className="flex items-center gap-2">
+                      <Label
+                        htmlFor={`deck-${deck.id}`}
+                        className="font-medium cursor-pointer"
+                      >
+                        {deck.name}
+                      </Label>
+                      {deck.sharedBy && (
+                        <Badge variant="outline" className="text-xs">
+                          {t('game.sharedBy')} {deck.sharedBy}
+                        </Badge>
+                      )}
+                    </div>
+                    {deck.description && (
+                      <p className="text-xs text-muted-foreground">
+                        {deck.description}
+                      </p>
+                    )}
+                    <div className="flex gap-2">
+                      <Badge variant="secondary" className="text-xs">
+                        {deck.blackCardCount} {t('game.black')}
+                      </Badge>
+                      <Badge variant="secondary" className="text-xs">
+                        {deck.whiteCardCount} {t('game.white')}
+                      </Badge>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* System Decks - Compact View */}
       {systemDecks.length > 0 && (
         <div className="space-y-3">
@@ -360,67 +421,6 @@ export function DeckSelector({
               </CollapsibleContent>
             </Collapsible>
           )}
-        </div>
-      )}
-
-      {/* User Decks */}
-      {userDecks.length > 0 && (
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold">{t('game.myDecks')}</h3>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleSelectAllUser}
-              className="text-xs"
-            >
-              {userDecks.every((d) => selectedIds.has(d.id))
-                ? t('game.deselectAll')
-                : t('game.selectAll')}
-            </Button>
-          </div>
-
-          <div className="space-y-2">
-            {userDecks.map((deck) => (
-              <Card key={deck.id}>
-                <CardContent className="flex items-start space-x-3 p-3">
-                  <Checkbox
-                    id={`deck-${deck.id}`}
-                    checked={selectedIds.has(deck.id)}
-                    onCheckedChange={() => handleToggleDeck(deck.id)}
-                  />
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <Label
-                        htmlFor={`deck-${deck.id}`}
-                        className="font-medium cursor-pointer"
-                      >
-                        {deck.name}
-                      </Label>
-                      {deck.sharedBy && (
-                        <Badge variant="outline" className="text-xs">
-                          {t('game.sharedBy')} {deck.sharedBy}
-                        </Badge>
-                      )}
-                    </div>
-                    {deck.description && (
-                      <p className="text-xs text-muted-foreground">
-                        {deck.description}
-                      </p>
-                    )}
-                    <div className="flex gap-2">
-                      <Badge variant="secondary" className="text-xs">
-                        {deck.blackCardCount} {t('game.black')}
-                      </Badge>
-                      <Badge variant="secondary" className="text-xs">
-                        {deck.whiteCardCount} {t('game.white')}
-                      </Badge>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
         </div>
       )}
     </div>
