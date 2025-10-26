@@ -48,13 +48,6 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy package files for migration dependencies
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
-
-# Install ONLY production dependencies (including drizzle-kit)
-RUN pnpm install --prod --frozen-lockfile
-
 # Copy necessary files from builder
 COPY --from=builder /app/public ./public
 
@@ -66,12 +59,15 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Copy the compiled custom server to root
+COPY --from=builder --chown=nextjs:nodejs /app/dist/server.js ./server.js
+
+# Copy source files needed by the custom server at runtime
+COPY --from=builder --chown=nextjs:nodejs /app/dist/src ./src
+
 # Copy migration-related files
 COPY --from=builder --chown=nextjs:nodejs /app/src/lib/db ./src/lib/db
 COPY --from=builder --chown=nextjs:nodejs /app/drizzle.config.ts ./drizzle.config.ts
-
-# Change ownership of node_modules
-RUN chown -R nextjs:nodejs /app/node_modules
 
 USER nextjs
 
@@ -80,5 +76,5 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Start the application
+# Start the custom server with Socket.io support
 CMD ["node", "server.js"]
