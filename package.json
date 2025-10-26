@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "tsx watch --env-file=.env server.ts",
-    "build": "next build && tsc --project tsconfig.server.json",
+    "build": "next build && tsc --project tsconfig.server.json && tsc-alias -p tsconfig.server.json",
     "start": "NODE_ENV=production node dist/server.js",
     "lint": "next lint",
     "prettier:format": "prettier --ignore-path .gitignore --write \"./src/**/*.{ts,tsx,js,css,scss,html,json}\"",
@@ -70,6 +70,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
     "tailwindcss": "^4",
+    "tsc-alias": "^1.8.16",
     "tsx": "^4.20.6",
     "typescript": "^5"
   }

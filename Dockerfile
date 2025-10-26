@@ -60,15 +60,9 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Copy the compiled custom server to root
-COPY --from=builder --chown=nextjs:nodejs /app/dist/server.js ./server.js
-
-# Copy source files needed by the custom server at runtime
-COPY --from=builder --chown=nextjs:nodejs /app/dist/src ./src
-
-# Copy migration-related files
-COPY --from=builder --chown=nextjs:nodejs /app/src/lib/db ./src/lib/db
-COPY --from=builder --chown=nextjs:nodejs /app/drizzle.config.ts ./drizzle.config.ts
+# Copy all compiled files from dist
+# This includes server.js and all compiled src/ files with resolved paths
+COPY --from=builder --chown=nextjs:nodejs /app/dist ./
 
 # Install additional production dependencies needed by custom server
 # that aren't included in standalone build (socket.io, etc.)
