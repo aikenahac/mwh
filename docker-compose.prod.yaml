@@ -12,7 +12,7 @@ services:
         condition: service_healthy
     networks:
       - proxy
-    command: sh -c "pnpm drizzle-kit push && exit 0"
+    command: sh -c "pnpm db:push && exit 0"
     restart: "no"
 
   app:
@@ -36,6 +36,47 @@ services:
       - "traefik.http.routers.mwh.service=mwh"
       - "traefik.http.routers.mwh.tls.certresolver=cloudflare"
 
+  app-beta:
+    image: ghcr.io/aikenahac/mwh:beta
+    container_name: mwh-beta
+    env_file:
+      - stack.env
+    ports:
+      - "3102:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.mwh-beta.loadbalancer.server.port=3000"
+      - "traefik.http.routers.mwh-beta.rule=Host(`beta.gomwh.com`)"
+      - "traefik.http.routers.mwh-beta.entrypoints=https"
+      - "traefik.http.routers.mwh-beta.service=mwh-beta"
+      - "traefik.http.routers.mwh-beta.tls.certresolver=cloudflare"
+
+  studio:
+    image: ghcr.io/drizzle-team/gateway:latest
+    container_name: mwh-db-studio
+    environment:
+      - PORT=4983
+
+      - MASTERPASS=${DRIZZLE_MASTERPASS}
+    volumes:
+      - drizzle_gateway:/app
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.mwh-studio.loadbalancer.server.port=4983"
+      - "traefik.http.routers.mwh-studio.rule=Host(`*******.gomwh.com`)"
+      - "traefik.http.routers.mwh-studio.entrypoints=https"
+      - "traefik.http.routers.mwh-studio.service=mwh-studio"
+      - "traefik.http.routers.mwh-studio.tls.certresolver=cloudflare"
+
   db:
     image: postgres:latest
     container_name: mwh-db
@@ -54,6 +95,7 @@ services:
 
 volumes:
   mwh_db_data:
+  drizzle_gateway:
 
 networks:
   proxy:
