@@ -7,9 +7,13 @@
  * Run with: ts-node server.ts (dev) or node server.js (production)
  */
 
-// Load environment variables
-import dotenv from 'dotenv';
-dotenv.config({ path: ['.env', 'stack.env'] });
+// Load environment variables only in development
+// In production (Docker), env vars are provided by the container
+if (process.env.NODE_ENV !== 'production') {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const dotenv = require('dotenv');
+  dotenv.config({ path: ['.env', 'stack.env'] });
+}
 
 import { createServer } from 'http';
 import { parse } from 'url';
