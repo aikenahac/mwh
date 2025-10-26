@@ -17,6 +17,13 @@ export const Routes = {
   CARD_EDIT: (id: string) => `/cards/${id}/edit`,
   CARD_CREATE: (deckId: string) => `/cards/create/${deckId}`,
 
+  // Game
+  GAME: '/game',
+  GAME_SESSION: (sessionId: string) => `/game/${sessionId}`,
+  GAME_HISTORY: '/game/history',
+  GAME_HISTORY_DETAILS: (gameId: string) => `/game/history/${gameId}`,
+  GAME_LEADERBOARD: '/game/leaderboard',
+
   // Docs
   DOCS: '/docs',
   DOCS_PRIVACY_POLICY: '/docs/privacy-policy',

@@ -16,22 +16,22 @@ import { useTranslations } from 'next-intl';
 
 export function PrintDeckDialog({ cards }: { cards?: Array<Card> }) {
   const t = useTranslations();
-  
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant='outline'>
+        <Button variant="outline">
           <Printer />
         </Button>
       </DialogTrigger>
-      <DialogContent className='w-[80vw] h-[60vh]'>
+      <DialogContent className="w-[80vw] h-[60vh]">
         <VisuallyHidden.Root>
           <DialogTitle>{t('deck.printDialog.printDocument')}</DialogTitle>
         </VisuallyHidden.Root>
-        <PDFViewer className='w-full h-full'>
+        <PDFViewer className="w-full h-full">
           <PrintDocument cards={cards} />
         </PDFViewer>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

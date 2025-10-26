@@ -47,7 +47,10 @@ export default async function DeckPage({
         const user = await clerk.users.getUser(share.sharedWithUserId);
         return {
           ...share,
-          username: user.username || user.emailAddresses[0]?.emailAddress || share.sharedWithUserId,
+          username:
+            user.username ||
+            user.emailAddresses[0]?.emailAddress ||
+            share.sharedWithUserId,
         };
       } catch {
         return {
@@ -55,7 +58,7 @@ export default async function DeckPage({
           username: share.sharedWithUserId,
         };
       }
-    })
+    }),
   );
 
   return (
@@ -65,14 +68,21 @@ export default async function DeckPage({
           <h1 className="text-2xl font-bold flex items-center">
             {deck.name}
             {permissions.isOwner && (
-              <span className="ml-2 text-xs font-normal text-muted-foreground">(Owner)</span>
+              <span className="ml-2 text-xs font-normal text-muted-foreground">
+                (Owner)
+              </span>
             )}
             {!permissions.isOwner && permissions.permission === 'view' && (
-              <span className="ml-2 text-xs font-normal text-muted-foreground">(View Only)</span>
+              <span className="ml-2 text-xs font-normal text-muted-foreground">
+                (View Only)
+              </span>
             )}
-            {!permissions.isOwner && permissions.permission === 'collaborate' && (
-              <span className="ml-2 text-xs font-normal text-muted-foreground">(Collaborator)</span>
-            )}
+            {!permissions.isOwner &&
+              permissions.permission === 'collaborate' && (
+                <span className="ml-2 text-xs font-normal text-muted-foreground">
+                  (Collaborator)
+                </span>
+              )}
           </h1>
           <p>{deck.description}</p>
         </div>
@@ -81,7 +91,11 @@ export default async function DeckPage({
           <PrintDeckDialog cards={deck.cards} />
           {permissions.canEdit && <EditDeckDialog deck={deck} />}
           {permissions.isOwner && (
-            <ShareDeckDialog deckId={deck.id} shares={sharesWithUsernames} isOwner={permissions.isOwner} />
+            <ShareDeckDialog
+              deckId={deck.id}
+              shares={sharesWithUsernames}
+              isOwner={permissions.isOwner}
+            />
           )}
           {permissions.canEdit && (
             <Link
@@ -103,26 +117,26 @@ export default async function DeckPage({
       >
         {deck.cards
           .filter((c) => c.type === 'black')
-          .map((card) => (
+          .map((card) =>
             permissions.canEdit ? (
               <Link href={Routes.CARD_EDIT(card.id)} key={card.id}>
                 <MWHCard card={card} />
               </Link>
             ) : (
               <MWHCard card={card} key={card.id} />
-            )
-          ))}
+            ),
+          )}
         {deck.cards
           .filter((c) => c.type === 'white')
-          .map((card) => (
+          .map((card) =>
             permissions.canEdit ? (
               <Link href={Routes.CARD_EDIT(card.id)} key={card.id}>
                 <MWHCard card={card} />
               </Link>
             ) : (
               <MWHCard card={card} key={card.id} />
-            )
-          ))}
+            ),
+          )}
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ import { useTheme } from 'next-themes';
 import { usePathname } from 'next/navigation';
 import { Routes } from '@/lib/routes';
 import { useTranslations } from 'next-intl';
-import { LogIn, Menu, Home, Layers, Shield } from 'lucide-react';
+import { LogIn, Menu, Home, Layers, Shield, Gamepad2 } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -43,6 +43,7 @@ export function Navbar({ isAdmin = false }: NavbarProps) {
       {/* Desktop Navigation */}
       <div className="hidden md:flex gap-3">
         <Link href="/" className={getClassName(path === Routes.HOME)}>
+          <Home className="mr-1 h-4 w-4" />
           {t('nav.home')}
         </Link>
         <Link
@@ -51,14 +52,22 @@ export function Navbar({ isAdmin = false }: NavbarProps) {
             path.startsWith(Routes.DECKS) || path.startsWith(Routes.CARDS),
           )}
         >
+          <Layers className="mr-1 h-4 w-4" />
           {t('nav.decks')}
+        </Link>
+        <Link
+          href={Routes.GAME}
+          className={getClassName(path.startsWith(Routes.GAME))}
+        >
+          <Gamepad2 className="mr-1 h-4 w-4" />
+          {t('nav.game')}
         </Link>
         {isAdmin && (
           <Link
             href={Routes.ADMIN}
             className={getClassName(path.startsWith(Routes.ADMIN))}
           >
-            <Shield className="mr-2 h-4 w-4" />
+            <Shield className="mr-1 h-4 w-4" />
             Admin
           </Link>
         )}
@@ -95,6 +104,14 @@ export function Navbar({ isAdmin = false }: NavbarProps) {
               >
                 <Layers className="mr-2 h-4 w-4" />
                 {t('nav.decks')}
+              </Link>
+              <Link
+                href={Routes.GAME}
+                className={`${getClassName(path.startsWith(Routes.GAME))} w-full justify-start`}
+                onClick={closeSheet}
+              >
+                <Gamepad2 className="mr-2 h-4 w-4" />
+                {t('nav.game')}
               </Link>
               {isAdmin && (
                 <Link

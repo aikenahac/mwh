@@ -5,7 +5,11 @@ import { deck, deckShare } from '@/lib/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { auth, clerkClient } from '@clerk/nextjs/server';
 import { canShareDeck, isOwnerOfDeck } from '@/lib/auth/permissions';
-import { shareDeckSchema, updateSharePermissionSchema, removeShareSchema } from '@/lib/schemas';
+import {
+  shareDeckSchema,
+  updateSharePermissionSchema,
+  removeShareSchema,
+} from '@/lib/schemas';
 
 type Result = {
   success: boolean;
@@ -120,7 +124,11 @@ export async function shareDeck({
     }
 
     // Validate input
-    const validation = shareDeckSchema.safeParse({ deckId, username, permission });
+    const validation = shareDeckSchema.safeParse({
+      deckId,
+      username,
+      permission,
+    });
     if (!validation.success) {
       return {
         success: false,
@@ -170,7 +178,7 @@ export async function shareDeck({
     const existingShare = await db.query.deckShare.findFirst({
       where: and(
         eq(deckShare.deckId, deckId),
-        eq(deckShare.sharedWithUserId, sharedWithUserId)
+        eq(deckShare.sharedWithUserId, sharedWithUserId),
       ),
     });
 
@@ -220,7 +228,10 @@ export async function updateSharePermission({
     }
 
     // Validate input
-    const validation = updateSharePermissionSchema.safeParse({ shareId, permission });
+    const validation = updateSharePermissionSchema.safeParse({
+      shareId,
+      permission,
+    });
     if (!validation.success) {
       return {
         success: false,
@@ -270,7 +281,9 @@ type RemoveShareProps = {
   shareId: string;
 };
 
-export async function removeShare({ shareId }: RemoveShareProps): Promise<Result> {
+export async function removeShare({
+  shareId,
+}: RemoveShareProps): Promise<Result> {
   try {
     const { userId } = await auth();
 

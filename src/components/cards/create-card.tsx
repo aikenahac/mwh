@@ -84,7 +84,10 @@ export function CreateCardEditor({
               <Label htmlFor="card_pick" className="text-right font-bold">
                 {t('card.editor.pickLabel')}
               </Label>
-              <ToggleGroup type="single" value={isCustomPick ? 'custom' : pick.toString()}>
+              <ToggleGroup
+                type="single"
+                value={isCustomPick ? 'custom' : pick.toString()}
+              >
                 <ToggleGroupItem
                   onClick={() => setPick(1)}
                   value="1"

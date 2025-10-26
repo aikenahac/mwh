@@ -20,7 +20,7 @@ export async function Footer() {
           <nav className="flex gap-6">
             <Link
               href={Routes.SOURCE_CODE}
-              target='_blank'
+              target="_blank"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               {t('footer.source')}

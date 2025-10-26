@@ -42,7 +42,9 @@ export function AddUserRole() {
         setUserId('');
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to add user role');
+        setError(
+          err instanceof Error ? err.message : 'Failed to add user role',
+        );
       }
     });
   };
