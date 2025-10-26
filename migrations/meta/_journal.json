@@ -57,6 +57,13 @@
       "when": 1760693164572,
       "tag": "0008_nebulous_rockslide",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1761502242616,
+      "tag": "0009_unknown_nightmare",
+      "breakpoints": true
     }
   ]
 }

@@ -18,8 +18,8 @@ import * as gameService from './game-service';
 import * as deckService from './deck-service';
 import * as archiveService from './archive-service';
 import { db } from '@/lib/db';
-import { player, round, gameSession } from '@/lib/db/schema';
-import { eq, and } from 'drizzle-orm';
+import { player, round, gameSession, submission, card } from '@/lib/db/schema';
+import { eq, and, inArray } from 'drizzle-orm';
 import { GameError, GameErrorCode } from './types';
 import type { Card } from '@/lib/db/schema';
 
@@ -320,17 +320,7 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
         where: eq(player.sessionId, data.sessionId),
       });
 
-      for (const p of players) {
-        // Find socket for this player
-        const playerSocketId = findSocketIdByPlayerId(p.id);
-        if (playerSocketId) {
-          io.to(playerSocketId).emit('cards-dealt', {
-            hand: p.hand as string[],
-          });
-        }
-      }
-
-      // Start first round
+      // Start first round (before dealing cards so we know who the czar is)
       const firstCzar = session.players[0];
       const firstBlackCard = blackCards[0];
 
@@ -340,6 +330,20 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
         firstBlackCard.id,
         firstCzar.id,
       );
+
+      // Deal cards to all players EXCEPT the czar
+      for (const p of players) {
+        // Skip the czar - they don't need cards
+        if (p.id === firstCzar.id) continue;
+
+        // Find socket for this player
+        const playerSocketId = findSocketIdByPlayerId(p.id);
+        if (playerSocketId) {
+          io.to(playerSocketId).emit('cards-dealt', {
+            hand: p.hand as string[],
+          });
+        }
+      }
 
       // Update black card index
       const pools = gameCardPools.get(data.sessionId)!;
@@ -855,6 +859,118 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
           .set({ isConnected: false })
           .where(eq(player.id, playerInfo.playerId));
 
+        // Check if disconnected player is the current czar
+        const session = await gameService.getGameSessionData(
+          playerInfo.sessionId,
+        );
+        const disconnectedPlayer = session.players.find(
+          (p) => p.id === playerInfo.playerId,
+        );
+
+        if (disconnectedPlayer?.isCardCzar && session.status === 'playing') {
+          // Czar disconnected during active game - auto-select random winner after 30 seconds
+          console.log(
+            `[Game] Card Czar disconnected, starting auto-select timer`,
+          );
+
+          setTimeout(
+            async () => {
+              try {
+                // Check if czar is still disconnected
+                const currentPlayer = await db.query.player.findFirst({
+                  where: eq(player.id, playerInfo.playerId),
+                });
+
+                if (currentPlayer && !currentPlayer.isConnected) {
+                  // Get current round
+                  const currentRound = await db.query.round.findFirst({
+                    where: and(
+                      eq(round.sessionId, playerInfo.sessionId),
+                      eq(round.status, 'playing'),
+                    ),
+                    with: { submissions: true },
+                  });
+
+                  if (
+                    currentRound &&
+                    currentRound.czarPlayerId === playerInfo.playerId
+                  ) {
+                    // Auto-select random winner
+                    if (currentRound.submissions.length > 0) {
+                      const randomSubmission =
+                        currentRound.submissions[
+                          Math.floor(
+                            Math.random() * currentRound.submissions.length,
+                          )
+                        ];
+                      console.log(
+                        `[Game] Auto-selecting random winner due to czar disconnect`,
+                      );
+
+                      // Use the select-winner handler logic
+                      const result = await gameService.selectWinner(
+                        currentRound.id,
+                        randomSubmission.id,
+                        playerInfo.playerId,
+                      );
+
+                      // Emit winner-selected event
+                      const winnerPlayer = session.players.find(
+                        (p) => p.id === result.winnerId,
+                      );
+
+                      // Get all submissions with their cards
+                      const allSubmissions =
+                        await db.query.submission.findMany({
+                          where: eq(submission.roundId, currentRound.id),
+                        });
+
+                      // Fetch card data for all submissions
+                      const submissionsWithCards = await Promise.all(
+                        allSubmissions.map(async (sub) => {
+                          const cardIds = sub.cardIds as string[];
+                          const cards = await db.query.card.findMany({
+                            where: inArray(card.id, cardIds),
+                          });
+                          return {
+                            id: sub.id,
+                            playerId: sub.playerId,
+                            cardIds,
+                            cards,
+                            isWinner: sub.id === randomSubmission.id,
+                          };
+                        }),
+                      );
+
+                      // Find the winning submission with cards
+                      const winningSubmissionData = submissionsWithCards.find(
+                        (s) => s.id === randomSubmission.id,
+                      )!;
+
+                      io.to(playerInfo.sessionId).emit('winner-selected', {
+                        winnerId: result.winnerId,
+                        winnerNickname: winnerPlayer?.nickname || 'Unknown',
+                        winningSubmission: {
+                          id: winningSubmissionData.id,
+                          playerId: winningSubmissionData.playerId,
+                          playerNickname: winnerPlayer?.nickname || 'Unknown',
+                          cardIds: winningSubmissionData.cardIds,
+                          cards: winningSubmissionData.cards,
+                        },
+                        points: result.winnerScore,
+                        allSubmissions: submissionsWithCards,
+                      });
+                    }
+                  }
+                }
+              } catch (error) {
+                console.error('[Game] Error auto-selecting winner:', error);
+              }
+            },
+            30 * 1000,
+          ); // 30 second delay
+        }
+
         // Notify others
         io.to(playerInfo.sessionId).emit('player-disconnected', {
           playerId: playerInfo.playerId,
@@ -943,6 +1059,11 @@ async function startNextRound(
     console.error(
       `[startNextRound] No more black cards for session ${sessionId}`,
     );
+    // End game due to cards running out
+    console.log(`[startNextRound] Ending game due to card exhaustion`);
+    const gameEndData = await archiveService.archiveCompletedGame(sessionId);
+    io.to(sessionId).emit('game-ended', gameEndData);
+    gameCardPools.delete(sessionId);
     return;
   }
 
@@ -957,12 +1078,15 @@ async function startNextRound(
   // Update black card index
   pools.currentBlackIndex++;
 
-  // Deal updated hands to players
+  // Deal updated hands to players EXCEPT the czar
   const players = await db.query.player.findMany({
     where: eq(player.sessionId, sessionId),
   });
 
   for (const p of players) {
+    // Skip the czar - they don't need cards
+    if (p.id === nextCzar.id) continue;
+
     const socketId = findSocketIdByPlayerId(p.id);
     if (socketId) {
       io.to(socketId).emit('cards-dealt', { hand: p.hand as string[] });

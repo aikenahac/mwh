@@ -236,6 +236,11 @@ export const submission = pgTable(
   (table) => ({
     roundIdIdx: index('Submission_round_id_idx').on(table.roundId),
     playerIdIdx: index('Submission_player_id_idx').on(table.playerId),
+    // Ensure one submission per player per round
+    uniqueSubmission: unique('Submission_round_player_unique').on(
+      table.roundId,
+      table.playerId,
+    ),
   }),
 );
 

@@ -1,0 +1,1 @@
+ALTER TABLE "Submission" ADD CONSTRAINT "Submission_round_player_unique" UNIQUE("round_id","player_id");

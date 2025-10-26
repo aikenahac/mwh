@@ -25,7 +25,7 @@ import {
   type Round,
   type Card,
 } from '@/lib/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { aggregateCardPool, validateCardPool } from './deck-service';
 import type {
   GameSettings,
@@ -502,6 +502,23 @@ export async function selectWinner(
     );
   }
 
+  // Verify all non-czar players have submitted
+  const sessionPlayers = await db.query.player.findMany({
+    where: eq(player.sessionId, currentRound.session.id),
+  });
+  const nonCzarPlayers = sessionPlayers.filter(
+    (p) => p.id !== currentRound.czarPlayerId,
+  );
+  const expectedSubmissions = nonCzarPlayers.length;
+  const actualSubmissions = currentRound.submissions.length;
+
+  if (actualSubmissions < expectedSubmissions) {
+    throw new GameError(
+      GameErrorCode.VALIDATION_ERROR,
+      `Not all players have submitted (${actualSubmissions}/${expectedSubmissions})`,
+    );
+  }
+
   const winningSubmission = currentRound.submissions.find(
     (s) => s.id === submissionId,
   );
@@ -522,27 +539,23 @@ export async function selectWinner(
     })
     .where(eq(round.id, roundId));
 
-  // Award point to winner
-  const winner = await db.query.player.findFirst({
-    where: eq(player.id, winningSubmission.playerId),
-  });
+  // Award point to winner using atomic increment
+  const [updatedWinner] = await db
+    .update(player)
+    .set({ score: sql`${player.score} + 1` })
+    .where(eq(player.id, winningSubmission.playerId))
+    .returning();
 
-  if (!winner) {
+  if (!updatedWinner) {
     throw new GameError(
       GameErrorCode.INTERNAL_ERROR,
       'Winner player not found',
     );
   }
 
-  const newScore = winner.score + 1;
-  await db
-    .update(player)
-    .set({ score: newScore })
-    .where(eq(player.id, winner.id));
-
   return {
-    winnerId: winner.id,
-    winnerScore: newScore,
+    winnerId: updatedWinner.id,
+    winnerScore: updatedWinner.score,
   };
 }
 
@@ -566,7 +579,23 @@ export async function dealReplacementCards(
     const hand = p.hand as string[];
     const cardsNeeded = handSize - hand.length;
 
-    if (cardsNeeded > 0 && cardIndex < whiteCards.length) {
+    if (cardsNeeded > 0) {
+      // Check if we have enough cards available
+      if (cardIndex >= whiteCards.length) {
+        throw new GameError(
+          GameErrorCode.VALIDATION_ERROR,
+          'Not enough white cards available to deal replacement cards',
+        );
+      }
+
+      const availableCards = whiteCards.length - cardIndex;
+      if (availableCards < cardsNeeded) {
+        throw new GameError(
+          GameErrorCode.VALIDATION_ERROR,
+          `Not enough white cards: need ${cardsNeeded}, have ${availableCards}`,
+        );
+      }
+
       const newCards = whiteCards
         .slice(cardIndex, cardIndex + cardsNeeded)
         .map((c) => c.id);
