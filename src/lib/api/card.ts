@@ -14,7 +14,7 @@ export const cardSchema = z
   .object({
     id: z.string(),
     type: z.enum(['white', 'black']),
-    pick: z.number().int().min(1).max(4),
+    pick: z.number().int().min(1).max(10),
     text: z.string().nullish(),
     deckId: z.string(),
     userId: z.string(),

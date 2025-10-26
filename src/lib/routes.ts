@@ -27,5 +27,18 @@ export const Routes = {
   ADMIN_SYSTEM_DECKS: '/admin/system-decks',
   ADMIN_USER_ROLES: '/admin/user-roles',
 
-  SOURCE_CODE: 'https://github.com/aikenahac/mwh'
+  SOURCE_CODE: 'https://github.com/aikenahac/mwh',
+
+  // API Routes
+  API: {
+    // Decks
+    DECKS: '/api/decks',
+    DECK: (id: string) => `/api/decks/${id}`,
+    DECK_SHARES: (id: string) => `/api/decks/${id}/shares`,
+    DECK_SHARE: (id: string, shareId: string) => `/api/decks/${id}/shares/${shareId}`,
+
+    // Cards
+    CARDS: '/api/cards',
+    CARD: (id: string) => `/api/cards/${id}`,
+  },
 };
