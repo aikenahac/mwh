@@ -56,8 +56,9 @@ export function DeckSelector({
   );
   const [updating, setUpdating] = useState(false);
   const [isSystemDecksExpanded, setIsSystemDecksExpanded] = useState(false);
+  const [isUserDecksExpanded, setIsUserDecksExpanded] = useState(false);
 
-  const INITIAL_SYSTEM_DECKS_DISPLAY = 6;
+  const INITIAL_DECKS_DISPLAY = 6;
 
   // Fetch available decks
   useEffect(() => {
@@ -217,11 +218,15 @@ export function DeckSelector({
         </CardContent>
       </Card>
 
-      {/* User Decks */}
+      {/* User Decks - Compact View */}
       {userDecks.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold">{t('game.myDecks')}</h3>
+            <h3 className="text-sm font-semibold">
+              {t('game.myDecks')} (
+              {userDecks.filter((d) => selectedIds.has(d.id)).length}/
+              {userDecks.length})
+            </h3>
             <Button
               variant="ghost"
               size="sm"
@@ -234,47 +239,139 @@ export function DeckSelector({
             </Button>
           </div>
 
-          <div className="space-y-2">
-            {userDecks.map((deck) => (
-              <Card key={deck.id}>
-                <CardContent className="flex items-start space-x-3 p-3">
-                  <Checkbox
-                    id={`deck-${deck.id}`}
-                    checked={selectedIds.has(deck.id)}
-                    onCheckedChange={() => handleToggleDeck(deck.id)}
-                  />
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <Label
-                        htmlFor={`deck-${deck.id}`}
-                        className="font-medium cursor-pointer"
-                      >
-                        {deck.name}
-                      </Label>
-                      {deck.sharedBy && (
-                        <Badge variant="outline" className="text-xs">
-                          {t('game.sharedBy')} {deck.sharedBy}
+          {/* Compact grid view for initial decks */}
+          <div className="grid grid-cols-2 gap-2">
+            {userDecks.slice(0, INITIAL_DECKS_DISPLAY).map((deck) => (
+              <Card
+                key={deck.id}
+                className={`cursor-pointer transition-colors ${
+                  selectedIds.has(deck.id) ? 'border-primary bg-primary/5' : ''
+                }`}
+                onClick={() => handleToggleDeck(deck.id)}
+              >
+                <CardContent className="p-3">
+                  <div className="flex items-start gap-2">
+                    <Checkbox
+                      id={`deck-${deck.id}`}
+                      checked={selectedIds.has(deck.id)}
+                      onCheckedChange={() => handleToggleDeck(deck.id)}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1">
+                        <Label
+                          htmlFor={`deck-${deck.id}`}
+                          className="text-sm font-medium cursor-pointer leading-tight line-clamp-2"
+                        >
+                          {deck.name}
+                        </Label>
+                        {deck.sharedBy && (
+                          <Badge variant="outline" className="text-[10px] px-1 py-0">
+                            {t('game.sharedBy')}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex gap-1 mt-1">
+                        <Badge
+                          variant="secondary"
+                          className="text-[10px] px-1 py-0"
+                        >
+                          {deck.blackCardCount}B
                         </Badge>
-                      )}
-                    </div>
-                    {deck.description && (
-                      <p className="text-xs text-muted-foreground">
-                        {deck.description}
-                      </p>
-                    )}
-                    <div className="flex gap-2">
-                      <Badge variant="secondary" className="text-xs">
-                        {deck.blackCardCount} {t('game.black')}
-                      </Badge>
-                      <Badge variant="secondary" className="text-xs">
-                        {deck.whiteCardCount} {t('game.white')}
-                      </Badge>
+                        <Badge
+                          variant="secondary"
+                          className="text-[10px] px-1 py-0"
+                        >
+                          {deck.whiteCardCount}W
+                        </Badge>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
+
+          {/* Collapsible section for remaining decks */}
+          {userDecks.length > INITIAL_DECKS_DISPLAY && (
+            <Collapsible
+              open={isUserDecksExpanded}
+              onOpenChange={setIsUserDecksExpanded}
+            >
+              <CollapsibleTrigger asChild>
+                <Button variant="outline" className="w-full" size="sm">
+                  {isUserDecksExpanded ? (
+                    <>
+                      <ChevronUp className="mr-2 h-4 w-4" />
+                      Show Less (
+                      {userDecks.length - INITIAL_DECKS_DISPLAY} hidden)
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="mr-2 h-4 w-4" />
+                      Show More (
+                      {userDecks.length - INITIAL_DECKS_DISPLAY} more)
+                    </>
+                  )}
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="mt-2">
+                <div className="grid grid-cols-2 gap-2">
+                  {userDecks.slice(INITIAL_DECKS_DISPLAY).map((deck) => (
+                    <Card
+                      key={deck.id}
+                      className={`cursor-pointer transition-colors ${
+                        selectedIds.has(deck.id)
+                          ? 'border-primary bg-primary/5'
+                          : ''
+                      }`}
+                      onClick={() => handleToggleDeck(deck.id)}
+                    >
+                      <CardContent className="p-3">
+                        <div className="flex items-start gap-2">
+                          <Checkbox
+                            id={`deck-${deck.id}`}
+                            checked={selectedIds.has(deck.id)}
+                            onCheckedChange={() => handleToggleDeck(deck.id)}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1">
+                              <Label
+                                htmlFor={`deck-${deck.id}`}
+                                className="text-sm font-medium cursor-pointer leading-tight line-clamp-2"
+                              >
+                                {deck.name}
+                              </Label>
+                              {deck.sharedBy && (
+                                <Badge variant="outline" className="text-[10px] px-1 py-0">
+                                  {t('game.sharedBy')}
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="flex gap-1 mt-1">
+                              <Badge
+                                variant="secondary"
+                                className="text-[10px] px-1 py-0"
+                              >
+                                {deck.blackCardCount}B
+                              </Badge>
+                              <Badge
+                                variant="secondary"
+                                className="text-[10px] px-1 py-0"
+                              >
+                                {deck.whiteCardCount}W
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          )}
         </div>
       )}
 
@@ -301,7 +398,7 @@ export function DeckSelector({
 
           {/* Compact grid view for initial decks */}
           <div className="grid grid-cols-2 gap-2">
-            {systemDecks.slice(0, INITIAL_SYSTEM_DECKS_DISPLAY).map((deck) => (
+            {systemDecks.slice(0, INITIAL_DECKS_DISPLAY).map((deck) => (
               <Card
                 key={deck.id}
                 className={`cursor-pointer transition-colors ${
@@ -346,7 +443,7 @@ export function DeckSelector({
           </div>
 
           {/* Collapsible section for remaining decks */}
-          {systemDecks.length > INITIAL_SYSTEM_DECKS_DISPLAY && (
+          {systemDecks.length > INITIAL_DECKS_DISPLAY && (
             <Collapsible
               open={isSystemDecksExpanded}
               onOpenChange={setIsSystemDecksExpanded}
@@ -357,23 +454,20 @@ export function DeckSelector({
                     <>
                       <ChevronUp className="mr-2 h-4 w-4" />
                       Show Less (
-                      {systemDecks.length - INITIAL_SYSTEM_DECKS_DISPLAY}{' '}
-                      hidden)
+                      {systemDecks.length - INITIAL_DECKS_DISPLAY} hidden)
                     </>
                   ) : (
                     <>
                       <ChevronDown className="mr-2 h-4 w-4" />
                       Show More (
-                      {systemDecks.length - INITIAL_SYSTEM_DECKS_DISPLAY} more)
+                      {systemDecks.length - INITIAL_DECKS_DISPLAY} more)
                     </>
                   )}
                 </Button>
               </CollapsibleTrigger>
               <CollapsibleContent className="mt-2">
                 <div className="grid grid-cols-2 gap-2">
-                  {systemDecks
-                    .slice(INITIAL_SYSTEM_DECKS_DISPLAY)
-                    .map((deck) => (
+                  {systemDecks.slice(INITIAL_DECKS_DISPLAY).map((deck) => (
                       <Card
                         key={deck.id}
                         className={`cursor-pointer transition-colors ${
