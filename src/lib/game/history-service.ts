@@ -13,7 +13,7 @@ import {
   playerStatistic,
   deck,
 } from '@/lib/db/schema';
-import { eq, desc, asc, and, gte, lte, or, sql } from 'drizzle-orm';
+import { eq, desc, asc, and, gte, lte, or, sql, inArray } from 'drizzle-orm';
 import type {
   GameHistoryItem,
   PaginatedGameHistory,
@@ -58,6 +58,19 @@ export async function getUserGameHistory(
     conditions.push(lte(completedGame.completedAt, filters.dateTo));
   }
 
+  // Map sort field from snake_case to camelCase
+  const getSortField = (field?: string) => {
+    const fieldMap: Record<string, keyof typeof completedGame.$inferSelect> = {
+      'completed_at': 'completedAt',
+      'created_at': 'createdAt',
+      'duration_minutes': 'durationMinutes',
+      'total_rounds_played': 'totalRoundsPlayed',
+    };
+    return fieldMap[field || 'completed_at'] || 'completedAt';
+  };
+
+  const sortField = getSortField(sort?.field);
+
   // Query completed game players with game data
   const gamesQuery = db
     .select({
@@ -72,8 +85,8 @@ export async function getUserGameHistory(
     .where(and(...conditions))
     .orderBy(
       sort?.direction === 'asc'
-        ? asc(completedGame[sort.field])
-        : desc(completedGame[sort?.field || 'completedAt']),
+        ? asc(completedGame[sortField])
+        : desc(completedGame[sortField]),
     )
     .limit(pageSize)
     .offset(offset);
@@ -101,9 +114,7 @@ export async function getUserGameHistory(
     })
     .from(completedGameDeck)
     .innerJoin(deck, eq(completedGameDeck.deckId, deck.id))
-    .where((completedGameDeck, { inArray }) =>
-      inArray(completedGameDeck.completedGameId, gameIds),
-    );
+    .where(inArray(completedGameDeck.completedGameId, gameIds));
 
   // Group decks by game
   const decksByGame = new Map<string, (typeof deck.$inferSelect)[]>();
@@ -116,21 +127,34 @@ export async function getUserGameHistory(
 
   // Get winner nicknames
   const winnerIds = [
-    ...new Set(gamesData.map((g) => g.game.winnerUserId).filter(Boolean)),
+    ...new Set(
+      gamesData
+        .map((g) => g.game.winnerUserId)
+        .filter((id): id is string => id !== null),
+    ),
   ];
-  const winnersData = await db
-    .select({
-      gameId: completedGamePlayer.completedGameId,
-      nickname: completedGamePlayer.nickname,
-      userId: completedGamePlayer.clerkUserId,
-    })
-    .from(completedGamePlayer)
-    .where((completedGamePlayer, { inArray }) =>
-      and(
-        inArray(completedGamePlayer.completedGameId, gameIds),
-        or(...winnerIds.map((wId) => eq(completedGamePlayer.clerkUserId, wId))),
-      ),
-    );
+
+  let winnersData: Array<{
+    gameId: string;
+    nickname: string;
+    userId: string | null;
+  }> = [];
+
+  if (winnerIds.length > 0) {
+    winnersData = await db
+      .select({
+        gameId: completedGamePlayer.completedGameId,
+        nickname: completedGamePlayer.nickname,
+        userId: completedGamePlayer.clerkUserId,
+      })
+      .from(completedGamePlayer)
+      .where(
+        and(
+          inArray(completedGamePlayer.completedGameId, gameIds),
+          or(...winnerIds.map((wId) => eq(completedGamePlayer.clerkUserId, wId))),
+        ),
+      );
+  }
 
   const winnerNicknames = new Map<string, string>();
   for (const w of winnersData) {
@@ -146,9 +170,7 @@ export async function getUserGameHistory(
       count: sql<number>`count(*)`,
     })
     .from(completedGamePlayer)
-    .where((completedGamePlayer, { inArray }) =>
-      inArray(completedGamePlayer.completedGameId, gameIds),
-    )
+    .where(inArray(completedGamePlayer.completedGameId, gameIds))
     .groupBy(completedGamePlayer.completedGameId);
 
   const playerCountMap = new Map(
@@ -404,7 +426,10 @@ export async function getLeaderboard(
   currentUserId?: string,
 ): Promise<LeaderboardData> {
   // Determine order by field
-  let orderByField: typeof playerStatistic.totalGamesWon;
+  let orderByField:
+    | typeof playerStatistic.totalGamesWon
+    | typeof playerStatistic.winRate
+    | typeof playerStatistic.totalRoundsWon;
   switch (metric) {
     case 'wins':
       orderByField = playerStatistic.totalGamesWon;
@@ -432,9 +457,7 @@ export async function getLeaderboard(
       nickname: completedGamePlayer.nickname,
     })
     .from(completedGamePlayer)
-    .where((completedGamePlayer, { inArray }) =>
-      inArray(completedGamePlayer.clerkUserId, userIds as string[]),
-    )
+    .where(inArray(completedGamePlayer.clerkUserId, userIds as string[]))
     .orderBy(desc(completedGamePlayer.completedGameId));
 
   // Get most recent nickname for each user
@@ -466,12 +489,24 @@ export async function getLeaderboard(
 
     if (userStats) {
       // Count how many players have better stats
+      // Get the stats field name based on the metric
+      let userStatValue: number;
+      switch (metric) {
+        case 'wins':
+          userStatValue = userStats.totalGamesWon;
+          break;
+        case 'win_rate':
+          userStatValue = userStats.winRate;
+          break;
+        case 'rounds_won':
+          userStatValue = userStats.totalRoundsWon;
+          break;
+      }
+
       const betterPlayers = await db
         .select({ count: sql<number>`count(*)` })
         .from(playerStatistic)
-        .where(
-          sql`${orderByField} > ${userStats[orderByField.name as keyof typeof userStats]}`,
-        );
+        .where(sql`${orderByField} > ${userStatValue}`);
 
       currentUserRank = (betterPlayers[0]?.count || 0) + 1;
     }

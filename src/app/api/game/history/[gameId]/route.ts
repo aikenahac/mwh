@@ -17,12 +17,12 @@ import type {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { gameId: string } },
+  { params }: { params: Promise<{ gameId: string }> },
 ) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const userId = searchParams.get('userId');
-    const { gameId } = params;
+    const { gameId } = await params;
 
     if (!userId) {
       return NextResponse.json<ApiResponse>({
