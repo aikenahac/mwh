@@ -279,7 +279,8 @@
       "noDecksSelected": "Please select at least one deck",
       "fetchDecksFailed": "Failed to load decks",
       "updateDecksFailed": "Failed to update decks",
-      "wrongCardCount": "Please select the correct number of cards"
+      "wrongCardCount": "Please select the correct number of cards",
+      "loginRequired": "You must be logged in to start a game"
     }
   },
 

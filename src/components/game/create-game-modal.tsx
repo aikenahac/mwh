@@ -48,6 +48,14 @@ export function CreateGameModal({
   const [isCreating, setIsCreating] = useState(false);
 
   const handleCreateGame = async () => {
+    // Require authentication to create a game
+    if (!user) {
+      toast.error(t('game.errors.loginRequired'));
+      onOpenChange(false);
+      router.push('/auth/sign-in');
+      return;
+    }
+
     if (!socket) {
       toast.error(t('game.errors.notConnected'));
       return;
@@ -64,7 +72,7 @@ export function CreateGameModal({
       'create-game',
       {
         nickname: nickname.trim(),
-        clerkUserId: user?.id || null,
+        clerkUserId: user.id,
       },
       (response) => {
         setIsCreating(false);
