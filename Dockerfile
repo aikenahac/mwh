@@ -64,6 +64,13 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # This includes server.js and all compiled src/ files with resolved paths
 COPY --from=builder --chown=nextjs:nodejs /app/dist ./
 
+# Copy migration-related files (source TypeScript for drizzle-kit)
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle.config.ts ./drizzle.config.ts
+# Note: src/lib/db will have both .ts (for migrations) and .js (compiled, may be overwritten)
+# The runtime server uses the compiled code from dist/src/lib/db via the copied dist folder above
+# The migration scripts use the .ts files
+COPY --from=builder --chown=nextjs:nodejs /app/src/lib/db ./src/lib/db
+
 # Install additional production dependencies needed by custom server
 # that aren't included in standalone build (socket.io, etc.)
 COPY --from=builder /app/package.json ./package.json
