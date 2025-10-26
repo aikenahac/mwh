@@ -31,6 +31,7 @@ const gameCardPools = new Map<
     blackCards: Card[];
     whiteCards: Card[];
     currentBlackIndex: number;
+    currentWhiteIndex: number;
   }
 >();
 
@@ -288,7 +289,7 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
     try {
       const userId = data.clerkUserId || `guest_${socket.id}`;
 
-      const { blackCards, whiteCards } = await gameService.startGame(
+      const { blackCards, whiteCards, initialWhiteIndex } = await gameService.startGame(
         data.sessionId,
         userId,
       );
@@ -298,6 +299,7 @@ export function attachGameHandlers(socket: GameSocket, io: GameIO): void {
         blackCards,
         whiteCards,
         currentBlackIndex: 0,
+        currentWhiteIndex: initialWhiteIndex,
       });
 
       console.log(`[Game] Started: ${data.sessionId}`);
@@ -921,11 +923,15 @@ async function startNextRound(
   }
 
   // Deal replacement cards
-  await gameService.dealReplacementCards(
+  const { nextIndex } = await gameService.dealReplacementCards(
     sessionId,
     pools.whiteCards,
     session.settings.handSize,
+    pools.currentWhiteIndex,
   );
+
+  // Update white card index
+  pools.currentWhiteIndex = nextIndex;
 
   // Get next czar
   const currentCzar = session.players.find((p) => p.isCardCzar)!;

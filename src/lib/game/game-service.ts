@@ -274,7 +274,7 @@ export async function updateGameSettings(
 export async function startGame(
   sessionId: string,
   requestingUserId: string,
-): Promise<{ blackCards: Card[]; whiteCards: Card[] }> {
+): Promise<{ blackCards: Card[]; whiteCards: Card[]; initialWhiteIndex: number }> {
   await validateOwnership(sessionId, requestingUserId);
 
   const session = await db.query.gameSession.findFirst({
@@ -332,9 +332,9 @@ export async function startGame(
     .where(eq(gameSession.id, sessionId));
 
   // Deal initial hands to all players
-  await dealInitialHands(sessionId, whiteCards, session.settings.handSize);
+  const initialWhiteIndex = await dealInitialHands(sessionId, whiteCards, session.settings.handSize);
 
-  return { blackCards, whiteCards };
+  return { blackCards, whiteCards, initialWhiteIndex };
 }
 
 // ============================================
@@ -553,12 +553,13 @@ export async function dealReplacementCards(
   sessionId: string,
   whiteCards: Card[],
   handSize: number,
-): Promise<{ updatedPlayers: Player[]; remainingCards: Card[] }> {
+  startIndex: number,
+): Promise<{ updatedPlayers: Player[]; nextIndex: number }> {
   const players = await db.query.player.findMany({
     where: eq(player.sessionId, sessionId),
   });
 
-  let cardIndex = 0;
+  let cardIndex = startIndex;
   const updatedPlayers: Player[] = [];
 
   for (const p of players) {
@@ -580,9 +581,7 @@ export async function dealReplacementCards(
     }
   }
 
-  const remainingCards = whiteCards.slice(cardIndex);
-
-  return { updatedPlayers, remainingCards };
+  return { updatedPlayers, nextIndex: cardIndex };
 }
 
 /**
@@ -645,7 +644,7 @@ async function dealInitialHands(
   sessionId: string,
   whiteCards: Card[],
   handSize: number,
-): Promise<void> {
+): Promise<number> {
   const players = await db.query.player.findMany({
     where: eq(player.sessionId, sessionId),
   });
@@ -660,6 +659,8 @@ async function dealInitialHands(
 
     await db.update(player).set({ hand }).where(eq(player.id, p.id));
   }
+
+  return cardIndex;
 }
 
 /**
