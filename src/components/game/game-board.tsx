@@ -92,10 +92,10 @@ export function GameBoard({
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-4 sm:space-y-6 px-2 sm:px-0">
       {/* Black Card */}
       <div className="flex justify-center">
-        <div className="w-48 sm:w-56 md:w-64">
+        <div className="w-40 xs:w-48 sm:w-56 md:w-64 max-w-full">
           <MWHCard card={currentRound.blackCard} />
         </div>
       </div>
@@ -115,7 +115,7 @@ export function GameBoard({
               >
                 <CardContent className="p-3 sm:p-4 space-y-2">
                   {sub.cards.map((card) => (
-                    <div key={card.id} className="w-full max-w-xs mx-auto">
+                    <div key={card.id} className="w-full max-w-[200px] xs:max-w-xs mx-auto">
                       <MWHCard card={card} />
                     </div>
                   ))}
@@ -138,7 +138,7 @@ export function GameBoard({
                 {myHand
                   .filter((card) => submittedCardIds.includes(card.id))
                   .map((card) => (
-                    <div key={card.id} className="w-36 sm:w-40 md:w-48">
+                    <div key={card.id} className="w-32 xs:w-36 sm:w-40 md:w-48">
                       <MWHCard card={card} />
                     </div>
                   ))}
@@ -162,7 +162,7 @@ export function GameBoard({
                 </Button>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
+              <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2 sm:gap-3 md:gap-4">
                 {myHand.map((card) => (
                   <button
                     key={card.id}
@@ -177,7 +177,7 @@ export function GameBoard({
                         setSelectedCards([...selectedCards, card.id]);
                       }
                     }}
-                    className={`transition-all ${selectedCards.includes(card.id) ? 'ring-2 sm:ring-4 ring-blue-500 scale-95' : ''}`}
+                    className={`transition-all w-full ${selectedCards.includes(card.id) ? 'ring-2 sm:ring-4 ring-blue-500 scale-95' : ''}`}
                   >
                     <MWHCard card={card} />
                   </button>
