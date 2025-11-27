@@ -8,6 +8,7 @@ Mess with Humanity is a web application that allows users to create custom decks
 - [x] Add and edit cards (white answer cards and black question cards)
 - [x] Support for "Pick 2" black cards
 - [x] Generate printable PDFs of decks (4 cards per A4 page, landscape)
+- [x] Export decks as JSON (compatible with [crhallberg.com/cah](https://crhallberg.com/cah/) format)
 - [x] Share decks
 - [x] Collaborate on decks
 - [x] Admin panel
@@ -109,6 +110,50 @@ pnpm db:migrate       # Run migrations
 pnpm db:push          # Push schema changes (development)
 pnpm db:studio        # Open Drizzle Studio
 ```
+
+## Exporting and Importing Decks
+
+### Export Functionality
+
+You can export your custom decks as JSON files in two ways:
+
+1. **Export a Single Deck**: On any deck page, click the export button (download icon) to download that deck as a JSON file
+2. **Export All Decks**: On the decks list page, click "Export All" to download all your decks in a single JSON file
+
+### JSON Format
+
+The JSON export format is compatible with the official Cards Against Humanity JSON format used at [crhallberg.com/cah](https://crhallberg.com/cah/). This allows for easy sharing and importing of custom decks.
+
+**Format Structure:**
+```json
+[
+  {
+    "name": "Deck Name",
+    "white": [
+      {
+        "text": "Answer card text",
+        "pack": 300
+      }
+    ],
+    "black": [
+      {
+        "text": "Question card text with blanks ___",
+        "pick": 1,
+        "pack": 300
+      }
+    ]
+  }
+]
+```
+
+**Pack Numbers:**
+- Single deck exports use a random pack number between 400-600 to avoid conflicts with official CAH packs
+- When exporting all decks, pack numbers start at 300 and increment by 1 for each deck (300, 301, 302, etc.)
+- Official CAH packs from [crhallberg.com/cah](https://crhallberg.com/cah/) use pack numbers below 300
+
+### Importing Decks
+
+Admins can import decks in this format through the Admin Panel (`/admin/system-decks`). The importer accepts JSON files (max 5MB) in the same format as the exports.
 
 ## Production Deployment
 

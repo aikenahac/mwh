@@ -1,5 +1,6 @@
 import { MWHCard } from '@/components/cards/mwh-card';
 import { PrintDeckDialog } from '@/components/decks/deck/print-dialog';
+import { ExportDeckButton } from '@/components/decks/deck/export-deck-button';
 import { DeleteDeckDialog } from '@/components/decks/delete-deck-dialog';
 import { EditDeckDialog } from '@/components/decks/edit-deck-dialog';
 import { ShareDeckDialog } from '@/components/decks/share-deck-dialog';
@@ -79,6 +80,7 @@ export default async function DeckPage({
         <div className="flex flex-row items-center gap-2">
           {permissions.canEdit && <DeleteDeckDialog deckId={deck.id} />}
           <PrintDeckDialog cards={deck.cards} />
+          <ExportDeckButton deckId={deck.id} deckName={deck.name} />
           {permissions.canEdit && <EditDeckDialog deck={deck} />}
           {permissions.isOwner && (
             <ShareDeckDialog deckId={deck.id} shares={sharesWithUsernames} isOwner={permissions.isOwner} />

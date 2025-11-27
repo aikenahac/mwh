@@ -6,6 +6,9 @@ import { eq, and } from 'drizzle-orm';
 import { auth, clerkClient } from '@clerk/nextjs/server';
 import { canShareDeck, isOwnerOfDeck } from '@/lib/auth/permissions';
 import { shareDeckSchema, updateSharePermissionSchema, removeShareSchema } from '@/lib/schemas';
+import { getDeckById } from '@/lib/api/deck';
+import { Routes } from '@/lib/routes';
+import { redirect } from 'next/navigation';
 
 type Result = {
   success: boolean;
@@ -323,4 +326,41 @@ export async function removeShare({ shareId }: RemoveShareProps): Promise<Result
       error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
+}
+
+export async function exportDeckAsJSON(deckId: string): Promise<string> {
+  const { userId } = await auth();
+
+  if (!userId) redirect(Routes.SIGN_IN);
+
+  const { data: deck } = await getDeckById(deckId, userId);
+
+  if (!deck) {
+    throw new Error('Deck not found');
+  }
+
+  // Generate random pack number between 400 and 600 to avoid conflicts with official CAH packs
+  const packNumber = Math.floor(Math.random() * (600 - 400 + 1)) + 400;
+
+  // Transform deck into the import format
+  const exportData = [
+    {
+      name: deck.name,
+      white: deck.cards
+        .filter((card) => card.type === 'white')
+        .map((card) => ({
+          text: card.text || '',
+          pack: packNumber,
+        })),
+      black: deck.cards
+        .filter((card) => card.type === 'black')
+        .map((card) => ({
+          text: card.text || '',
+          pick: card.pick || 1,
+          pack: packNumber,
+        })),
+    },
+  ];
+
+  return JSON.stringify(exportData, null, 2);
 }

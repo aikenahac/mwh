@@ -64,13 +64,16 @@
     "empty": {
       "title": "No decks yet",
       "description": "Create your first deck to get started!"
-    }
+    },
+    "exportAll": "Export All",
+    "exporting": "Exporting..."
   },
 
   "deck": {
     "addCard": "Add Card",
     "unknownDeck": "Unknown deck",
     "print": "Print",
+    "exporting": "Exporting...",
 
     "editDialog": {
       "title": "Edit Deck",

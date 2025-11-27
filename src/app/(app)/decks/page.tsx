@@ -1,4 +1,5 @@
 import { CreateDeckDialog } from '@/components/decks/create-deck-dialog';
+import { ExportAllDecksButton } from '@/components/decks/export-all-decks-button';
 import { DeckCard } from '@/components/decks/deck/deck-card';
 import { Routes } from '@/lib/routes';
 import { getDecks } from '@/lib/api/deck';
@@ -19,7 +20,10 @@ export default async function DecksPage() {
     <div className="flex flex-col items-center w-full">
       <div className="flex flex-row items-center justify-between w-full">
         <h1 className="text-2xl font-bold">{t('decksPage.title')}</h1>
-        <CreateDeckDialog />
+        <div className="flex flex-row items-center gap-2">
+          {hasDecks && <ExportAllDecksButton />}
+          <CreateDeckDialog />
+        </div>
       </div>
       <br />
       {hasDecks ? (
