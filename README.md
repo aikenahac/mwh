@@ -145,5 +145,10 @@ src/
 └── i18n/                   # Internationalization
 ```
 
+## Credits
+
+- [Cards Against Humanity](https://www.cardsagainsthumanity.com/) - inspiration, content for cards (gameplay feature, currently on `beta`)
+- [crhallberg.com/cah](https://crhallberg.com/cah/) - JSON version of card content
+
 ---
 ###### To my girlfriend, who just complained about there not being a K-Pop expansion once
