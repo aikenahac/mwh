@@ -1,25 +1,24 @@
 # Configuration for my production environment
-# uses traefik for reverse proxy
 
 services:
   migrations:
-    image: ghcr.io/aikenahac/mwh:master
+    image: ghcr.io/aikenahac/mwh:beta
     container_name: mwh-migrations
     env_file:
-      - stack.env
+      - .env
     depends_on:
       db:
         condition: service_healthy
     networks:
-      - proxy
-    command: sh -c "pnpm drizzle-kit push && exit 0"
+      - mwh
+    command: sh -c "pnpm db:push"
     restart: "no"
 
   app:
     image: ghcr.io/aikenahac/mwh:master
     container_name: mwh
     env_file:
-      - stack.env
+      - .env
     ports:
       - "3101:3000"
     depends_on:
@@ -27,22 +26,42 @@ services:
         condition: service_healthy
     restart: unless-stopped
     networks:
-      - proxy
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.mwh.loadbalancer.server.port=3000"
-      - "traefik.http.routers.mwh.rule=Host(`gomwh.com`)"
-      - "traefik.http.routers.mwh.entrypoints=https"
-      - "traefik.http.routers.mwh.service=mwh"
-      - "traefik.http.routers.mwh.tls.certresolver=cloudflare"
+      - mwh
+
+  app-beta:
+    image: ghcr.io/aikenahac/mwh:beta
+    container_name: mwh-beta
+    env_file:
+      - .env
+    ports:
+      - "3102:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - mwh
+
+  studio:
+    image: ghcr.io/drizzle-team/gateway:latest
+    container_name: mwh-db-studio
+    environment:
+      - PORT=4983
+
+      - MASTERPASS=${DRIZZLE_MASTERPASS}
+    volumes:
+      - drizzle_gateway:/app
+    restart: unless-stopped
+    networks:
+      - mwh
 
   db:
     image: postgres:latest
     container_name: mwh-db
     env_file:
-      - stack.env
+      - .env
     volumes:
-      - mwh_db_data:/var/lib/postgresql/data
+      - mwh_db_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -50,11 +69,12 @@ services:
       retries: 5
     restart: unless-stopped
     networks:
-       - proxy
+       - mwh
 
 volumes:
   mwh_db_data:
+  drizzle_gateway:
 
 networks:
-  proxy:
-    external: true
+  mwh:
+    driver: bridge
