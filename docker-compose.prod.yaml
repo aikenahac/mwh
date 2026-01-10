@@ -4,6 +4,7 @@ services:
   migrations:
     image: ghcr.io/aikenahac/mwh:beta
     container_name: mwh-migrations
+    pull_policy: always
     env_file:
       - .env
     depends_on:
@@ -17,6 +18,7 @@ services:
   app:
     image: ghcr.io/aikenahac/mwh:master
     container_name: mwh
+    pull_policy: always
     env_file:
       - .env
     ports:
@@ -28,19 +30,20 @@ services:
     networks:
       - mwh
 
-  app-beta:
-    image: ghcr.io/aikenahac/mwh:beta
-    container_name: mwh-beta
-    env_file:
-      - .env
-    ports:
-      - "3102:3000"
-    depends_on:
-      db:
-        condition: service_healthy
-    restart: unless-stopped
-    networks:
-      - mwh
+  # app-beta:
+  #   image: ghcr.io/aikenahac/mwh:beta
+  #   container_name: mwh-beta
+  #   pull_policy: always
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - "3102:3000"
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   restart: unless-stopped
+  #   networks:
+  #     - mwh
 
   studio:
     image: ghcr.io/drizzle-team/gateway:latest
