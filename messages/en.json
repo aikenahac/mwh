@@ -17,6 +17,42 @@
     "signUp": "Sign Up"
   },
 
+  "auth": {
+    "signInTitle": "Welcome back",
+    "signInDescription": "Sign in to your account to continue",
+    "signUpTitle": "Create an account",
+    "signUpDescription": "Get started by creating your free account",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "username": "Username",
+    "usernamePlaceholder": "your_username",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "confirmPassword": "Confirm Password",
+    "continue": "Continue",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "or": "Or continue with",
+    "google": "Google",
+    "apple": "Apple",
+    "allFieldsRequired": "All fields are required",
+    "invalidEmail": "Please enter a valid email address",
+    "passwordsDontMatch": "Passwords don't match",
+    "mustAcceptTerms": "You must accept the terms and conditions",
+    "usernameMinLength": "Username must be at least 4 characters",
+    "usernameInvalidChars": "Username can only contain letters, numbers, underscores, and hyphens",
+    "usernameInvalidStartEnd": "Username cannot start or end with underscore or hyphen",
+    "acceptTermsPrefix": "I agree to the",
+    "and": "and",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "verifyEmail": "Verify your email",
+    "enterCode": "Enter the 6-digit code sent to your email",
+    "verify": "Verify"
+  },
+
   "home": {
     "title": "Home page",
     "hero": {

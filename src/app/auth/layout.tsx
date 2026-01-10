@@ -1,18 +1,22 @@
-import { AuthNavbar } from '@/components/auth/navbar';
+import { auth } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
+import { Routes } from '@/lib/routes';
 
-export default function AppLayout({
+export default async function AuthLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  const { userId } = await auth();
+
+  // Redirect authenticated users to home
+  if (userId) {
+    redirect(Routes.HOME);
+  }
+
   return (
-    <div className="min-h-screen w-screen max-w-screen flex items-center justify-center">
-      <div className="flex flex-col gap-2 ">
-        <header className="flex justify-end items-center gap-4 h-16 w-full">
-          <AuthNavbar />
-        </header>
-        {children}
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <div className="w-full max-w-md">{children}</div>
     </div>
   );
 }
