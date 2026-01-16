@@ -10,7 +10,7 @@ import {
   CardContent,
 } from '@/components/ui/card';
 import Link from 'next/link';
-import { Database, Users } from 'lucide-react';
+import { Database, Users, BarChart3 } from 'lucide-react';
 
 export default async function AdminPage() {
   const { userId } = await auth();
@@ -78,6 +78,30 @@ export default async function AdminPage() {
                 <p className="text-sm text-muted-foreground">
                   View all users with assigned roles, edit roles, add new users,
                   and remove users from the roles table.
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href={Routes.ADMIN_ANALYTICS}>
+            <Card className="cursor-pointer transition-all hover:shadow-lg hover:border-primary">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <BarChart3 className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle>Analytics</CardTitle>
+                    <CardDescription>
+                      View system-wide analytics and user activity trends
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Explore comprehensive analytics including user growth, deck creation trends,
+                  card distribution, and detailed user activity data.
                 </p>
               </CardContent>
             </Card>
