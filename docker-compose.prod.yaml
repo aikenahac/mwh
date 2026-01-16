@@ -30,20 +30,20 @@ services:
     networks:
       - mwh
 
-  app-beta:
-    image: ghcr.io/aikenahac/mwh:master
-    container_name: mwh-beta
-    pull_policy: always
-    env_file:
-      - .env
-    ports:
-      - "3102:3000"
-    depends_on:
-      db:
-        condition: service_healthy
-    restart: unless-stopped
-    networks:
-      - mwh
+  # app-beta:
+  #   image: ghcr.io/aikenahac/mwh:master
+  #   container_name: mwh-beta
+  #   pull_policy: always
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - "3102:3000"
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   restart: unless-stopped
+  #   networks:
+  #     - mwh
 
   studio:
     image: ghcr.io/drizzle-team/gateway:latest
