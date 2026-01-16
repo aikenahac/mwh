@@ -42,7 +42,7 @@ interface AllUserData {
 }
 
 interface AllUsersTableProps {
-  users: AllUserData[];
+  users: Array<AllUserData>;
 }
 
 function RoleCell({ row }: { row: { original: AllUserData } }) {
@@ -77,7 +77,7 @@ export function AllUsersTable({ users }: AllUsersTableProps) {
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const columns = useMemo<ColumnDef<AllUserData>[]>(
+  const columns = useMemo<Array<ColumnDef<AllUserData>>>(
     () => [
       {
         id: 'avatar',

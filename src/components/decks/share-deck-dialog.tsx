@@ -47,7 +47,7 @@ interface Share {
 
 interface ShareDeckDialogProps {
   deckId: string;
-  shares: Share[];
+  shares: Array<Share>;
   isOwner: boolean;
 }
 

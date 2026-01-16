@@ -116,7 +116,7 @@ export function PrintDocument({ cards }: { cards?: Array<Card> }) {
   const chunkedCards = chunkArray(cards || [], cardsPerPage);
 
   // Create alternating array of cards and back cards
-  const createAlternatingCards = (cardChunk: Card[]) => {
+  const createAlternatingCards = (cardChunk: Array<Card>) => {
     const alternatingElements = [];
     for (let i = 0; i < cardChunk.length; i++) {
       // Add the actual card

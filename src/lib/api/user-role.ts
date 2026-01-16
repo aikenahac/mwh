@@ -38,7 +38,7 @@ export async function hasRole(userId: string, role: 'superadmin'): Promise<boole
 /**
  * Get all users with roles
  */
-export async function getAllUserRoles(): Promise<UserRole[]> {
+export async function getAllUserRoles(): Promise<Array<UserRole>> {
   const roles = await db.query.userRole.findMany();
   const parsed = z.array(userRoleSchema).safeParse(roles);
   return parsed.success ? parsed.data : [];

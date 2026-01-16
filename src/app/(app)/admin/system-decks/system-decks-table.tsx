@@ -24,17 +24,17 @@ import { DeleteDeckButton } from './delete-deck-button';
 import type { Deck, Card } from '@/lib/db/schema';
 
 interface DeckWithCards extends Deck {
-  cards: Card[];
+  cards: Array<Card>;
 }
 
 interface SystemDecksTableProps {
-  decks: DeckWithCards[];
+  decks: Array<DeckWithCards>;
 }
 
 export function SystemDecksTable({ decks }: SystemDecksTableProps) {
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
-  const columns = useMemo<ColumnDef<DeckWithCards>[]>(
+  const columns = useMemo<Array<ColumnDef<DeckWithCards>>>(
     () => [
       {
         id: 'expander',
@@ -65,7 +65,7 @@ export function SystemDecksTable({ decks }: SystemDecksTableProps) {
         accessorKey: 'cards',
         header: 'Cards',
         cell: ({ getValue }) => {
-          const cards = getValue() as Card[];
+          const cards = getValue() as Array<Card>;
           return <span>{cards.length}</span>;
         },
       },

@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Database, Layers, Share2, TrendingUp } from 'lucide-react';
 import type { SystemStats } from '@/lib/api/analytics';
 

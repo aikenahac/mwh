@@ -20,8 +20,6 @@ import {
   XAxis,
   YAxis,
   Cell,
-  Legend,
-  Tooltip,
 } from 'recharts';
 import type {
   UserGrowthData,
@@ -31,10 +29,10 @@ import type {
 } from '@/lib/api/analytics';
 
 interface AnalyticsChartsProps {
-  userGrowth: UserGrowthData[];
-  deckTrends: DeckCreationTrend[];
-  cardTrends: CardCreationTrend[];
-  sharingTrends: SharingActivityTrend[];
+  userGrowth: Array<UserGrowthData>;
+  deckTrends: Array<DeckCreationTrend>;
+  cardTrends: Array<CardCreationTrend>;
+  sharingTrends: Array<SharingActivityTrend>;
 }
 
 export function AnalyticsCharts({

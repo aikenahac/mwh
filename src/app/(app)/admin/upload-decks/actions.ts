@@ -30,9 +30,9 @@ export interface UploadProgress {
   currentDeck: string | null;
   totalCards: number;
   processedCards: number;
-  skippedDecks: string[];
+  skippedDecks: Array<string>;
   skippedCards: number;
-  errors: string[];
+  errors: Array<string>;
   status: 'processing' | 'completed' | 'error';
 }
 

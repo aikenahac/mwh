@@ -55,7 +55,7 @@ interface UserRoleData {
 }
 
 interface UserRolesTableProps {
-  users: UserRoleData[];
+  users: Array<UserRoleData>;
 }
 
 function RoleCell({ row }: { row: { original: UserRoleData } }) {
@@ -130,7 +130,7 @@ function ActionsCell({ row }: { row: { original: UserRoleData } }) {
 export function UserRolesTable({ users }: UserRolesTableProps) {
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
-  const columns = useMemo<ColumnDef<UserRoleData>[]>(
+  const columns = useMemo<Array<ColumnDef<UserRoleData>>>(
     () => [
       {
         id: 'avatar',

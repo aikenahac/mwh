@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import { deck, card, deckShare } from '@/lib/db/schema';
-import { sql, eq, and, ne, count, desc } from 'drizzle-orm';
+import { sql, eq, and, ne, count } from 'drizzle-orm';
 import { clerkClient } from '@clerk/nextjs/server';
 
 // Zod Schemas
@@ -155,7 +155,7 @@ export async function getSystemStats(): Promise<SystemStats> {
 /**
  * Get user growth by month
  */
-export async function getUserGrowthByMonth(): Promise<UserGrowthData[]> {
+export async function getUserGrowthByMonth(): Promise<Array<UserGrowthData>> {
   const client = await clerkClient();
   const allUsersResponse = await client.users.getUserList({ limit: 500 });
   const allUsers = allUsersResponse.data;
@@ -173,7 +173,7 @@ export async function getUserGrowthByMonth(): Promise<UserGrowthData[]> {
   // Convert to cumulative growth
   const sortedMonths = Array.from(monthMap.entries()).sort(([a], [b]) => a.localeCompare(b));
   let cumulative = 0;
-  const result: UserGrowthData[] = sortedMonths.map(([month, count]) => {
+  const result: Array<UserGrowthData> = sortedMonths.map(([month, count]) => {
     cumulative += count;
     return { month, users: cumulative };
   });
@@ -184,7 +184,7 @@ export async function getUserGrowthByMonth(): Promise<UserGrowthData[]> {
 /**
  * Get deck creation trends (last 30 days)
  */
-export async function getDeckCreationTrends(): Promise<DeckCreationTrend[]> {
+export async function getDeckCreationTrends(): Promise<Array<DeckCreationTrend>> {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -212,7 +212,7 @@ export async function getDeckCreationTrends(): Promise<DeckCreationTrend[]> {
 /**
  * Get card creation trends by type (last 30 days)
  */
-export async function getCardCreationTrends(): Promise<CardCreationTrend[]> {
+export async function getCardCreationTrends(): Promise<Array<CardCreationTrend>> {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -260,7 +260,7 @@ export async function getCardCreationTrends(): Promise<CardCreationTrend[]> {
 /**
  * Get sharing activity trends (last 30 days)
  */
-export async function getSharingActivityTrends(): Promise<SharingActivityTrend[]> {
+export async function getSharingActivityTrends(): Promise<Array<SharingActivityTrend>> {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -285,7 +285,7 @@ export async function getSharingActivityTrends(): Promise<SharingActivityTrend[]
 /**
  * Get detailed user activity data
  */
-export async function getUserActivityData(): Promise<UserActivity[]> {
+export async function getUserActivityData(): Promise<Array<UserActivity>> {
   // Fetch all users from Clerk
   const client = await clerkClient();
   const allUsersResponse = await client.users.getUserList({ limit: 500 });
@@ -348,7 +348,7 @@ export async function getUserActivityData(): Promise<UserActivity[]> {
     .groupBy(deck.userId, deck.id, deck.name);
 
   // Build user activity data
-  const userActivity: UserActivity[] = allUsers.map((user) => {
+  const userActivity: Array<UserActivity> = allUsers.map((user) => {
     const deckData = deckCounts.find((d) => d.userId === user.id);
     const cardData = cardCounts.find((c) => c.userId === user.id);
     const sentData = sharesSent.find((s) => s.userId === user.id);

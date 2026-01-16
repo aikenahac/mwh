@@ -26,7 +26,7 @@ import { format } from 'date-fns';
 import type { UserActivity } from '@/lib/api/analytics';
 
 interface UserActivityTableProps {
-  data: UserActivity[];
+  data: Array<UserActivity>;
 }
 
 export function UserActivityTable({ data }: UserActivityTableProps) {
@@ -34,7 +34,7 @@ export function UserActivityTable({ data }: UserActivityTableProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [expanded, setExpanded] = useState<ExpandedState>({});
 
-  const columns = useMemo<ColumnDef<UserActivity>[]>(
+  const columns = useMemo<Array<ColumnDef<UserActivity>>>(
     () => [
       {
         id: 'expander',
