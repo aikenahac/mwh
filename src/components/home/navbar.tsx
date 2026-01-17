@@ -19,6 +19,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { useState } from 'react';
+import { BuyMeACoffee } from '../bmac';
 
 interface NavbarProps {
   isAdmin?: boolean;
@@ -123,7 +124,10 @@ export function Navbar({ isAdmin = false }: NavbarProps) {
 
       {/* Right Side Actions */}
       <div className="flex gap-4 items-center">
-        <ThemeToggle />
+        <div className="flex gap-2 items-center">
+          <BuyMeACoffee />
+          <ThemeToggle />
+        </div>
         <SignedOut>
           <Link
             href="/auth/sign-in"
