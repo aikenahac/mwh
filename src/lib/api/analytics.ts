@@ -347,21 +347,30 @@ export async function getUserActivityData(): Promise<Array<UserActivity>> {
     .where(ne(deck.userId, 'system'))
     .groupBy(deck.userId, deck.id, deck.name);
 
+  // Index all arrays by userId for O(1) lookups instead of O(n) per user
+  const deckCountMap = new Map(deckCounts.map((d) => [d.userId, d]));
+  const cardCountMap = new Map(cardCounts.map((c) => [c.userId, c]));
+  const sharesSentMap = new Map(sharesSent.map((s) => [s.userId, s]));
+  const sharesReceivedMap = new Map(sharesReceived.map((r) => [r.userId, r]));
+  const userDecksMap = new Map<string, typeof userDecksWithCards>();
+  for (const ud of userDecksWithCards) {
+    if (!userDecksMap.has(ud.userId)) userDecksMap.set(ud.userId, []);
+    userDecksMap.get(ud.userId)!.push(ud);
+  }
+
   // Build user activity data
   const userActivity: Array<UserActivity> = allUsers.map((user) => {
-    const deckData = deckCounts.find((d) => d.userId === user.id);
-    const cardData = cardCounts.find((c) => c.userId === user.id);
-    const sentData = sharesSent.find((s) => s.userId === user.id);
-    const receivedData = sharesReceived.find((r) => r.userId === user.id);
+    const deckData = deckCountMap.get(user.id);
+    const cardData = cardCountMap.get(user.id);
+    const sentData = sharesSentMap.get(user.id);
+    const receivedData = sharesReceivedMap.get(user.id);
 
     // Get user's decks
-    const userDecks = userDecksWithCards
-      .filter((ud) => ud.userId === user.id)
-      .map((ud) => ({
-        id: ud.deckId,
-        name: ud.deckName,
-        cardCount: ud.cardCount,
-      }));
+    const userDecks = (userDecksMap.get(user.id) ?? []).map((ud) => ({
+      id: ud.deckId,
+      name: ud.deckName,
+      cardCount: ud.cardCount,
+    }));
 
     // Determine last activity
     let lastActivity: Date | null = null;
