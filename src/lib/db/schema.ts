@@ -13,7 +13,9 @@ export const deck = pgTable('Deck', {
   description: text('description'),
   userId: text('user_id').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-});
+}, (table) => ({
+  userIdIdx: index('Deck_user_id_idx').on(table.userId),
+}));
 
 export const card = pgTable('Card', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -23,7 +25,11 @@ export const card = pgTable('Card', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   deckId: uuid('deck_id').notNull().references(() => deck.id, { onDelete: 'cascade' }),
   userId: text('user_id').notNull(),
-});
+}, (table) => ({
+  deckIdIdx: index('Card_deck_id_idx').on(table.deckId),
+  userIdIdx: index('Card_user_id_idx').on(table.userId),
+  typeDeckIdIdx: index('Card_type_deck_id_idx').on(table.type, table.deckId),
+}));
 
 export const deckShare = pgTable('DeckShare', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -36,6 +42,7 @@ export const deckShare = pgTable('DeckShare', {
   uniqueShare: unique().on(table.deckId, table.sharedWithUserId),
   deckIdIdx: index('DeckShare_deck_id_idx').on(table.deckId),
   sharedWithUserIdIdx: index('DeckShare_shared_with_user_id_idx').on(table.sharedWithUserId),
+  sharedByUserIdIdx: index('DeckShare_shared_by_user_id_idx').on(table.sharedByUserId),
 }));
 
 export const userRole = pgTable('UserRole', {

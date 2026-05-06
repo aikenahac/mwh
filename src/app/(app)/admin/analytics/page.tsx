@@ -2,6 +2,8 @@ import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { isSuperAdmin } from '@/lib/auth/permissions';
 import { Routes } from '@/lib/routes';
+
+export const revalidate = 300;
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import {

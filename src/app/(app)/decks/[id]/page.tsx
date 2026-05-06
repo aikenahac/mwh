@@ -40,24 +40,30 @@ export default async function DeckPage({
   // Check user permissions for this deck
   const permissions = await getUserDeckPermissions(deckId, userId);
 
-  // Enrich shares with usernames from Clerk
-  const sharesWithUsernames = await Promise.all(
-    (deck.shares || []).map(async (share) => {
-      try {
-        const clerk = await clerkClient();
-        const user = await clerk.users.getUser(share.sharedWithUserId);
-        return {
-          ...share,
-          username: user.username || user.emailAddresses[0]?.emailAddress || share.sharedWithUserId,
-        };
-      } catch {
-        return {
-          ...share,
-          username: share.sharedWithUserId,
-        };
-      }
-    })
-  );
+  // Enrich shares with usernames from Clerk in a single batched call
+  const shares = deck.shares || [];
+  const shareUserIds = shares.map((s) => s.sharedWithUserId);
+  let userById = new Map<string, { username: string | null; emailAddresses: Array<{ emailAddress: string }> }>();
+  if (shareUserIds.length > 0) {
+    try {
+      const clerk = await clerkClient();
+      const { data: users } = await clerk.users.getUserList({
+        userId: shareUserIds,
+        limit: shareUserIds.length,
+      });
+      userById = new Map(users.map((u) => [u.id, u]));
+    } catch {
+      // Fall through; usernames will be the raw IDs
+    }
+  }
+  const sharesWithUsernames = shares.map((share) => {
+    const user = userById.get(share.sharedWithUserId);
+    return {
+      ...share,
+      username:
+        user?.username || user?.emailAddresses[0]?.emailAddress || share.sharedWithUserId,
+    };
+  });
 
   return (
     <div>
