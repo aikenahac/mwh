@@ -1,8 +1,12 @@
 import { z } from 'zod';
+import { unstable_cache } from 'next/cache';
 import { db } from '@/lib/db';
 import { deck, card, deckShare } from '@/lib/db/schema';
 import { sql, eq, and, ne, count } from 'drizzle-orm';
 import { clerkClient } from '@clerk/nextjs/server';
+
+const ANALYTICS_REVALIDATE = 300; // 5 minutes
+const ANALYTICS_TAG = 'analytics';
 
 // Zod Schemas
 export const systemStatsSchema = z.object({
@@ -76,86 +80,63 @@ export type UserDeck = z.infer<typeof userDeckSchema>;
 /**
  * Get system-wide statistics
  */
-export async function getSystemStats(): Promise<SystemStats> {
-  // Get user deck counts (excluding system)
-  const [userDeckCount] = await db
-    .select({ count: count() })
-    .from(deck)
-    .where(ne(deck.userId, 'system'));
+async function _getSystemStats(): Promise<SystemStats> {
+  // Aggregate all deck counts in a single query using FILTER
+  const [deckRow] = await db
+    .select({
+      userDecks: sql<string>`COUNT(*) FILTER (WHERE ${deck.userId} <> 'system')`,
+      systemDecks: sql<string>`COUNT(*) FILTER (WHERE ${deck.userId} = 'system')`,
+    })
+    .from(deck);
 
-  // Get system deck counts
-  const [systemDeckCount] = await db
-    .select({ count: count() })
-    .from(deck)
-    .where(eq(deck.userId, 'system'));
-
-  // Get user card counts (excluding system) by joining with deck
-  const [userCardCount] = await db
-    .select({ count: count() })
+  // Aggregate all card counts in a single query using FILTER
+  const [cardRow] = await db
+    .select({
+      userTotal: sql<string>`COUNT(*) FILTER (WHERE ${deck.userId} <> 'system')`,
+      userWhite: sql<string>`COUNT(*) FILTER (WHERE ${deck.userId} <> 'system' AND ${card.type} = 'white')`,
+      userBlack: sql<string>`COUNT(*) FILTER (WHERE ${deck.userId} <> 'system' AND ${card.type} = 'black')`,
+      systemTotal: sql<string>`COUNT(*) FILTER (WHERE ${deck.userId} = 'system')`,
+      systemWhite: sql<string>`COUNT(*) FILTER (WHERE ${deck.userId} = 'system' AND ${card.type} = 'white')`,
+      systemBlack: sql<string>`COUNT(*) FILTER (WHERE ${deck.userId} = 'system' AND ${card.type} = 'black')`,
+    })
     .from(card)
-    .innerJoin(deck, eq(card.deckId, deck.id))
-    .where(ne(deck.userId, 'system'));
-
-  const [userWhiteCardCount] = await db
-    .select({ count: count() })
-    .from(card)
-    .innerJoin(deck, eq(card.deckId, deck.id))
-    .where(and(eq(card.type, 'white'), ne(deck.userId, 'system')));
-
-  const [userBlackCardCount] = await db
-    .select({ count: count() })
-    .from(card)
-    .innerJoin(deck, eq(card.deckId, deck.id))
-    .where(and(eq(card.type, 'black'), ne(deck.userId, 'system')));
-
-  // Get system card counts
-  const [systemCardCount] = await db
-    .select({ count: count() })
-    .from(card)
-    .innerJoin(deck, eq(card.deckId, deck.id))
-    .where(eq(deck.userId, 'system'));
-
-  const [systemWhiteCardCount] = await db
-    .select({ count: count() })
-    .from(card)
-    .innerJoin(deck, eq(card.deckId, deck.id))
-    .where(and(eq(card.type, 'white'), eq(deck.userId, 'system')));
-
-  const [systemBlackCardCount] = await db
-    .select({ count: count() })
-    .from(card)
-    .innerJoin(deck, eq(card.deckId, deck.id))
-    .where(and(eq(card.type, 'black'), eq(deck.userId, 'system')));
+    .innerJoin(deck, eq(card.deckId, deck.id));
 
   const [shareCount] = await db.select({ count: count() }).from(deckShare);
 
-  // Get Clerk users count
+  // Get Clerk users count (lightweight: limit 1, totalCount comes from headers)
   const client = await clerkClient();
   const usersResponse = await client.users.getUserList({ limit: 1 });
   const totalUsers = usersResponse.totalCount;
 
-  // Calculate average for user decks only
-  const avgCardsPerDeck = userDeckCount.count > 0 ? userCardCount.count / userDeckCount.count : 0;
+  const userDecks = Number(deckRow.userDecks);
+  const userCards = Number(cardRow.userTotal);
+  const avgCardsPerDeck = userDecks > 0 ? userCards / userDecks : 0;
 
   return systemStatsSchema.parse({
     totalUsers,
-    totalDecks: userDeckCount.count,
-    totalCards: userCardCount.count,
-    totalWhiteCards: userWhiteCardCount.count,
-    totalBlackCards: userBlackCardCount.count,
+    totalDecks: userDecks,
+    totalCards: userCards,
+    totalWhiteCards: Number(cardRow.userWhite),
+    totalBlackCards: Number(cardRow.userBlack),
     totalShares: shareCount.count,
     avgCardsPerDeck: Math.round(avgCardsPerDeck * 10) / 10,
-    systemDecks: systemDeckCount.count,
-    systemCards: systemCardCount.count,
-    systemWhiteCards: systemWhiteCardCount.count,
-    systemBlackCards: systemBlackCardCount.count,
+    systemDecks: Number(deckRow.systemDecks),
+    systemCards: Number(cardRow.systemTotal),
+    systemWhiteCards: Number(cardRow.systemWhite),
+    systemBlackCards: Number(cardRow.systemBlack),
   });
 }
+
+export const getSystemStats = unstable_cache(_getSystemStats, ['analytics:system-stats'], {
+  revalidate: ANALYTICS_REVALIDATE,
+  tags: [ANALYTICS_TAG],
+});
 
 /**
  * Get user growth by month
  */
-export async function getUserGrowthByMonth(): Promise<Array<UserGrowthData>> {
+async function _getUserGrowthByMonth(): Promise<Array<UserGrowthData>> {
   const client = await clerkClient();
   const allUsersResponse = await client.users.getUserList({ limit: 500 });
   const allUsers = allUsersResponse.data;
@@ -181,10 +162,16 @@ export async function getUserGrowthByMonth(): Promise<Array<UserGrowthData>> {
   return z.array(userGrowthDataSchema).parse(result);
 }
 
+export const getUserGrowthByMonth = unstable_cache(
+  _getUserGrowthByMonth,
+  ['analytics:user-growth-by-month'],
+  { revalidate: ANALYTICS_REVALIDATE, tags: [ANALYTICS_TAG] },
+);
+
 /**
  * Get deck creation trends (last 30 days)
  */
-export async function getDeckCreationTrends(): Promise<Array<DeckCreationTrend>> {
+async function _getDeckCreationTrends(): Promise<Array<DeckCreationTrend>> {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -209,10 +196,16 @@ export async function getDeckCreationTrends(): Promise<Array<DeckCreationTrend>>
   return z.array(deckCreationTrendSchema).parse(result);
 }
 
+export const getDeckCreationTrends = unstable_cache(
+  _getDeckCreationTrends,
+  ['analytics:deck-creation-trends'],
+  { revalidate: ANALYTICS_REVALIDATE, tags: [ANALYTICS_TAG] },
+);
+
 /**
  * Get card creation trends by type (last 30 days)
  */
-export async function getCardCreationTrends(): Promise<Array<CardCreationTrend>> {
+async function _getCardCreationTrends(): Promise<Array<CardCreationTrend>> {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -257,10 +250,16 @@ export async function getCardCreationTrends(): Promise<Array<CardCreationTrend>>
   return z.array(cardCreationTrendSchema).parse(result);
 }
 
+export const getCardCreationTrends = unstable_cache(
+  _getCardCreationTrends,
+  ['analytics:card-creation-trends'],
+  { revalidate: ANALYTICS_REVALIDATE, tags: [ANALYTICS_TAG] },
+);
+
 /**
  * Get sharing activity trends (last 30 days)
  */
-export async function getSharingActivityTrends(): Promise<Array<SharingActivityTrend>> {
+async function _getSharingActivityTrends(): Promise<Array<SharingActivityTrend>> {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -282,10 +281,16 @@ export async function getSharingActivityTrends(): Promise<Array<SharingActivityT
   return z.array(sharingActivityTrendSchema).parse(result);
 }
 
+export const getSharingActivityTrends = unstable_cache(
+  _getSharingActivityTrends,
+  ['analytics:sharing-activity-trends'],
+  { revalidate: ANALYTICS_REVALIDATE, tags: [ANALYTICS_TAG] },
+);
+
 /**
  * Get detailed user activity data
  */
-export async function getUserActivityData(): Promise<Array<UserActivity>> {
+async function _getUserActivityData(): Promise<Array<UserActivity>> {
   // Fetch all users from Clerk
   const client = await clerkClient();
   const allUsersResponse = await client.users.getUserList({ limit: 500 });
@@ -413,3 +418,9 @@ export async function getUserActivityData(): Promise<Array<UserActivity>> {
 
   return z.array(userActivitySchema).parse(userActivity);
 }
+
+export const getUserActivityData = unstable_cache(
+  _getUserActivityData,
+  ['analytics:user-activity-data'],
+  { revalidate: ANALYTICS_REVALIDATE, tags: [ANALYTICS_TAG] },
+);

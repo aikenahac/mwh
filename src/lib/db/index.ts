@@ -13,7 +13,7 @@ const pool =
   new Pool({
     connectionString: process.env.DATABASE_URL,
     // Maximum number of clients in the pool
-    max: 10,
+    max: 20,
     // Maximum time a client can remain idle before being closed (30 seconds)
     idleTimeoutMillis: 30000,
     // Maximum time to wait for a connection (10 seconds)
