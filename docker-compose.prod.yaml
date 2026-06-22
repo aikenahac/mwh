@@ -30,19 +30,6 @@ services:
     networks:
       - mwh
 
-  studio:
-    image: ghcr.io/drizzle-team/gateway:latest
-    container_name: mwh-db-studio
-    environment:
-      - PORT=4983
-
-      - MASTERPASS=${DRIZZLE_MASTERPASS}
-    volumes:
-      - drizzle_gateway:/app
-    restart: unless-stopped
-    networks:
-      - mwh
-
   db:
     image: postgres:latest
     container_name: mwh-db
@@ -61,7 +48,6 @@ services:
 
 volumes:
   mwh_db_data:
-  drizzle_gateway:
 
 networks:
   mwh:
